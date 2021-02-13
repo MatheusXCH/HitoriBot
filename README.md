@@ -1,2 +1,0 @@
-# Discordzada
-Discord Bot
