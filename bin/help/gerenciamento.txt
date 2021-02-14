@@ -1,0 +1,24 @@
+**!invite**             
+    - Manda um convite na DM do autor
+        
+**!nick [member]**     
+    - Troca o nick de um membro
+
+**!kick [member]**
+    - Kicka um membro
+
+**!role [member]**
+    - Lista todas as roles de um membro
+
+**!set-role [member] [role-name]**
+    - Define uma role de um membro
+
+**!drop-role [member]**
+    - Retira uma rola de um membro
+
+**!ban [member]**
+    - Invoca o Ban Hammer
+
+**!clear *[num] *[member]**
+    - Limpa as últimas [num] mensagens do [member]
+    - Default_Num = 5, Default_Member = BOT
