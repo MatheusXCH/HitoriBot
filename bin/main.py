@@ -3,6 +3,8 @@ import os, sys, traceback, discord, logging, time
 from dotenv import load_dotenv
 from discord.ext import commands
 from discord import Member
+from boto.s3.connection import S3Connection
+s3 = S3Connection(os.environ['DISCORD_TOKEN'], os.environ['DISCORD_GUILD']) 
 
 logging.basicConfig(level=logging.INFO)
 clear = lambda: os.system('cls')
