@@ -7,10 +7,7 @@ from discord.ext import commands
 from discord.ext.commands import has_permissions, MissingPermissions
 from discord.ext.commands import Bot, guild_only
 
-#GLOBAL
-
-#Paths
-image_path = './bin/stickers/'
+import settings as st #Get the globals from Settings
 
 #Extension Management
 class Management(commands.Cog):
@@ -56,7 +53,7 @@ class Management(commands.Cog):
     async def kick(self, ctx, member: Member):
         await member.kick()
         await ctx.send(f'{member.mention} foi KICKADO pelo RH!')
-        await ctx.send(file = discord.File(image_path + 'RH.png'))
+        await ctx.send(file = discord.File(st.image_path + 'RH.png'))
     #Trata o erro de 'Nick'
     @kick.error
     async def kick_error(self, ctx, error):
@@ -71,7 +68,7 @@ class Management(commands.Cog):
     async def ban(self, ctx, member: Member):
         await member.ban()
         await ctx.send(f'{member.mention} foi BANIDO pelo RH!')
-        await ctx.send(file = discord.File(image_path + 'RH.png'))
+        await ctx.send(file = discord.File(st.image_path + 'RH.png'))
     #Trata o erro de 'Ban'
     @ban.error
     async def ban_error(self, ctx, error):

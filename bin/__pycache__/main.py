@@ -1,13 +1,8 @@
 #PyBOT - Author: @Matheus Xavier
-#
-#
-
 import os, sys, traceback, discord, logging, time
 from dotenv import load_dotenv
 from discord.ext import commands
 from discord import Member
-
-import settings as st #Get the globals from Settings
 
 logging.basicConfig(level=logging.INFO)
 clear = lambda: os.system('cls')

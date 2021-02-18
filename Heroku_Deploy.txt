@@ -1,0 +1,13 @@
+#Open CMD on main.py folder
+
+heroku login
+
+git init
+
+git:remote -a discordzada
+
+git add .
+
+git commit -am "description"
+
+git push heroku master

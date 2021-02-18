@@ -2,7 +2,7 @@ import os, discord, codecs, time
 from discord.ext import commands
 from discord import Colour
 
-help_path = './bin/help/'
+import settings as st #Get the globals from Settings
 
 class Help(commands.Cog):
     def __init__(self, bot):
@@ -11,13 +11,13 @@ class Help(commands.Cog):
     #Help (Command) - Mostra o custom help do Servidor    
     @commands.command(name='help')
     async def help(self, ctx):
-        with codecs.open(help_path + 'gerenciamento.txt', 'r', encoding='utf8') as f:
+        with codecs.open(st.help_path + 'gerenciamento.txt', 'r', encoding='utf8') as f:
             gerenciamento = f.read()
-        with codecs.open(help_path + 'mensagens.txt', 'r', encoding='utf8') as f:
+        with codecs.open(st.help_path + 'mensagens.txt', 'r', encoding='utf8') as f:
             mensagens = f.read()
-        with codecs.open(help_path + 'minigames.txt', 'r', encoding='utf8') as f:
+        with codecs.open(st.help_path + 'minigames.txt', 'r', encoding='utf8') as f:
             minigames = f.read()
-        with codecs.open(help_path + 'stickers.txt', 'r', encoding='utf8') as f:
+        with codecs.open(st.help_path + 'stickers.txt', 'r', encoding='utf8') as f:
             stickers = f.read()
         
         embed = discord.Embed(
