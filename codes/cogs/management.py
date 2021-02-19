@@ -7,7 +7,7 @@ from discord.ext import commands
 from discord.ext.commands import has_permissions, MissingPermissions
 from discord.ext.commands import Bot, guild_only
 
-import settings as st #Get the globals from Settings
+import codes.settings as st #Get the globals from Settings
 
 #Extension Management
 class Management(commands.Cog):

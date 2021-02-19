@@ -1,11 +1,7 @@
 import os, discord
 from discord.ext import commands
 
-import settings as st #Get the globals from Settings
-
-#GLOBAL
-#Path no qual estão armazenados os stickerss
-image_path = './stickers/'
+import codes.settings as st #Get the globals from Settings
 
 class Stickers(commands.Cog):
     def __init__(self, bot):

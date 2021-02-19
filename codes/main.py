@@ -7,7 +7,8 @@ from dotenv import load_dotenv
 from discord.ext import commands
 from discord import Member
 
-import settings as st #Get the globals from Settings
+sys.path.append("D:\\python-codes\\Discordzada") #Config the PYTHONPATH to import "codes.settings" without warnings
+import codes.settings as st #Get the globals from Settings
 
 logging.basicConfig(level=logging.INFO)
 clear = lambda: os.system('cls')
