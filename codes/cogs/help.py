@@ -2,7 +2,7 @@ import os, discord, codecs, time
 from discord.ext import commands
 from discord import Colour
 
-import settings as st #Get the globals from Settings
+import codes.settings as st #Get the globals from Settings
 
 class Help(commands.Cog):
     def __init__(self, bot):

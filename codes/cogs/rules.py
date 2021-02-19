@@ -1,7 +1,7 @@
 import os, discord, codecs
 from discord.ext import commands
 
-import settings as st #Get the globals from Settings
+import codes.settings as st #Get the globals from Settings
 
 class Rules(commands.Cog):
     def __init__(self, bot):
