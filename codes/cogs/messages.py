@@ -2,6 +2,8 @@ import os, discord
 from discord.ext import commands
 from discord.ext.commands import has_permissions, MissingPermissions
 
+import settings as st #Get the globals from Settings
+
 class Messages(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -27,6 +29,7 @@ Se vai deixar morrer, teu irmão???
         )
         embed.add_field(name=':play_pause: Animezada:', value= 'https://www.youtube.com/playlist?list=PLlOJh8D_rbtt3u1U3XScS8iL-EvNOf_ap', inline=True)
         embed.add_field(name=':play_pause: Biruta:', value= 'https://www.youtube.com/playlist?list=PLlOJh8D_rbtsYBFZWDPCqG4gqXSSkSj_m', inline=True)
+        embed.add_field(name=':play_pause: É o Ericks:', value= 'https://www.youtube.com/playlist?list=PLUou7E06dGsYeCeFykeBHCG7bXgx_VC4e', inline=True)
         
         await ctx.send(embed=embed)
     

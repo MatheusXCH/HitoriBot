@@ -1,0 +1,11 @@
+#Environment variables
+.env
+
+#The __pycache__ folder
+__pycache__/
+
+#Local bat
+PyBOT.bat
+
+#Heroku Deploy Tutorial
+Heroku_Deploy.txt

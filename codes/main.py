@@ -1,8 +1,13 @@
 #PyBOT - Author: @Matheus Xavier
+#
+#
+
 import os, sys, traceback, discord, logging, time
 from dotenv import load_dotenv
 from discord.ext import commands
 from discord import Member
+
+import settings as st #Get the globals from Settings
 
 logging.basicConfig(level=logging.INFO)
 clear = lambda: os.system('cls')
@@ -18,12 +23,12 @@ GUILD = os.getenv('DISCORD_GUILD')
 
 PREFIX = '!'
 
-startup_extensions = ["messages",
-                      "stickers",
-                      "rules",
-                      "dices",
-                      "management",
-                      "help"]
+startup_extensions = ["cogs.messages",
+                      "cogs.stickers",
+                      "cogs.rules",
+                      "cogs.dices",
+                      "cogs.management",
+                      "cogs.help"]
 
 #Prefix = ! e Help Command personalizado
 bot = commands.Bot(command_prefix=PREFIX, help_command=None)

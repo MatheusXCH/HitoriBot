@@ -1,1 +1,1 @@
-python bin/main.py
+python codes/main.py
