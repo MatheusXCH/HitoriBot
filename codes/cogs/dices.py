@@ -1,10 +1,7 @@
 import os, discord, random, time
 from discord.ext import commands
 
-#GLOBAL
-
-#Paths
-image_path = './stickers/'
+import settings as st #Get the globals from Settings
 
 class Dices(commands.Cog):
     def __init__(self, bot):
