@@ -20,7 +20,7 @@ class Dices(commands.Cog):
         await ctx.send(f':octagonal_sign: **FUJITORA FOI INVOCADO** :octagonal_sign: \n\n'
                        f'Lembre-se: \n'
                        f'*JAMAIS QUESTIONE O RESULTADO DOS DADOS!*')
-        await ctx.send(file = discord.File(image_path + 'Dado.png'))
+        await ctx.send(file = discord.File(st.image_path + 'Dado.png'))
         
         time.sleep(1)
         await ctx.send(':three:')
