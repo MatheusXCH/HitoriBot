@@ -6,10 +6,10 @@ import os, discord
 project_path = os.getcwd()
 
 #Path para 'Rules'
-rule_path = os.path.join("regras", "")
+rule_path = os.path.join("misc", "regras", "")
 
 #Path para 'Stickers'
-image_path = os.path.join("stickers", "")
+image_path = os.path.join("misc", "stickers", "")
 
 #Path para 'Help'
-help_path = os.path.join("help", "")
+help_path = os.path.join("misc", "help", "")
