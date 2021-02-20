@@ -13,3 +13,6 @@ image_path = os.path.join("misc", "stickers", "")
 
 #Path para 'Help'
 help_path = os.path.join("misc", "help", "")
+
+#Path para 'Minigame'
+minigame_path = os.path.join("misc", "minigame", "")
