@@ -1,3 +1,6 @@
 **!dado [dados]d[lados]** 
     - Invoca o Fujitora pra decidir nos dados
+
+**!coin**
+    - Cara ou Coroa
         

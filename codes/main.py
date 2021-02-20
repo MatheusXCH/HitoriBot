@@ -29,7 +29,8 @@ startup_extensions = ["cogs.messages",
                       "cogs.rules",
                       "cogs.dices",
                       "cogs.management",
-                      "cogs.help"]
+                      "cogs.help",
+                      "cogs.coin"]
 
 #Prefix = ! e Help Command personalizado
 bot = commands.Bot(command_prefix=PREFIX, help_command=None)
