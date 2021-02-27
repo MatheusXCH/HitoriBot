@@ -4,12 +4,20 @@ from discord.ext import commands
 import codes.settings as st #Get the globals from Settings
 
 class Rules(commands.Cog):
+    """Módulo: Rules
+    
+        - Lista as regras do servidor
+        - As regras estão disponíveis para edição via arquivo .txt, localizado no diretório '/misc/regras/rules.txt'
+    """
+    
     def __init__(self, bot):
         self.bot = bot
     
-    #Regras (Command) - Mostra as regras do Servidor
     @commands.command(name='rules')
     async def rules(self, ctx):
+        """!rules 
+        - Lista as regras do servidor!"""
+        
         with codecs.open(st.rule_path + 'rules.txt', 'r', encoding='utf8') as f:
             text = f.read()
         

@@ -4,12 +4,20 @@ from discord.ext import commands
 import codes.settings as st #Get the globals from Settings
 
 class Coin(commands.Cog):
+    """Módulo: Coin
+    
+        - Contém um simples jogo de Cara ou Corôa
+        - O resultado é mostrado pelo PyBOT via Embed com a imagem correspondente da face obtida
+    """
+    
     def __init__(self, bot):
         self.bot = bot
     
-    #Coin (Command) - Cara ou Coroa
     @commands.command(name = 'coin')
     async def coin(self, ctx):
+        """!coin
+        - Cara ou Corôa"""
+        
         coin_flip = random.randint(0, 1)
         if coin_flip:
             embed_cara = discord.Embed()
