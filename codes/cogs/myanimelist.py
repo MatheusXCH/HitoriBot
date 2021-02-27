@@ -54,8 +54,24 @@ class MyAnimeList(commands.Cog):
                 studios = ''
                 for std in anime["studios"]:
                     studio_list.append(std["name"])
-                    studios = ', '.join(studio_list)
+                studios = ', '.join(studio_list)
                 if studios == '': studios = 'Unknown'
+                
+                genres_list = []
+                genres = ''
+                label_count = 0
+                for genre in anime["genres"]:
+                    label_count += 1
+                    genres_list.append(genre["name"])
+                    if label_count == 3:
+                        genres_list.append('line_feed')
+                        label_count = 0
+                genres = ', '.join(genres_list)
+                if genres == '': genres = 'Unknown'
+                #Tratando os 'Enters'
+                genres = genres.replace('line_feed,', '\n')
+                genres = genres.replace(', line_feed', '\n') #Caso o valor seja múltiplo de 3, apaga o último line_feed
+                
                 
                 embed_anime.add_field(name = '**Nota: **', value = str(anime["score"]),inline = True)   
                 embed_anime.add_field(name = '**#Rank: **', value = str(anime["rank"]))
@@ -63,7 +79,9 @@ class MyAnimeList(commands.Cog):
             
                 embed_anime.add_field(name = '**Estudio:**', value = studios, inline = True)
                 embed_anime.add_field(name = '**Fonte Original:**', value = anime["source"], inline = True)
+                embed_anime.add_field(name = '**Gêneros: **', value = genres, inline = False)
                 
+                embed_anime.set_footer(text = f'Clique em 📄 para ver a sinopse')
                 embed_anime.set_image(url = str(anime["image_url"]))
                 
                 return embed_anime
@@ -75,6 +93,7 @@ class MyAnimeList(commands.Cog):
             await message.add_reaction('◀')
             await message.add_reaction('▶')
             await message.add_reaction('⏩')
+            await message.add_reaction('📄')
             
             def check(reaction, user):
                 return user == ctx.author
@@ -105,6 +124,8 @@ class MyAnimeList(commands.Cog):
                         i = len(search) - 1
                         page = anime_pages_layout(len(search) - 1)
                         await message.edit(embed = page)
+                    elif str(reaction) == '📄':
+                        await ctx.invoke(self.bot.get_command('anime-sin'), anime_sin_title = page.title)
 
                     try:
                         reaction, user = await self.bot.wait_for('reaction_add', timeout = 30.0, check = check)
@@ -116,7 +137,6 @@ class MyAnimeList(commands.Cog):
                 await ctx.send(embed = error_embed)
             await message.clear_reactions()
 
-    #TODO Adicionar os gêneros do anime pesquisado
     @commands.command(pass_context = True, name = 'anime-sin')
     async def anime_sin(self, ctx, *, anime_sin_title: str = 'Nothing Passed to Command'):
         """!anime-sin [title]
@@ -137,14 +157,13 @@ class MyAnimeList(commands.Cog):
                 return
             
             anime = jikan.anime(search["results"][0]["mal_id"])
-            
-            embed_sin = discord.Embed(
+            embed_anime_sin = discord.Embed(
                 title = str(anime["title"]),
                 colour = discord.Colour(0x04d197),
                 description = translator.translate(anime["synopsis"],lang_src='en', lang_tgt='pt'),
-                url = anime["url"],        
+                url = anime["url"]
             )
-            await ctx.send(content = None, embed=embed_sin)
+            await ctx.send(content = None, embed=embed_anime_sin)
 
     @commands.command(pass_context = True, name = 'manga')
     async def manga(self, ctx, *, manga_title : str = 'Nothing Passed to Command'):
@@ -180,7 +199,7 @@ class MyAnimeList(commands.Cog):
                 author = ""
                 for std in manga["authors"]:
                     authors_list.append(std["name"])
-                    author = '; '.join(authors_list)
+                author = '; '.join(authors_list)
                 if author == "": author = 'Unknown' #É preciso tratar, pois o caso no qual
                                                     #author == "" gera um erro no discord.Embed
                 
@@ -188,16 +207,33 @@ class MyAnimeList(commands.Cog):
                 magazine = ""
                 for std in manga["serializations"]:
                     magazines_list.append(std["name"])
-                    magazine = '; '.join(magazines_list)
+                magazine = '; '.join(magazines_list)
                 if magazine == "": magazine = 'Unknown'
+                
+                genres_list = []
+                genres = ''
+                label_count = 0
+                for genre in manga["genres"]:
+                    label_count += 1
+                    genres_list.append(genre["name"])
+                    if label_count == 3:
+                        genres_list.append('line_feed')
+                        label_count = 0
+                genres = ', '.join(genres_list)
+                if genres == '': genres = 'Unknown'
+                #Tratando os 'Enters'
+                genres = genres.replace('line_feed,', '\n')
+                genres = genres.replace(', line_feed', '\n') #Caso o valor seja múltiplo de 3, apaga o último line_feed
                 
                 embed_manga.add_field(name = '**Nota: **', value = str(manga["score"]),inline = True)   
                 embed_manga.add_field(name = '**#Rank: **', value = str(manga["rank"]))
                 embed_manga.add_field(name = '**#Popularidade:**', value = manga["popularity"], inline = True)
             
                 embed_manga.add_field(name = '**Autor:**', value = author, inline = True)
-                embed_manga.add_field(name = '**Revista:**', value = magazine, inline = True)
+                embed_manga.add_field(name = '**Revista:**', value = magazine, inline = False)
+                embed_manga.add_field(name = '**Gêneros:**', value = genres, inline = False)
                 
+                embed_manga.set_footer(text = f'Clique em 📄 para ver a sinopse')
                 embed_manga.set_image(url = str(manga["image_url"]))
 
                 return embed_manga
@@ -209,6 +245,7 @@ class MyAnimeList(commands.Cog):
             await message.add_reaction('◀')
             await message.add_reaction('▶')
             await message.add_reaction('⏩')
+            await message.add_reaction('📄')
             
             def check(reaction, user):
                 return user == ctx.author
@@ -240,7 +277,9 @@ class MyAnimeList(commands.Cog):
                         i = len(search) - 1
                         page = manga_pages_layout(len(search) - 1)
                         await message.edit(embed = page)
-                        
+                    elif str(reaction) == '📄':
+                        await ctx.invoke(self.bot.get_command('manga-sin'), manga_sin_title = page.title)
+
                     try:
                         reaction, user = await self.bot.wait_for('reaction_add', timeout = 30.0, check = check)
                         await message.remove_reaction(reaction, user)
@@ -251,7 +290,6 @@ class MyAnimeList(commands.Cog):
                 await ctx.send(embed = error_embed)
             await message.clear_reactions()
 
-    #TODO Adicionar os gêneros do mangá pesquisado
     @commands.command(pass_context = True, name = 'manga-sin')
     async def manga_sin(self, ctx, *, manga_sin_title: str = 'Nothing Passed to Command'):
         """!manga-sin [title]
@@ -327,11 +365,12 @@ class MyAnimeList(commands.Cog):
                 return
 
             japan_voice_list = []
-          
+            voice = ''
             for dub in character["voice_actors"]:
                 if dub["language"] == 'Japanese':
                     japan_voice_list.append(dub["name"])
             voice = '; '.join(japan_voice_list)
+            if voice == '': voice = 'Unknown'
 
             #Tratando possíveis erros na descrição
             #Esses erros podem acontecer pois os itens "animeography" e "mangaography" podem ser listas vazias
