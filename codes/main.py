@@ -31,14 +31,24 @@ startup_extensions = ["cogs.messages",
                       "cogs.management",
                       "cogs.help",
                       "cogs.coin",
-                      "cogs.myanimelist"]
+                      "cogs.myanimelist",
+                      "cogs.howlongtobeat"]
 
 #Prefix = ! e Help Command personalizado
-bot = commands.Bot(command_prefix=PREFIX, help_command=None)
+#bot = commands.Bot(command_prefix=PREFIX, help_command=None)
+bot = commands.Bot(command_prefix=PREFIX)
 
 #Evento que dispara quando o bot conecta
 @bot.event
 async def on_ready():
+    """On_Ready
+        - Confirma que o Bot está online
+        - Retorna a lista de Servidores aos quais o PyBOT está conectado
+        - A lista contém:
+            - Nome da Guilda 
+            - ID da Guilda
+            - Apelido que o PyBOT possui no servidor
+    """
     guild = []
     for g in bot.guilds:
         guild.append(g)
@@ -77,7 +87,7 @@ async def on_member_remove(member):
     print(f"{member} has left the server")
     await member.guild.send(f'{member.display_name} deixou o servidor!')      
 
-#Função principal - Carrega as extensões
+#Carrega as extensões (Cogs)
 if __name__ == "__main__":
     loading_error_flag = 0
     for extension in startup_extensions:

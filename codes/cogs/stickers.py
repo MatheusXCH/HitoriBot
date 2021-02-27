@@ -4,12 +4,15 @@ from discord.ext import commands
 import codes.settings as st #Get the globals from Settings
 
 class Stickers(commands.Cog):
+    """Módulo: Stickers
+        - Responsável por todos os comandos relacionados aos stickers disponibilizados pelo PyBOT
+        - Sempre que um dos comandos por chamado, o PyBOT responderá com o sticker (imagem) correspondente
+        - Todos os Stickers está disponível no diretório '/misc/stickers'
+    """
+    
     def __init__(self, bot):
         self.bot = bot
 
-    #Stickers - Daqui em diante, estão listados todos os Stickers do Servidor
-    #
-    #
     @commands.command(name='bebero')
     async def bebero(self, ctx):        
         await ctx.send(file = discord.File(st.image_path + 'Bebero.png'))

@@ -4,13 +4,25 @@ from discord.ext import commands
 import codes.settings as st #Get the globals from Settings
 
 class Dices(commands.Cog):
+    """Módulo: Dices
+    
+        - Contém um minigame no qual o Almirante Fujitora (One Piece!!!) é invocado para tirar a sorte nos dados!
+    """
+    
     def __init__(self, bot):
         self.bot = bot
 
     #TODO Tentar colocar no formato Embed
-    #Dado (Command) - Invoca o Fujitora e joga um XdY
     @commands.command(name='dado')
     async def dado(self, ctx, dice : str):
+        """!dado [MdN]
+        - Invoca o Fujitora para tirar a sorte nos dados!
+            
+        - Argumentos: dice (type str) 
+            
+        ##### Ex: !dado 3d6 -> Joga 3 dados de 6 faces
+        """
+        
         try:
             rolls, limit = map(int, dice.split('d'))
         except Exception:

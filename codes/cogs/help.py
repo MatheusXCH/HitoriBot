@@ -4,13 +4,22 @@ from discord import Colour
 
 import codes.settings as st #Get the globals from Settings
 
+#TODO Melhorar o !HELP
 class Help(commands.Cog):
+    """Módulo: Help
+    
+        - Substituiu o !help padrão, adicionando informações sobre os comandos disponíveis para uso do PyBOT \\
+        - Os comandos estão descritos nos arquivos .txt, disponíveis no diretório '/misc/help/*.txt'
+    """
     def __init__(self, bot):
         self.bot = bot
-
-    #Help (Command) - Mostra o custom help do Servidor    
-    @commands.command(name='help')
+  
+    @commands.command(name='custom-help')
     async def help(self, ctx):
+        """!help 
+        - Substitui o help padrão por uma versão personalizada para o PyBOT
+        """
+        
         with codecs.open(st.help_path + 'gerenciamento.txt', 'r', encoding='utf8') as f:
             gerenciamento = f.read()
         with codecs.open(st.help_path + 'mensagens.txt', 'r', encoding='utf8') as f:
