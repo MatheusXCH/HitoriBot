@@ -11,18 +11,18 @@ jikan = Jikan()
 translator = google_translator()
 hltb = HowLongToBeat()
 
-'''
+
 #JIKAN Function
 
 def SearchAnime(title):
-    # #Search an Anime
-    # search = jikan.search('anime', title, page=1)
-    # anime = jikan.anime(search["results"][0]["mal_id"])
-    # print(f'TIPO: {type(anime["studios"])}')
+    #Search an Anime
+    search = jikan.search('anime', title, page=1)
+    anime = jikan.anime(search["results"][0]["mal_id"])
+    print(f'TIPO: {type(anime["studios"])}')
     
-    # print(f'Dict "ANIME": \n\n')
-    # for keys in anime:
-    #     print(f'{keys}: {anime[keys]}\n')
+    print(f'Dict "ANIME": \n\n')
+    for keys in anime:
+        print(f'{keys}: {anime[keys]}\n')
 
     # #Search a manga
     # search = jikan.search('manga', title, page=1)
@@ -33,16 +33,16 @@ def SearchAnime(title):
     #     print(f'{keys}: {manga[keys]}\n')
     
     # Search a person
-    search = jikan.search('person', title, page=1)
-    print(search)
-    person = jikan.person(search["results"][0]["mal_id"])
+    # search = jikan.search('person', title, page=1)
+    # print(search)
+    # person = jikan.person(search["results"][0]["mal_id"])
     # person = jikan.person(title)
     
    
     
-    print(f'Dict "PERSON": \n\n')
-    for keys in person:
-        print(f'{keys}: {person[keys]}\n')
+    # print(f'Dict "PERSON": \n\n')
+    # for keys in person:
+    #     print(f'{keys}: {person[keys]}\n')
     
     
     #Search a character
@@ -76,7 +76,7 @@ def SearchAnime(title):
 #Anime Main
 pesquisa = (input('Nome: '))
 SearchAnime(pesquisa)
-'''
 
-search = jikan.search('anime', '@@@####$$$$$', page = 1)
-print(search)
+
+# search = jikan.search('anime', '@@@####$$$$$', page = 1)
+# print(search)
