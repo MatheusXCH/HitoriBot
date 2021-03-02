@@ -1,28 +1,61 @@
-import mal
-from mal import *
-from mal import AnimeSearch
-from mal import Anime
+import os, mal, dotenv
+from dotenv import load_dotenv
 from jikanpy import Jikan
 
 from google_trans_new import google_translator
 from howlongtobeatpy import HowLongToBeat
 
+import random, pandas, pprint
+from pprint import pprint
+from riotwatcher import LolWatcher, ApiError
+
+import json
+import requests
+
 jikan = Jikan()
 translator = google_translator()
 hltb = HowLongToBeat()
 
+load_dotenv()
+RIOT_KEY = os.getenv('RIOT_KEY')
+watcher = LolWatcher(RIOT_KEY)
+my_region = 'BR1'
+
+def Riot_Watcher_Func(name: str):
+    summoner = watcher.summoner.by_name(my_region, name)
+    pprint(summoner)
+
+def getVersion():
+    response = requests.get('https://ddragon.leagueoflegends.com/api/versions.json')
+    league_versions = response.json()
+    return league_versions[0]
+
+def Data_Dragon_Func():
+    latest_version = getVersion()
+    lang_code = 'pt_BR'
+    
+    all_champions_url = f'http://ddragon.leagueoflegends.com/cdn/{latest_version}/data/{lang_code}/champion.json'
+    all_champions_response = requests.get(all_champions_url)
+    all_champions = all_champions_response.json()
+    pprint(all_champions)
+    
+
+Data_Dragon_Func()
+
+# name = input('Nome: ')
+# Riot_Watcher_Func(name)
 
 #JIKAN Function
 
-def SearchAnime(title):
-    #Search an Anime
-    search = jikan.search('anime', title, page=1)
-    anime = jikan.anime(search["results"][0]["mal_id"])
-    print(f'TIPO: {type(anime["studios"])}')
+# def SearchAnime(title):
+#     #Search an Anime
+#     search = jikan.search('anime', title, page=1)
+#     anime = jikan.anime(search["results"][0]["mal_id"])
+#     print(f'TIPO: {type(anime["studios"])}')
     
-    print(f'Dict "ANIME": \n\n')
-    for keys in anime:
-        print(f'{keys}: {anime[keys]}\n')
+#     print(f'Dict "ANIME": \n\n')
+#     for keys in anime:
+#         print(f'{keys}: {anime[keys]}\n')
 
     # #Search a manga
     # search = jikan.search('manga', title, page=1)
@@ -73,9 +106,9 @@ def SearchAnime(title):
     
     # print(f'\n\n{cont}')
 
-#Anime Main
-pesquisa = (input('Nome: '))
-SearchAnime(pesquisa)
+# #Anime Main
+# pesquisa = (input('Nome: '))
+# SearchAnime(pesquisa)
 
 
 # search = jikan.search('anime', '@@@####$$$$$', page = 1)

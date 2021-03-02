@@ -16,6 +16,7 @@ clear = lambda: os.system('cls')
 #Carrega todas as intents para uso do Bot
 intents=intents=discord.Intents.all()
 intents.members = True
+intents.reactions = True
 
 #Carrega os Tokens necessários
 load_dotenv()
@@ -32,7 +33,8 @@ startup_extensions = ["cogs.messages",
                       "cogs.help",
                       "cogs.coin",
                       "cogs.myanimelist",
-                      "cogs.howlongtobeat"]
+                      "cogs.howlongtobeat",
+                      "cogs.leagueoflegends"]
 
 #Prefix = ! e Help Command personalizado
 #bot = commands.Bot(command_prefix=PREFIX, help_command=None)
