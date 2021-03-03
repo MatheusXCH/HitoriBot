@@ -1,4 +1,4 @@
-import os, discord, time
+import os, discord, time, codecs
 from discord import Member
 from discord import User
 from discord import Role

@@ -1,8 +1,0 @@
-**!rules**
-    - Regras do servidor
-
-**!familia**         
-    - Pergunta pro BrTT se isso aqui é uma família
-        
-**!playlist**       
-    - Lista as playlists elaboradas para tocar no servidor
