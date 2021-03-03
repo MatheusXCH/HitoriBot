@@ -33,7 +33,7 @@ startup_extensions = [
                     "cogs.minigames",
                     "cogs.myanimelist",
                     "cogs.howlongtobeat",
-                    "cogs.leagueoflegends"
+                    #"cogs.leagueoflegends"
                     ]
 
 #bot = commands.Bot(command_prefix=PREFIX, help_command=None)
@@ -42,10 +42,8 @@ custom_pretty_help = PrettyHelp(
     color = discord.Color(0xa632a8),
     index_title = f'Módulos',
     ending_note = f'Help - PyBOT',
-    no_category = f'Sem Classificação',
     sort_commands = True,
     show_index = True,
-    dm_help = True
 )
 
 bot = commands.Bot(command_prefix=PREFIX, help_command = custom_pretty_help)
