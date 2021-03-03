@@ -16,3 +16,6 @@ help_path = os.path.join("misc", "help", "")
 
 #Path para 'Minigame'
 minigame_path = os.path.join("misc", "minigame", "")
+
+#Path to League Data Dragon
+data_dragon_path = os.path.join("misc", "league_of_legends", "data_dragon", "")

@@ -6,6 +6,8 @@ import os, sys, traceback, discord, logging, time
 from dotenv import load_dotenv
 from discord.ext import commands
 from discord import Member
+from pretty_help import PrettyHelp
+from pretty_help import Navigation
 
 sys.path.append("D:\\python-codes\\Discordzada") #Config the PYTHONPATH to import "codes.settings" without warnings
 import codes.settings as st #Get the globals from Settings
@@ -16,27 +18,35 @@ clear = lambda: os.system('cls')
 #Carrega todas as intents para uso do Bot
 intents=intents=discord.Intents.all()
 intents.members = True
+intents.reactions = True
 
 #Carrega os Tokens necessários
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
-
 PREFIX = '!'
 
-startup_extensions = ["cogs.messages",
-                      "cogs.stickers",
-                      "cogs.rules",
-                      "cogs.dices",
-                      "cogs.management",
-                      "cogs.help",
-                      "cogs.coin",
-                      "cogs.myanimelist",
-                      "cogs.howlongtobeat"]
+startup_extensions = [
+                    "cogs.messages",
+                    "cogs.stickers",
+                    "cogs.management",
+                    "cogs.minigames",
+                    "cogs.myanimelist",
+                    "cogs.howlongtobeat",
+                    #"cogs.leagueoflegends"
+                    ]
 
-#Prefix = ! e Help Command personalizado
 #bot = commands.Bot(command_prefix=PREFIX, help_command=None)
-bot = commands.Bot(command_prefix=PREFIX)
+custom_pretty_help = PrettyHelp(
+    active_time = 60,
+    color = discord.Color(0xa632a8),
+    index_title = f'Módulos',
+    ending_note = f'Help - PyBOT',
+    sort_commands = True,
+    show_index = True,
+)
+
+bot = commands.Bot(command_prefix=PREFIX, help_command = custom_pretty_help)
 
 #Evento que dispara quando o bot conecta
 @bot.event
@@ -65,27 +75,6 @@ async def on_ready():
             print(f'{g.name} (id: {g.id}) como {nickname}')
             
     await bot.change_presence(activity= discord.Game('no Bicho'))
-
-
-#Daqui em diante estão os eventos (@bot.event)
-#
-#
-#
-
-#TODO Testar o On Member Join e On Member Remove   
-@bot.command(pass_context=True) 
-@bot.event
-async def on_member_join(member):
-    print(f"{member} has joined the server")
-    await member.guild.send(f'Deem as boas-vindas a {member.display_name}, o mais novo membro do servidor!')
-    await member.create_dm()
-    await member.dm_channel.send(f'Seja bem vindo ao servidor, {member.display_name}')
-
-@bot.command(pass_context=True) 
-@bot.event
-async def on_member_remove(member):
-    print(f"{member} has left the server")
-    await member.guild.send(f'{member.display_name} deixou o servidor!')      
 
 #Carrega as extensões (Cogs)
 if __name__ == "__main__":

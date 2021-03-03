@@ -6,23 +6,27 @@ from howlongtobeatpy import HowLongToBeat
 
 hltb = HowLongToBeat()
 
-class HowLongToBeat(commands.Cog):
-    """Módulo: HowLongToBeat
-        - Integra o PyBOT com o https://howlongtobeat.com/ via howlongtobeatpy
-        - Permite consultar o tempo estimado de término de games, de acordo com os dados disponibilizados pela comunidade do HLTB
-        #### Utiliza: 
-        ##### howlongtobeatpy API (by ScrappyCocco on: https://github.com/ScrappyCocco/HowLongToBeat-PythonAPI)
+# Módulo: HowLongToBeat
+#    - Integra o PyBOT com o https://howlongtobeat.com/ via howlongtobeatpy
+#    - Permite consultar o tempo estimado de término de games, de acordo com os dados disponibilizados pela comunidade do HLTB
+#    #### Utiliza: 
+#    ##### howlongtobeatpy API (by ScrappyCocco on: https://github.com/ScrappyCocco/HowLongToBeat-PythonAPI)
 
+
+class HowLongToBeat(commands.Cog):
+    """Obtém dados de tempo de jogo dos games cadastrados no 'HowLongToBeat'
     """
     
     def __init__(self, bot):
         self.bot = bot
 
+    # !hltb <game_title>
+    # - Procura um jogo no HowLongToBeat e retorna Título, Imagem, Main, Main+Extra e Completionist
+    # - Com o painel interativo, é possível avançar por todos os itens encontrados na primeira página do HowLongToBeat!
     @commands.command(pass_context = True, name = 'hltb')
     async def hltb(self, ctx, *, game_title):
-        """!hltb [game_title]
-        - Procura um jogo no HowLongToBeat e retorna Título, Imagem, Main, Main+Extra e Completionist
-        - Com o painel interativo, é possível avançar por todos os itens encontrados na primeira página do HowLongToBeat!
+        """!hltb <game_title>
+        Retorna o resultado da busca no HowLongToBeat
         """  
           
         results = hltb.search(game_title)
