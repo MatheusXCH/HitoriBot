@@ -3,3 +3,8 @@ python-dotenv==0.15.0
 jikanpy==4.3.0
 google-trans-new==1.1.9
 howlongtobeatpy==0.1.17
+riotwatcher==3.1.1
+requests==2.25.1
+pandas==1.2.2
+numpy==1.20.1
+discord-pretty-help==1.2.2
