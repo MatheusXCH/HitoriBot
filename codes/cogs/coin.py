@@ -3,16 +3,18 @@ from discord.ext import commands
 
 import codes.settings as st #Get the globals from Settings
 
+# Módulo: Coin
+#  - Contém um simples jogo de Cara ou Corôa
+#  - O resultado é mostrado pelo PyBOT via Embed com a imagem correspondente da face obtida
+
 class Coin(commands.Cog):
-    """Módulo: Coin
-    
-        - Contém um simples jogo de Cara ou Corôa
-        - O resultado é mostrado pelo PyBOT via Embed com a imagem correspondente da face obtida
+    """
     """
     
     def __init__(self, bot):
         self.bot = bot
     
+    # !coin
     @commands.command(name = 'coin')
     async def coin(self, ctx):
         """!coin

@@ -9,25 +9,28 @@ from google_trans_new import google_translator
 jikan = Jikan()
 translator = google_translator()
 
+# Módulo: MyAnimeList
+#     - Integra os resultados de busca do MyAnimeList com o Bot, via jikanpy API 
+#     - Utiliza da API 'google_trans_new' para fazer automaticamente traduções necessárias de 'EN/PT-BR' 
+#     - Os comandos listados abaixo buscam fornecer informações, em forma de Embed interativos, sobre animes, mangás, suas sinopses e personagens das obras
+#     #### Utiliza:
+#     ##### JikanPY API (by abhinavk99 on: https://github.com/abhinavk99/jikanpy) 
+#     ##### Google_Trans_New API (by lushan88a on: https://github.com/lushan88a/google_trans_new)
 class MyAnimeList(commands.Cog):
-    """Módulo: MyAnimeList
-        - Integra os resultados de busca do MyAnimeList com o Bot, via jikanpy API 
-        - Utiliza da API 'google_trans_new' para fazer automaticamente traduções necessárias de 'EN/PT-BR' 
-        - Os comandos listados abaixo buscam fornecer informações, em forma de Embed interativos, sobre animes, mangás, suas sinopses e personagens das obras
-        #### Utiliza:
-        ##### JikanPY API (by abhinavk99 on: https://github.com/abhinavk99/jikanpy) 
-        ##### Google_Trans_New API (by lushan88a on: https://github.com/lushan88a/google_trans_new)
+    """Obtém dados sobre animes, mangás e personagens diretamente do MyAnimeList
     """
     
     def __init__(self, bot):
         self.bot = bot
 
+    # !anime [title]
+    #         - Procura por um anime no MyAnimeList e obtém as infos: 
+    #             - Título, Lançamento, Status, Tipo, Episódios, URL, Nota, Rank, Popularidade, Estudio, Fonte Original e Imagem
+    #         - Retorna um Embed interativo com os dados obtidos
     @commands.command(pass_context = True, name = 'anime')
     async def anime(self, ctx, *, anime_title : str = 'Nothing Passed to Command'):
-        """!anime [title]
-            - Procura por um anime no MyAnimeList e obtém as infos: 
-                - Título, Lançamento, Status, Tipo, Episódios, URL, Nota, Rank, Popularidade, Estudio, Fonte Original e Imagem
-            - Retorna um Embed interativo com os dados obtidos
+        """!anime <anime_title>
+        Retorna os animes encontrados no MyAnimeList que correspondem à busca
         """
         
         if anime_title == 'Nothing Passed to Command':
@@ -137,11 +140,13 @@ class MyAnimeList(commands.Cog):
                 await ctx.send(embed = error_embed)
             await message.clear_reactions()
 
+    # !anime-sin [title]
+    #         - Procura por um anime no MyAnimeList e obtém a sua sinopse
+    #         - Retorna um Embed com o título da obra encontrada e sua sinopse traduzida para PT-BR
     @commands.command(pass_context = True, name = 'anime-sin')
     async def anime_sin(self, ctx, *, anime_sin_title: str = 'Nothing Passed to Command'):
-        """!anime-sin [title]
-            - Procura por um anime no MyAnimeList e obtém a sua sinopse
-            - Retorna um Embed com o título da obra encontrada e sua sinopse traduzida para PT-BR
+        """!anime-sin <anime_title>
+        Retorna as sinopses dos animes encontrados no MyAnimeList que correspondem à busca
         """
         
         if anime_sin_title == 'Nothing Passed to Command':
@@ -165,12 +170,14 @@ class MyAnimeList(commands.Cog):
             )
             await ctx.send(content = None, embed=embed_anime_sin)
 
+    # !manga [title]
+    #     - Procura por um mangá no MyAnimeList e obtém as infos: 
+    #         - Título, Status, Tipo, Capítulos, Volumes, URL, Nota, Rank, Popularidade, Autor, Revista e Imagem
+    #     - Retorna um Embed interativo com os dados obtidos
     @commands.command(pass_context = True, name = 'manga')
     async def manga(self, ctx, *, manga_title : str = 'Nothing Passed to Command'):
-        """!manga [title]
-        - Procura por um mangá no MyAnimeList e obtém as infos: 
-            - Título, Status, Tipo, Capítulos, Volumes, URL, Nota, Rank, Popularidade, Autor, Revista e Imagem
-        - Retorna um Embed interativo com os dados obtidos
+        """!manga <manga_title>
+        Retorna os mangás encontrados no MyAnimeList que correspondem à busca
         """
         
         if manga_title == 'Nothing Passed to Command':
@@ -289,12 +296,14 @@ class MyAnimeList(commands.Cog):
                 error_embed = discord.Embed(title = 'Erro:', description = 'Desculpe, o limite de consultas por minuto ao MyAnimeList foi atingido!\nPor favor, aguarde um pouco e tente novamente!')
                 await ctx.send(embed = error_embed)
             await message.clear_reactions()
-
+            
+    # !manga-sin [title]
+    #         - Procura por um mangá no MyAnimeList e obtém sua sinopse 
+    #         - Retorna um Embed com o título da obra encontrada e sua sinopse
     @commands.command(pass_context = True, name = 'manga-sin')
     async def manga_sin(self, ctx, *, manga_sin_title: str = 'Nothing Passed to Command'):
-        """!manga-sin [title]
-            - Procura por um mangá no MyAnimeList e obtém sua sinopse 
-            - Retorna um Embed com o título da obra encontrada e sua sinopse
+        """!manga-sin <manga_title>
+        Retorna as sinopses dos mangás encontrados no MyAnimeList que correspondem à busca
         """
         
         if manga_sin_title == 'Nothing Passed to Command':
@@ -320,17 +329,20 @@ class MyAnimeList(commands.Cog):
             await ctx.send(content = None, embed=embed_sin)
 
     #TODO Arrumar problemas - Os personagens mostrados não são os mais populares. Algumas vezes é preciso escrever o nome completo deles, o que não é ideal
+    # !mal-char [name]
+    #         - Procura por um personagem no MyAnimeList e obtém as infos: 
+    #             - Nome, Anime, Manga/Light Novel, URL e Imagem
+    #         - Retorna um Embed com os dados obtidos
+            
+    #         #### Limitações:
+    #         - Devido a forma como o MAL busca por personagens, ao passar o nome incompleto a API nem sempre retorna o resultado mais popular
+    #         - Diante disso, buscando amenizar a situação, essa função busca os 10 primeiros resultados e retorna o mais popular deles
+    #             - Ainda assim, nem sempre é garantido que o resultado mais popular de todo o MAL estará entre os 10 primeiros    
     @commands.command(pass_context = True, name = 'mal-char')
     async def mal_char(self, ctx, *, char_name : str = 'Nothing Passed to Command'):
-        """!mal-char [name]
-            - Procura por um personagem no MyAnimeList e obtém as infos: 
-                - Nome, Anime, Manga/Light Novel, URL e Imagem
-            - Retorna um Embed com os dados obtidos
-            
-            #### Limitações:
-            - Devido a forma como o MAL busca por personagens, ao passar o nome incompleto a API nem sempre retorna o resultado mais popular
-            - Diante disso, buscando amenizar a situação, essa função busca os 10 primeiros resultados e retorna o mais popular deles
-                - Ainda assim, nem sempre é garantido que o resultado mais popular de todo o MAL estará entre os 10 primeiros
+        """!mal-char <character_name>
+        Retorna personagem de anime mais famoso de acordo com a busca requisitada
+        # OBS: Essa função nem sempre retorna o personagem mais popular, devido a uma limitação da busca do MAL
         """
         
         if char_name == 'Nothing Passed to Command':

@@ -19,28 +19,53 @@ hltb = HowLongToBeat()
 load_dotenv()
 RIOT_KEY = os.getenv('RIOT_KEY')
 watcher = LolWatcher(RIOT_KEY)
-my_region = 'BR1'
 
-def Riot_Watcher_Func(name: str):
-    summoner = watcher.summoner.by_name(my_region, name)
-    pprint(summoner)
-
-def getVersion():
-    response = requests.get('https://ddragon.leagueoflegends.com/api/versions.json')
-    league_versions = response.json()
-    return league_versions[0]
-
-def Data_Dragon_Func():
-    latest_version = getVersion()
+class dataDragon:
+    #Atributos compartilhados entre todas as instâncias de dataDragon
+    my_region = 'BR1'
     lang_code = 'pt_BR'
     
-    all_champions_url = f'http://ddragon.leagueoflegends.com/cdn/{latest_version}/data/{lang_code}/champion.json'
-    all_champions_response = requests.get(all_champions_url)
-    all_champions = all_champions_response.json()
-    pprint(all_champions)
-    
+    def __init__(self):
+        
+        #Métodos do construtor
+        def get_current_version():
+            response = requests.get('https://ddragon.leagueoflegends.com/api/versions.json')
+            league_versions = response.json()
+            return league_versions[0]
+        
+        def get_all_champions_json():
+            all_champions_url = f'http://ddragon.leagueoflegends.com/cdn/{self.latest_version}/data/{self.lang_code}/champion.json'
+            all_response = requests.get(all_champions_url)
+            return all_response.json()
 
-Data_Dragon_Func()
+        #Atributos do construtor
+        self.latest_version = get_current_version()
+        self.all_champions = get_all_champions_json()
+            
+            
+    
+    #Métodos da classe
+    def get_profile_icon(self, iconID: int):
+        return f'http://ddragon.leagueoflegends.com/cdn/{self.latest_version}/img/profileicon/{iconID}.png'
+        
+    def get_champion_name(self, championID: int):
+        champion_name = ''
+        all_champions = self.all_champions
+        for item in all_champions['data']:
+            row = all_champions['data'][item]
+            if row['key'] == str(championID):
+                champion_name = row['name']
+        return champion_name
+        
+        
+ob1 = dataDragon()
+print(ob1.latest_version)
+champ = ob1.get_champion_name(64)
+print(champ)
+
+# champion = ob1.get_champion_name(64)
+# print(champion)
+
 
 # name = input('Nome: ')
 # Riot_Watcher_Func(name)
