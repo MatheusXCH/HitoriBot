@@ -12,6 +12,7 @@ class Minigames(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+
     #TODO Tentar colocar no formato Embed
     # !dado [MdN]
     #     - Invoca o Fujitora para tirar a sorte nos dados!
@@ -55,6 +56,7 @@ class Minigames(commands.Cog):
         
         await ctx.send(f'**Resultado** \n :arrow_right: {result} \n')
         await ctx.send(f'\n**Soma**\n :arrow_right: {sum}')
+
 
     # !coin
     #     - Cara ou Corôa

@@ -23,6 +23,7 @@ class MyAnimeList(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+
     # !anime [title]
     #         - Procura por um anime no MyAnimeList e obtém as infos: 
     #             - Título, Lançamento, Status, Tipo, Episódios, URL, Nota, Rank, Popularidade, Estudio, Fonte Original e Imagem
@@ -97,6 +98,7 @@ class MyAnimeList(commands.Cog):
             await message.add_reaction('▶')
             await message.add_reaction('⏩')
             await message.add_reaction('📄')
+            await message.add_reaction('❌')
             
             def check(reaction, user):
                 return user == ctx.author
@@ -107,28 +109,38 @@ class MyAnimeList(commands.Cog):
 
             i = 0
             reaction = None
+            synopsis = None
             try:
                 while True:
                     if str(reaction) == '⏪':
                         i = 0
                         page = anime_pages_layout(i)
                         await message.edit(embed = page)
+                        
                     elif str(reaction) == '◀':
                         if i > 0:
                             i -= 1
                             page = anime_pages_layout(i)
                             await message.edit(embed = page)
+                            
                     elif str(reaction) == '▶':
                         if i < len(search) - 1:
                             i += 1
                             page = anime_pages_layout(i)
                             await message.edit(embed = page)
+                            
                     elif str(reaction) == '⏩':
                         i = len(search) - 1
                         page = anime_pages_layout(len(search) - 1)
                         await message.edit(embed = page)
+                        
                     elif str(reaction) == '📄':
-                        await ctx.invoke(self.bot.get_command('anime-sin'), anime_sin_title = page.title)
+                        synopsis = await ctx.invoke(self.bot.get_command('anime-sin'), anime_sin_title = page.title)
+                        
+                    elif str(reaction) == '❌':
+                        await message.clear_reactions()
+                        await message.delete()
+                        return
 
                     try:
                         reaction, user = await self.bot.wait_for('reaction_add', timeout = 30.0, check = check)
@@ -139,6 +151,7 @@ class MyAnimeList(commands.Cog):
                 error_embed = discord.Embed(title = 'Erro:', description = 'Desculpe, o limite de consultas por minuto ao MyAnimeList foi atingido!\nPor favor, aguarde um pouco e tente novamente!')
                 await ctx.send(embed = error_embed)
             await message.clear_reactions()
+
 
     # !anime-sin [title]
     #         - Procura por um anime no MyAnimeList e obtém a sua sinopse
@@ -169,6 +182,7 @@ class MyAnimeList(commands.Cog):
                 url = anime["url"]
             )
             await ctx.send(content = None, embed=embed_anime_sin)
+
 
     # !manga [title]
     #     - Procura por um mangá no MyAnimeList e obtém as infos: 
@@ -253,6 +267,7 @@ class MyAnimeList(commands.Cog):
             await message.add_reaction('▶')
             await message.add_reaction('⏩')
             await message.add_reaction('📄')
+            await message.add_reaction('❌')
             
             def check(reaction, user):
                 return user == ctx.author
@@ -270,22 +285,31 @@ class MyAnimeList(commands.Cog):
                         i = 0
                         page = manga_pages_layout(i)
                         await message.edit(embed = page)
+                        
                     elif str(reaction) == '◀':
                         if i > 0:
                             i -= 1
                             page = manga_pages_layout(i)
                             await message.edit(embed = page)
+                            
                     elif str(reaction) == '▶':
                         if i < len(search) - 1:
                             i += 1
                             page = manga_pages_layout(i)
                             await message.edit(embed = page)
+                            
                     elif str(reaction) == '⏩':
                         i = len(search) - 1
                         page = manga_pages_layout(len(search) - 1)
                         await message.edit(embed = page)
+                        
                     elif str(reaction) == '📄':
                         await ctx.invoke(self.bot.get_command('manga-sin'), manga_sin_title = page.title)
+                        
+                    elif str(reaction) == '❌':
+                        await message.clear_reactions()
+                        await message.delete()
+                        return
 
                     try:
                         reaction, user = await self.bot.wait_for('reaction_add', timeout = 30.0, check = check)
@@ -296,6 +320,7 @@ class MyAnimeList(commands.Cog):
                 error_embed = discord.Embed(title = 'Erro:', description = 'Desculpe, o limite de consultas por minuto ao MyAnimeList foi atingido!\nPor favor, aguarde um pouco e tente novamente!')
                 await ctx.send(embed = error_embed)
             await message.clear_reactions()
+ 
             
     # !manga-sin [title]
     #         - Procura por um mangá no MyAnimeList e obtém sua sinopse 
@@ -327,6 +352,7 @@ class MyAnimeList(commands.Cog):
                 url = manga["url"],        
             )
             await ctx.send(content = None, embed=embed_sin)
+
 
     #TODO Arrumar problemas - Os personagens mostrados não são os mais populares. Algumas vezes é preciso escrever o nome completo deles, o que não é ideal
     # !mal-char [name]
@@ -410,8 +436,10 @@ class MyAnimeList(commands.Cog):
             page.set_image(url = str(character["image_url"]))
            
             await ctx.send(content = None, embed = page)
+  
     
     #TODO Fazer um comando para pesquisar pelos TOP anime ou mangá
+
 
 def setup(bot):
     bot.add_cog(MyAnimeList(bot))

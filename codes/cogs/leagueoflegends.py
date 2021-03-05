@@ -7,6 +7,7 @@ from discord.utils import *
 import random, pandas, pprint
 from pprint import pprint
 from riotwatcher import LolWatcher, ApiError
+from roleidentification import *
 
 sys.path.append("D:\\python-codes\\Discordzada") #Config the PYTHONPATH to import "codes.leaguecontent" without warnings
 from codes.leaguecontent import dataDragon
@@ -21,12 +22,14 @@ dd = dataDragon.dataDragon()
 class LeagueOfLegends(commands.Cog):
     """Obtém informações sobre o LOL direto da API da Riot Games
     """
+
     def __init__(self, bot):
         self.bot = bot
     
+    
     #TODO Pensar em mais informações úteis para serem mostradas aqui
     @commands.command(pass_context = True, name = 'summ')
-    async def get_summoner(self, ctx, *, name: str = 'Nothing Passed to Command', current_champion = None):
+    async def get_summoner(self, ctx, *, name: str = 'Nothing Passed to Command', current_champion = None, command_call_flag = 0, msg = None):
         """!summ <summoner_name>
         Retorna informações sobre o invocador
         """
@@ -85,55 +88,47 @@ class LeagueOfLegends(commands.Cog):
                 if top3_champions != []:
                     summoner_info_embed.add_field(name = f'**{dd.get_champion_name(top3_champions[i]["championId"])}**', value = f'{top3_champions[i]["championPoints"]} MP' , inline = True)
             
-            if current_champion != None:
+            if command_call_flag == 0:
+                await ctx.send(embed = summoner_info_embed)
+                
+            if command_call_flag == 1:
                 for item in masteries:
-                    if item["championId"] == current_champion["championId"]:
+                    if item["championId"] == current_champion:
+                        champion_name = dd.get_champion_name(current_champion) 
                         champion_points = item.get("championPoints")
-                try:        
-                    summoner_info_embed.add_field(name = f'\u200b', value = f'Maestria com **{current_champion["championName"]}:**  {champion_points} MP', inline = False)
+                try:
+                    summoner_info_embed.add_field(name = f'\u200b', value = f'Maestria com **{champion_name}:**  {champion_points} MP', inline = False)
                 except:
                     pass
-            await ctx.send(embed = summoner_info_embed)    
+                await msg.edit(embed = summoner_info_embed)
+                 
 
     #TODO Match History Command - Ainda não há nada feito aqui!
     #TODO Passar o nome do comando para o @commands.command
-    @commands.command(pass_context = True)
+    @commands.command(pass_context = True, name = 'hist')
     async def match_history(self, ctx, *, name: str = 'Empadão de Tatu'):
         """!hist <summoner_name>
         Retorna o histórico recente do invocador
         """
-        
+        champion_roles = pull_data()
         summoner = watcher.summoner.by_name(region, name)
-        summ_matches = watcher.match.matchlist_by_account(region, summoner['accountId'])
+        matches = watcher.match.matchlist_by_account(region, summoner['accountId'])
         
-        last_match = summ_matches['matches'][0]
+        matches_embed = discord.Embed(
+            title = f'Histórico de {summoner["name"]}',
+            url = f'https://br.op.gg/summoner/userName=' + '+'.join(name.split(' '))
+        )
+        
+        matches_embed.set_thumbnail(url = dd.get_profile_icon(iconID = summoner["profileIconId"]))
+        last_match = matches['matches'][0]
         match_detail = watcher.match.by_id(region, last_match['gameId'])
         
-        pprint(match_detail)
+        #TODO Fazer o histórico da ÚLTIMA partida!!!
+        # É preciso olhar o arquivo "match_Detail.txt" para ver a estrutura do dicionário de match_detail
+        # Usar a função 'get_role(champion_roles, list_champion_in_match)' para pegar os dados dos campeões da última partida
+        # O parâmetro 'list_champion_in_match' é uma lista de 5 elementos contendo o championId de cada um dos campeões na partida
         
-        # participants = []
-        # for row in match_detail['participants']:
-        #     participants_row = {}
-        #     participants_row['champion'] = row['championId']
-        #     participants_row['spell1'] = row['spell1Id']
-        #     participants_row['spell2'] = row['spell2Id']
-        #     participants_row['win'] = row['stats']['win']
-        #     participants_row['kills'] = row['stats']['kills']
-        #     participants_row['deaths'] = row['stats']['deaths']
-        #     participants_row['assists'] = row['stats']['assists']
-        #     participants_row['totalDamageDealt'] = row['stats']['totalDamageDealt']
-        #     participants_row['goldEarned'] = row['stats']['goldEarned']
-        #     participants_row['champLevel'] = row['stats']['champLevel']
-        #     participants_row['totalMinionsKilled'] = row['stats']['totalMinionsKilled']
-        #     participants_row['item0'] = row['stats']['item0']
-        #     participants_row['item1'] = row['stats']['item1']
-        #     participants.append(participants_row)
-        
-        # match_label = pandas.DataFrame(participants)
-        # print(match_label)
-        # await ctx.send(match_label)
-            
-    #TODO Tentar ordenar o layout pelas lanes
+    
     #TODO Tentar chamar a função dinamicamente através de um Listener
     @commands.command(pass_context = True, name = 'live')
     async def live_match(self, ctx, *, name: str = 'Empadão de Tatu'):
@@ -156,67 +151,113 @@ class LeagueOfLegends(commands.Cog):
             return
         
         participants = spec["participants"]
-        
-        player_list = []
-        champion_list = []
+        blue_champion_id_list = []
+        red_champion_id_list = []
+        count = 0
         for row in participants:
-            player_list.append({'name': row['summonerName'], 'id': row['summonerId']})
-            champ_name = dd.get_champion_name(row['championId'])
-            champion_list.append({'championName': champ_name, 'championId': row['championId']})
-        
-        soloQ_list = []
-        for player in player_list:
-            rank = watcher.league.by_summoner(region, player['id'])
-            if rank == []:
-                soloQ_list.append(f'UNRANKED')
+        #Get list of champions in Blue/Red side
+            if count < 5:
+                blue_champion_id_list.append(row['championId'])
+                count += 1
             else:
-                for item in rank:
+                red_champion_id_list.append(row['championId'])
+                count += 1            
+        #Get the Blue/Red side champions roles
+        champion_roles = pull_data()
+        blue_team = get_roles(champion_roles, blue_champion_id_list)
+        red_team = get_roles(champion_roles, red_champion_id_list)
+
+        def get_rank(summonerId):
+            current_rank = watcher.league.by_summoner(region, summonerId)
+            player_rank = ''
+            if current_rank == []:
+                player_rank = 'UNRANKED'
+            else:
+                for item in current_rank:
                     if item["queueType"] == 'RANKED_SOLO_5x5':
-                        soloQ_list.append(f'{item["tier"]} {item["rank"]}')
-                    
+                        player_rank = f'{item["tier"]} {item["rank"]} ({item["leaguePoints"]} LP)'
+            return player_rank
         
+        for row in participants:
+            #BLUE TEAM
+            if row['championId'] == blue_team['TOP']:
+                rank = get_rank(row['summonerId'])
+                blue_team.update({'TOP': {'name': row['summonerName'], 'id': row['summonerId'], 'champion': dd.get_champion_name(row['championId']), 'championId': row['championId'], 'rank': rank} })
+            elif row['championId'] == blue_team['JUNGLE']:
+                rank = get_rank(row['summonerId'])
+                blue_team.update({'JUNGLE': {'name': row['summonerName'], 'id': row['summonerId'], 'champion': dd.get_champion_name(row['championId']),'championId': row['championId'], 'rank': rank} })    
+            elif row['championId'] == blue_team['MIDDLE']:
+                rank = get_rank(row['summonerId'])
+                blue_team.update({'MIDDLE': {'name': row['summonerName'], 'id': row['summonerId'], 'champion': dd.get_champion_name(row['championId']),'championId': row['championId'], 'rank': rank} })
+            elif row['championId'] == blue_team['BOTTOM']:
+                rank = get_rank(row['summonerId'])
+                blue_team.update({'BOTTOM': {'name': row['summonerName'], 'id': row['summonerId'], 'champion': dd.get_champion_name(row['championId']),'championId': row['championId'], 'rank': rank} })
+            elif row['championId'] == blue_team['UTILITY']:
+                rank = get_rank(row['summonerId'])
+                blue_team.update({'UTILITY': {'name': row['summonerName'], 'id': row['summonerId'], 'champion': dd.get_champion_name(row['championId']),'championId': row['championId'], 'rank': rank} })
+            
+            #RED TEAM
+            if row['championId'] == red_team['TOP']:
+                rank = get_rank(row['summonerId'])
+                red_team.update({'TOP': {'name': row['summonerName'], 'id': row['summonerId'], 'champion': dd.get_champion_name(row['championId']),'championId': row['championId'], 'rank': rank} })
+            elif row['championId'] == red_team['JUNGLE']:
+                rank = get_rank(row['summonerId'])
+                red_team.update({'JUNGLE': {'name': row['summonerName'], 'id': row['summonerId'], 'champion': dd.get_champion_name(row['championId']),'championId': row['championId'], 'rank': rank} })    
+            elif row['championId'] == red_team['MIDDLE']:
+                rank = get_rank(row['summonerId'])
+                red_team.update({'MIDDLE': {'name': row['summonerName'], 'id': row['summonerId'], 'champion': dd.get_champion_name(row['championId']),'championId': row['championId'], 'rank': rank} })
+            elif row['championId'] == red_team['BOTTOM']:
+                rank = get_rank(row['summonerId'])
+                red_team.update({'BOTTOM': {'name': row['summonerName'], 'id': row['summonerId'], 'champion': dd.get_champion_name(row['championId']),'championId': row['championId'], 'rank': rank} })
+            elif row['championId'] == red_team['UTILITY']:
+                rank = get_rank(row['summonerId'])
+                red_team.update({'UTILITY': {'name': row['summonerName'], 'id': row['summonerId'], 'champion': dd.get_champion_name(row['championId']),'championId': row['championId'], 'rank': rank} })
+                
         live_match_embed = discord.Embed(
             title = f'Partida ao vivo de {summoner["name"]}',
             url = f'https://br.op.gg/summoner/userName=' + '+'.join(name.split(' '))
         )
 
         live_match_embed.add_field(name = 'Summoner', value = 
-                                                      f'🔹 {player_list[0]["name"]}\n' + 
-                                                      f'🔹 {player_list[1]["name"]}\n' +
-                                                      f'🔹 {player_list[2]["name"]}\n' +
-                                                      f'🔹 {player_list[3]["name"]}\n' +
-                                                      f'🔹 {player_list[4]["name"]}\n\n' +
-                                                      f'🔸 {player_list[5]["name"]}\n' + 
-                                                      f'🔸 {player_list[6]["name"]}\n' +
-                                                      f'🔸 {player_list[7]["name"]}\n' +
-                                                      f'🔸 {player_list[8]["name"]}\n' +
-                                                      f'🔸 {player_list[9]["name"]}\n',
+                                                      f'🔹 {blue_team["TOP"]["name"]}\n' + 
+                                                      f'🔹 {blue_team["JUNGLE"]["name"]}\n' +
+                                                      f'🔹 {blue_team["MIDDLE"]["name"]}\n' +
+                                                      f'🔹 {blue_team["BOTTOM"]["name"]}\n' +
+                                                      f'🔹 {blue_team["UTILITY"]["name"]}\n' +
+                                                      f'\n' + 
+                                                      f'🔸 {red_team["TOP"]["name"]}\n' +
+                                                      f'🔸 {red_team["JUNGLE"]["name"]}\n' +
+                                                      f'🔸 {red_team["MIDDLE"]["name"]}\n' +
+                                                      f'🔸 {red_team["BOTTOM"]["name"]}\n' +
+                                                      f'🔸 {red_team["UTILITY"]["name"]}\n',
                                                       inline = True)
         
         live_match_embed.add_field(name = 'Champion', value = 
-                                                      f'{champion_list[0]["championName"]}\n' + 
-                                                      f'{champion_list[1]["championName"]}\n' +
-                                                      f'{champion_list[2]["championName"]}\n' +
-                                                      f'{champion_list[3]["championName"]}\n' +
-                                                      f'{champion_list[4]["championName"]}\n\n' +
-                                                      f'{champion_list[5]["championName"]}\n' + 
-                                                      f'{champion_list[6]["championName"]}\n' +
-                                                      f'{champion_list[7]["championName"]}\n' +
-                                                      f'{champion_list[8]["championName"]}\n' +
-                                                      f'{champion_list[9]["championName"]}\n',
+                                                      f'{dd.EMOJI_TOP} {blue_team["TOP"]["champion"]}\n' + 
+                                                      f'{dd.EMOJI_JUNGLE} {blue_team["JUNGLE"]["champion"]}\n' + 
+                                                      f'{dd.EMOJI_MIDDLE} {blue_team["MIDDLE"]["champion"]}\n' + 
+                                                      f'{dd.EMOJI_BOTTOM} {blue_team["BOTTOM"]["champion"]}\n' + 
+                                                      f'{dd.EMOJI_UTILITY} {blue_team["UTILITY"]["champion"]}\n' + 
+                                                      f'\n' + 
+                                                      f'{dd.EMOJI_TOP} {red_team["TOP"]["champion"]}\n' + 
+                                                      f'{dd.EMOJI_JUNGLE} {red_team["JUNGLE"]["champion"]}\n' + 
+                                                      f'{dd.EMOJI_MIDDLE} {red_team["MIDDLE"]["champion"]}\n' + 
+                                                      f'{dd.EMOJI_BOTTOM} {red_team["BOTTOM"]["champion"]}\n' + 
+                                                      f'{dd.EMOJI_UTILITY} {red_team["UTILITY"]["champion"]}\n',
                                                       inline = True)
         
         live_match_embed.add_field(name = 'Rank', value = 
-                                                      f'® {soloQ_list[0]}\n' + 
-                                                      f'® {soloQ_list[1]}\n' +
-                                                      f'® {soloQ_list[2]}\n' +
-                                                      f'® {soloQ_list[3]}\n' +
-                                                      f'® {soloQ_list[4]}\n\n' +
-                                                      f'® {soloQ_list[5]}\n' +
-                                                      f'® {soloQ_list[6]}\n' +
-                                                      f'® {soloQ_list[7]}\n' +
-                                                      f'® {soloQ_list[8]}\n' +
-                                                      f'® {soloQ_list[9]}\n',
+                                                      f'® {blue_team["TOP"]["rank"]}\n' + 
+                                                      f'® {blue_team["JUNGLE"]["rank"]}\n' + 
+                                                      f'® {blue_team["MIDDLE"]["rank"]}\n' + 
+                                                      f'® {blue_team["BOTTOM"]["rank"]}\n' + 
+                                                      f'® {blue_team["UTILITY"]["rank"]}\n' + 
+                                                      f'\n' + 
+                                                      f'® {red_team["TOP"]["rank"]}\n' + 
+                                                      f'® {red_team["JUNGLE"]["rank"]}\n' + 
+                                                      f'® {red_team["MIDDLE"]["rank"]}\n' + 
+                                                      f'® {red_team["BOTTOM"]["rank"]}\n' + 
+                                                      f'® {red_team["UTILITY"]["rank"]}\n',
                                                       inline = True)
         
         message = await ctx.send(embed = live_match_embed)
@@ -230,15 +271,18 @@ class LeagueOfLegends(commands.Cog):
         await message.add_reaction('3️⃣')
         await message.add_reaction('4️⃣')
         await message.add_reaction('5️⃣')
+        await message.add_reaction('❌')
         
         def check(reaction, user):
             return user == ctx.author
 
         reaction = None
-        control = None
         blue_flag = 1
         red_flag = 0
+        command_call_flag_control = 1
         
+        call_summ_msg_embed = discord.Embed(description = 'Utilize os botões acima para obter informações sobre os invocadores')
+        call_summ_msg = await ctx.send(embed = call_summ_msg_embed)
         while True:
             if str(reaction) == '🔹':
                 blue_flag = 1
@@ -249,32 +293,42 @@ class LeagueOfLegends(commands.Cog):
             
             if str(reaction) == '1️⃣':
                 if(blue_flag):
-                    await ctx.invoke(self.bot.get_command('summ'), name = player_list[0]["name"], current_champion = champion_list[0])
+                    await ctx.invoke(self.bot.get_command('summ'), name = blue_team["TOP"]["name"], current_champion = blue_team["TOP"]["championId"], command_call_flag = command_call_flag_control, msg = call_summ_msg)
                 else:
-                    await ctx.invoke(self.bot.get_command('summ'), name = player_list[5]["name"], current_champion = champion_list[5])
+                    await ctx.invoke(self.bot.get_command('summ'), name = red_team["TOP"]["name"], current_champion = red_team["TOP"]["championId"], command_call_flag = command_call_flag_control, msg = call_summ_msg)
+                    
             elif str(reaction) == '2️⃣':
                 if(blue_flag):
-                    await ctx.invoke(self.bot.get_command('summ'), name = player_list[1]["name"], current_champion = champion_list[1])
+                    await ctx.invoke(self.bot.get_command('summ'), name = blue_team["JUNGLE"]["name"], current_champion = blue_team["JUNGLE"]["championId"], command_call_flag = command_call_flag_control, msg = call_summ_msg)
                 else:
-                    await ctx.invoke(self.bot.get_command('summ'), name = player_list[6]["name"], current_champion = champion_list[6])
+                    await ctx.invoke(self.bot.get_command('summ'), name = red_team["JUNGLE"]["name"], current_champion = red_team["JUNGLE"]["championId"], command_call_flag = command_call_flag_control, msg = call_summ_msg)
+                    
             elif str(reaction) == '3️⃣':
                 if(blue_flag):
-                    await ctx.invoke(self.bot.get_command('summ'), name = player_list[2]["name"], current_champion = champion_list[2])
+                    await ctx.invoke(self.bot.get_command('summ'), name = blue_team["MIDDLE"]["name"], current_champion = blue_team["MIDDLE"]["championId"], command_call_flag = command_call_flag_control, msg = call_summ_msg)
                 else:
-                    await ctx.invoke(self.bot.get_command('summ'), name = player_list[7]["name"], current_champion = champion_list[7])
+                    await ctx.invoke(self.bot.get_command('summ'), name = red_team["MIDDLE"]["name"], current_champion = red_team["MIDDLE"]["championId"], command_call_flag = command_call_flag_control, msg = call_summ_msg)
+                    
             elif str(reaction) == '4️⃣':
                 if(blue_flag):
-                    await ctx.invoke(self.bot.get_command('summ'), name = player_list[3]["name"], current_champion = champion_list[3])
+                    await ctx.invoke(self.bot.get_command('summ'), name = blue_team["BOTTOM"]["name"], current_champion = blue_team["BOTTOM"]["championId"], command_call_flag = command_call_flag_control, msg = call_summ_msg)
                 else:
-                    await ctx.invoke(self.bot.get_command('summ'), name = player_list[8]["name"], current_champion = champion_list[8])
+                    await ctx.invoke(self.bot.get_command('summ'), name = red_team["BOTTOM"]["name"], current_champion = red_team["BOTTOM"]["championId"], command_call_flag = command_call_flag_control, msg = call_summ_msg)
+                    
             elif str(reaction) == '5️⃣':
                 if(blue_flag):
-                    await ctx.invoke(self.bot.get_command('summ'), name = player_list[4]["name"], current_champion = champion_list[4])
+                    await ctx.invoke(self.bot.get_command('summ'), name = blue_team["UTILITY"]["name"], current_champion = blue_team["UTILITY"]["championId"], command_call_flag = command_call_flag_control, msg = call_summ_msg)
                 else:
-                    await ctx.invoke(self.bot.get_command('summ'), name = player_list[9]["name"], current_champion = champion_list[9])
+                    await ctx.invoke(self.bot.get_command('summ'), name = red_team["UTILITY"]["name"], current_champion = red_team["UTILITY"]["championId"], command_call_flag = command_call_flag_control, msg = call_summ_msg)
             
+            elif str(reaction) == '❌':
+                await call_summ_msg.delete()
+                await message.clear_reactions()
+                await message.delete()
+                return
+                    
             try:
-                reaction, user = await self.bot.wait_for('reaction_add', timeout = 60.0, check = check)
+                reaction, user = await self.bot.wait_for('reaction_add', timeout = 90.0, check = check)
                     
                 if str(reaction) == '🔹' and not blue_flag:
                     await message.remove_reaction('🔸', user)

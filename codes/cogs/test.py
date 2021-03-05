@@ -12,6 +12,8 @@ from riotwatcher import LolWatcher, ApiError
 import json
 import requests
 
+from roleidentification import *
+
 jikan = Jikan()
 translator = google_translator()
 hltb = HowLongToBeat()
@@ -19,56 +21,36 @@ hltb = HowLongToBeat()
 load_dotenv()
 RIOT_KEY = os.getenv('RIOT_KEY')
 watcher = LolWatcher(RIOT_KEY)
+region = 'BR1'
 
-class dataDragon:
-    #Atributos compartilhados entre todas as instâncias de dataDragon
-    my_region = 'BR1'
-    lang_code = 'pt_BR'
-    
-    def __init__(self):
-        
-        #Métodos do construtor
-        def get_current_version():
-            response = requests.get('https://ddragon.leagueoflegends.com/api/versions.json')
-            league_versions = response.json()
-            return league_versions[0]
-        
-        def get_all_champions_json():
-            all_champions_url = f'http://ddragon.leagueoflegends.com/cdn/{self.latest_version}/data/{self.lang_code}/champion.json'
-            all_response = requests.get(all_champions_url)
-            return all_response.json()
-
-        #Atributos do construtor
-        self.latest_version = get_current_version()
-        self.all_champions = get_all_champions_json()
-            
-            
-    
-    #Métodos da classe
-    def get_profile_icon(self, iconID: int):
-        return f'http://ddragon.leagueoflegends.com/cdn/{self.latest_version}/img/profileicon/{iconID}.png'
-        
-    def get_champion_name(self, championID: int):
-        champion_name = ''
-        all_champions = self.all_champions
-        for item in all_champions['data']:
-            row = all_champions['data'][item]
-            if row['key'] == str(championID):
-                champion_name = row['name']
-        return champion_name
-        
-        
-ob1 = dataDragon()
-print(ob1.latest_version)
-champ = ob1.get_champion_name(64)
-print(champ)
-
-# champion = ob1.get_champion_name(64)
-# print(champion)
+# summoner = watcher.summoner.by_name(region, 'Empadão de Tatu')
+# matches = watcher.match.matchlist_by_account(region, summoner['accountId'])
+# ranks = watcher.league.by_summoner(region, summoner["id"])
+# masteries = watcher.champion_mastery.by_summoner(region, summoner["id"])
+# # spec = watcher.spectator.by_summoner(region, summoner['id'])
+# match_detail = watcher.match.by_id(region, matches['matches'][0]['gameId'])
 
 
-# name = input('Nome: ')
-# Riot_Watcher_Func(name)
+response = requests.get('https://ddragon.leagueoflegends.com/api/versions.json')
+league_versions = response.json()
+pprint(league_versions[0])
+
+# pprint(match_detail)
+champion_roles = pull_data()
+champions = [122, 64, 69, 119, 201]  # ['Darius', 'Lee Sin', 'Cassiopeia', 'Draven', 'Braum']
+champions1 = [64, 201, 119, 122, 69]
+champions2 = [201, 64, 122, 69, 119]
+roles = get_roles(champion_roles, champions)
+roles1 = get_roles(champion_roles, champions1)
+roles2 = get_roles(champion_roles, champions2)
+
+pprint(roles)
+pprint(roles1)
+pprint(roles2)
+
+print(roles.values())
+
+
 
 #JIKAN Function
 

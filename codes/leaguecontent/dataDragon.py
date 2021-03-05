@@ -11,6 +11,13 @@ class dataDragon:
     my_region = 'BR1'
     lang_code = 'pt_BR'
     
+    #Emojis das Roles
+    EMOJI_TOP = '<:TOP:817472045087457280>'
+    EMOJI_JUNGLE = '<:JUNGLE:817472044878921810>'
+    EMOJI_MIDDLE = '<:MIDDLE:817472045062291497>'
+    EMOJI_BOTTOM = '<:ADC:817472146799460433>'
+    EMOJI_UTILITY = '<:SUPPORT:817472045130186812>'
+    
     def __init__(self):
         
         #Métodos do construtor
@@ -27,6 +34,7 @@ class dataDragon:
         #Atributos do construtor
         self.latest_version = get_current_version()
         self.all_champions = get_all_champions_json()
+
             
             
     
@@ -42,3 +50,6 @@ class dataDragon:
             if row['key'] == str(championID):
                 champion_name = row['name']
         return champion_name
+
+# dd = dataDragon()
+# print(dd.latest_version)
