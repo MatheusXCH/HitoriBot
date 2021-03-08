@@ -32,8 +32,8 @@ startup_extensions = [
                     "cogs.management",
                     "cogs.minigames",
                     "cogs.myanimelist",
-                    "cogs.howlongtobeat",
-                    "cogs.leagueoflegends"
+                    "cogs.howlongtobeat"
+                    #"cogs.leagueoflegends"
                     ]
 
 #bot = commands.Bot(command_prefix=PREFIX, help_command=None)
@@ -74,7 +74,7 @@ async def on_ready():
             nickname = nickname.nick
             print(f'{g.name} (id: {g.id}) como {nickname}')
             
-    await bot.change_presence(activity= discord.Game('no Bicho'))
+    await bot.change_presence(activity = discord.Activity(type = discord.ActivityType.watching, name = "o Yuki no banho"))
 
 #Carrega as extensões (Cogs)
 if __name__ == "__main__":
