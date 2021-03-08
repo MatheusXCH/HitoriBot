@@ -20,6 +20,7 @@ class HowLongToBeat(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+
     # !hltb <game_title>
     # - Procura um jogo no HowLongToBeat e retorna Título, Imagem, Main, Main+Extra e Completionist
     # - Com o painel interativo, é possível avançar por todos os itens encontrados na primeira página do HowLongToBeat!
@@ -59,6 +60,7 @@ class HowLongToBeat(commands.Cog):
         await message.add_reaction('◀')
         await message.add_reaction('▶')
         await message.add_reaction('⏩')
+        await message.add_reaction('❌')
 
         def check(reaction, user):
             """ Confere se o click na reação foi feito pelo autor do comando """
@@ -72,20 +74,27 @@ class HowLongToBeat(commands.Cog):
                 i = 0
                 page = hltb_pages_layout(i)
                 await message.edit(embed = page)
+                
             elif str(reaction) == '◀':
                 if i > 0:
                     i -= 1
                     page = hltb_pages_layout(i)
                     await message.edit(embed = page)
+                    
             elif str(reaction) == '▶':
                 if i < len(results) - 1:
                     i += 1
                     page = hltb_pages_layout(i)
                     await message.edit(embed = page)
+                    
             elif str(reaction) == '⏩':
                 i = len(results) - 1
                 page = hltb_pages_layout(len(results) - 1)
                 await message.edit(embed = page)
+                
+            elif str(reaction) == '❌':
+                await message.clear_reactions()
+                await message.delete()
 
             try:
                 reaction, user = await self.bot.wait_for('reaction_add', timeout=30.0, check=check)

@@ -9,9 +9,10 @@ import codes.settings as st #Get the globals from Settings
 class Messages(commands.Cog):
     """Módulo que contém alguns comandos simples, que retornam apenas mensagens de texto
     """
-
+    
     def __init__(self, bot):
         self.bot = bot
+
 
     # !familia 
     #     - Pergunta pro BRTT se isso aqui é uma família
@@ -27,6 +28,7 @@ class Messages(commands.Cog):
                    )
         familia_embed = discord.Embed(description = response)
         await ctx.send(embed = familia_embed)
+    
     
     # !playlist 
     #     - Envia um Embed com todas as Playlists feitas para o Servidor
@@ -46,6 +48,7 @@ class Messages(commands.Cog):
         embed.add_field(name=':play_pause: É o Ericks:', value= 'https://www.youtube.com/playlist?list=PLUou7E06dGsYeCeFykeBHCG7bXgx_VC4e', inline=True)
         
         await ctx.send(embed=embed)
+        
         
 def setup(bot):
     bot.add_cog(Messages(bot))

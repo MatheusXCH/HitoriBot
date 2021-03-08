@@ -11,6 +11,7 @@ class Stickers(commands.Cog):
     """Módulo contendo todos os stickers disponíveis para uso
     """
     
+    
     def __init__(self, bot):
         self.bot = bot
 
