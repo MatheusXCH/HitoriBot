@@ -1,4 +1,4 @@
-import os, mal, dotenv, pprint, requests, json
+import os, dotenv, pprint, requests, json
 from dotenv import load_dotenv
 from riotwatcher import LolWatcher, ApiError
 

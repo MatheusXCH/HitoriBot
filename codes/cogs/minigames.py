@@ -38,7 +38,7 @@ class Minigames(commands.Cog):
             roll = random.randint(1, faces)
             rolls_results.append(roll)
             sum = roll + sum
-        result = f' {DICE_EMOJI} \n '.join(str(r) for r in rolls_results) + f' {DICE_EMOJI} '
+        result = f' {DICE_EMOJI}\n'.join(str(r) for r in rolls_results) + f' {DICE_EMOJI}'
         
         sum_flag = ':green_circle:'
         if sum <= (rolls * faces)/2:

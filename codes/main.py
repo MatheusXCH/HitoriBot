@@ -32,8 +32,9 @@ startup_extensions = [
                     "cogs.management",
                     "cogs.minigames",
                     "cogs.myanimelist",
-                    "cogs.howlongtobeat"
-                    #"cogs.leagueoflegends"
+                    "cogs.howlongtobeat",
+                    "cogs.leagueoflegends",
+                    "cogs.storesteam"
                     ]
 
 #bot = commands.Bot(command_prefix=PREFIX, help_command=None)

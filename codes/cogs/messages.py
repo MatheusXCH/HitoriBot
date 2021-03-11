@@ -1,4 +1,4 @@
-import os, discord
+import os, discord, codecs, random
 from discord.ext import commands
 from discord.ext.commands import has_permissions, MissingPermissions
 
@@ -48,7 +48,30 @@ class Messages(commands.Cog):
         embed.add_field(name=':play_pause: É o Ericks:', value= 'https://www.youtube.com/playlist?list=PLUou7E06dGsYeCeFykeBHCG7bXgx_VC4e', inline=True)
         
         await ctx.send(embed=embed)
+    
+    
+    #TODO Adicionar mais ofensas ao arquivo "ofenses.txt"
+    # !ofensa - O bot simplesmente vai xingar
+    @commands.command(name = 'ofensa')
+    async def ofensas(self, ctx, *, text):
+        """!ofensas
+        O bot simplesmente vai xingar, é só isso mesmo
+        """
+        with codecs.open(st.messages_path + 'ofenses.txt', 'r') as f:
+            ofense_list = f.readlines()
         
+        choise = random.randint(1, len(ofense_list) - 1)
+        message = f'{text} {ofense_list[choise]}'
+        
+        await ctx.send(content = message)
+    
+    
+    #Listener - Diz ao usuário que não é pra dirigir a palavra ao BOT
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        if self.bot.user.mentioned_in(message) and message.author != self.bot.user:
+            await message.channel.send(f'Aí {message.author.mention}, não me dirigi a palavra não, faz o favor!')
+
         
 def setup(bot):
     bot.add_cog(Messages(bot))
