@@ -25,3 +25,6 @@ messages_path = os.path.join("misc", "messages", "")
 
 #Path to Steam Game Data
 steam_data_path = os.path.join("misc", "steam", "")
+
+#Path to Audios
+audio_path = os.path.join("misc", "audios", "")
