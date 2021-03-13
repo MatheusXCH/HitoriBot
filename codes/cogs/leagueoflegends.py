@@ -5,7 +5,6 @@ from discord.ext import commands
 from discord.utils import *
 
 import random, pandas, pprint
-from pprint import pprint
 from riotwatcher import LolWatcher, ApiError
 from roleidentification import *
 
