@@ -19,6 +19,7 @@ clear = lambda: os.system('cls')
 intents=intents=discord.Intents.all()
 intents.members = True
 intents.reactions = True
+intents.voice_states = True
 
 #Carrega os Tokens necessários
 load_dotenv()
@@ -32,8 +33,10 @@ startup_extensions = [
                     "cogs.management",
                     "cogs.minigames",
                     "cogs.myanimelist",
-                    "cogs.howlongtobeat"
-                    #"cogs.leagueoflegends"
+                    "cogs.howlongtobeat",
+                    "cogs.leagueoflegends",
+                    "cogs.storesteam",
+                    "cogs.audioplayer"
                     ]
 
 #bot = commands.Bot(command_prefix=PREFIX, help_command=None)

@@ -1,4 +1,4 @@
-import os, discord
+import os, discord, codecs, random, asyncio
 from discord.ext import commands
 from discord.ext.commands import has_permissions, MissingPermissions
 
@@ -25,7 +25,7 @@ class Messages(commands.Cog):
         response = (f'Isso aqui não é uma família, é um time!\n' + 
                     f'Se vai deixar morrer, teu irmão???\n\n' + 
                     f'*CLARO QUE VAI NÉ, PORRA!*'
-                   )
+                    )
         familia_embed = discord.Embed(description = response)
         await ctx.send(embed = familia_embed)
     
@@ -43,12 +43,21 @@ class Messages(commands.Cog):
             colour= discord.Colour(0x32a852),
             description='Aqui estão os **links das playlists** elaboradas para este servidor:',
         )
-        embed.add_field(name=':play_pause: Animezada:', value= 'https://www.youtube.com/playlist?list=PLlOJh8D_rbtt3u1U3XScS8iL-EvNOf_ap', inline=True)
-        embed.add_field(name=':play_pause: Biruta:', value= 'https://www.youtube.com/playlist?list=PLlOJh8D_rbtsYBFZWDPCqG4gqXSSkSj_m', inline=True)
-        embed.add_field(name=':play_pause: É o Ericks:', value= 'https://www.youtube.com/playlist?list=PLUou7E06dGsYeCeFykeBHCG7bXgx_VC4e', inline=True)
+        embed.add_field(name=':play_pause: Animezada:', value= 'https://www.youtube.com/playlist?list=PLlOJh8D_rbtt3u1U3XScS8iL-EvNOf_ap', inline = False)
+        embed.add_field(name=':play_pause: Biruta:', value= 'https://www.youtube.com/playlist?list=PLlOJh8D_rbtsYBFZWDPCqG4gqXSSkSj_m', inline = False)
+        embed.add_field(name=':play_pause: É o Ericks:', value= 'https://www.youtube.com/playlist?list=PLUou7E06dGsYeCeFykeBHCG7bXgx_VC4e', inline = False)
+        embed.add_field(name=':play_pause: Só o HYPE:', value = 'https://www.youtube.com/playlist?list=PLeOu0isxutGI693o9yg6d3BGSUbPPgU4X', inline = False)
         
-        await ctx.send(embed=embed)
-        
+        message = await ctx.send(embed=embed)
+        await asyncio.sleep(10)
+        await message.delete()
+    
+    #Listener - Diz ao usuário que não é pra dirigir a palavra ao BOT
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        if self.bot.user.mentioned_in(message) and message.author != self.bot.user:
+            await message.channel.send(f'Aí {message.author.mention}, não me dirigi a palavra não, faz o favor!')
+
         
 def setup(bot):
     bot.add_cog(Messages(bot))

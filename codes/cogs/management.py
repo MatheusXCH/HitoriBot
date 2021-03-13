@@ -31,12 +31,12 @@ class Management(commands.Cog):
             - Monitora o chat de texto, identificando palavras indesejadas e limpando-as logo em sequência
         """
         
-        bad_words = ["SADSAHDKJSADJKHASJKHWQEIUWQYEIYQWUIYEISAPDASPDIAS"]
+        bad_sentences = ["SAKDJLKASIOWEUOQIWESDHDHASWQOEUQWOIUFASJSALKQWEQEPWU"]
         
-        for word in bad_words:
-            if message.content.count(word) > 0:
+        for sentence in bad_sentences:
+            if message.content.count(sentence) > 0:
                 await message.channel.purge(limit=1)
-                await message.channel.send(f'Mensagem deletada - Uso da palavra indevida ({word})!')
+                await message.channel.send(f'Mensagem deletada - Uso de expressão indevida! (||{sentence})||')
 
     @commands.command(name='rules')
     async def rules(self, ctx):
@@ -48,9 +48,9 @@ class Management(commands.Cog):
             text = f.read()
         
         embed = discord.Embed(
-            title = f'__**Regras do Servidor**__',
+            title = f'__**Regras e Diretrizes do Servidor**__',
             colour = discord.Colour(0xe82e2e),
-            description = "Leia as Regras atentamente"
+            description = "Leia as Regras e Diretrizes atentamente"
         )
         
         embed.add_field(name='Regras', value=text, inline=False)
