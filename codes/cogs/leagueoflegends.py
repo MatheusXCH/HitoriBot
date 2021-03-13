@@ -1,10 +1,10 @@
-import os, discord, dotenv, sys
+import os, discord, dotenv, sys, pprint
 from dotenv import load_dotenv
 from pprint import pprint
 from discord.ext import commands
 from discord.utils import *
 
-import random, pandas, pprint
+import random, pandas
 from riotwatcher import LolWatcher, ApiError
 from roleidentification import *
 
