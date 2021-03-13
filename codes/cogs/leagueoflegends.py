@@ -100,27 +100,27 @@ class LeagueOfLegends(commands.Cog):
                 except:
                     pass
                 await msg.edit(embed = summoner_info_embed)
-                 
+
 
     #TODO Match History Command - Ainda não há nada feito aqui!
     #TODO Passar o nome do comando para o @commands.command
-    @commands.command(pass_context = True, name = 'hist')
-    async def match_history(self, ctx, *, name: str = 'Empadão de Tatu'):
-        """!hist <summoner_name>
-        Retorna o histórico recente do invocador
-        """
-        champion_roles = pull_data()
-        summoner = watcher.summoner.by_name(region, name)
-        matches = watcher.match.matchlist_by_account(region, summoner['accountId'])
+    # @commands.command(pass_context = True, name = 'hist')
+    # async def match_history(self, ctx, *, name: str = 'Empadão de Tatu'):
+    #     """!hist <summoner_name>
+    #     Retorna o histórico recente do invocador
+    #     """
+    #     champion_roles = pull_data()
+    #     summoner = watcher.summoner.by_name(region, name)
+    #     matches = watcher.match.matchlist_by_account(region, summoner['accountId'])
         
-        matches_embed = discord.Embed(
-            title = f'Histórico de {summoner["name"]}',
-            url = f'https://br.op.gg/summoner/userName=' + '+'.join(name.split(' '))
-        )
+    #     matches_embed = discord.Embed(
+    #         title = f'Histórico de {summoner["name"]}',
+    #         url = f'https://br.op.gg/summoner/userName=' + '+'.join(name.split(' '))
+    #     )
         
-        matches_embed.set_thumbnail(url = dd.get_profile_icon(iconID = summoner["profileIconId"]))
-        last_match = matches['matches'][0]
-        match_detail = watcher.match.by_id(region, last_match['gameId'])
+    #     matches_embed.set_thumbnail(url = dd.get_profile_icon(iconID = summoner["profileIconId"]))
+    #     last_match = matches['matches'][0]
+    #     match_detail = watcher.match.by_id(region, last_match['gameId'])
         
         #TODO Fazer o histórico da ÚLTIMA partida!!!
         # É preciso olhar o arquivo "match_Detail.txt" para ver a estrutura do dicionário de match_detail
@@ -217,47 +217,47 @@ class LeagueOfLegends(commands.Cog):
             url = f'https://br.op.gg/summoner/userName=' + '+'.join(name.split(' '))
         )
 
-        live_match_embed.add_field(name = 'Summoner', value = 
-                                                      f'🔹 {blue_team["TOP"]["name"]}\n' + 
-                                                      f'🔹 {blue_team["JUNGLE"]["name"]}\n' +
-                                                      f'🔹 {blue_team["MIDDLE"]["name"]}\n' +
-                                                      f'🔹 {blue_team["BOTTOM"]["name"]}\n' +
-                                                      f'🔹 {blue_team["UTILITY"]["name"]}\n' +
-                                                      f'\n' + 
-                                                      f'🔸 {red_team["TOP"]["name"]}\n' +
-                                                      f'🔸 {red_team["JUNGLE"]["name"]}\n' +
-                                                      f'🔸 {red_team["MIDDLE"]["name"]}\n' +
-                                                      f'🔸 {red_team["BOTTOM"]["name"]}\n' +
-                                                      f'🔸 {red_team["UTILITY"]["name"]}\n',
-                                                      inline = True)
+        live_match_embed.add_field(name = 'Summoner', 
+                                value = f'🔹 {blue_team["TOP"]["name"]}\n' + 
+                                f'🔹 {blue_team["JUNGLE"]["name"]}\n' +
+                                f'🔹 {blue_team["MIDDLE"]["name"]}\n' +
+                                f'🔹 {blue_team["BOTTOM"]["name"]}\n' +
+                                f'🔹 {blue_team["UTILITY"]["name"]}\n' +
+                                f'\n' + 
+                                f'🔸 {red_team["TOP"]["name"]}\n' +
+                                f'🔸 {red_team["JUNGLE"]["name"]}\n' +
+                                f'🔸 {red_team["MIDDLE"]["name"]}\n' +
+                                f'🔸 {red_team["BOTTOM"]["name"]}\n' +
+                                f'🔸 {red_team["UTILITY"]["name"]}\n',
+                                inline = True)
         
-        live_match_embed.add_field(name = 'Champion', value = 
-                                                      f'{dd.EMOJI_TOP} {blue_team["TOP"]["champion"]}\n' + 
-                                                      f'{dd.EMOJI_JUNGLE} {blue_team["JUNGLE"]["champion"]}\n' + 
-                                                      f'{dd.EMOJI_MIDDLE} {blue_team["MIDDLE"]["champion"]}\n' + 
-                                                      f'{dd.EMOJI_BOTTOM} {blue_team["BOTTOM"]["champion"]}\n' + 
-                                                      f'{dd.EMOJI_UTILITY} {blue_team["UTILITY"]["champion"]}\n' + 
-                                                      f'\n' + 
-                                                      f'{dd.EMOJI_TOP} {red_team["TOP"]["champion"]}\n' + 
-                                                      f'{dd.EMOJI_JUNGLE} {red_team["JUNGLE"]["champion"]}\n' + 
-                                                      f'{dd.EMOJI_MIDDLE} {red_team["MIDDLE"]["champion"]}\n' + 
-                                                      f'{dd.EMOJI_BOTTOM} {red_team["BOTTOM"]["champion"]}\n' + 
-                                                      f'{dd.EMOJI_UTILITY} {red_team["UTILITY"]["champion"]}\n',
-                                                      inline = True)
+        live_match_embed.add_field(name = 'Champion', 
+                                value = f'{dd.EMOJI_TOP} {blue_team["TOP"]["champion"]}\n' + 
+                                f'{dd.EMOJI_JUNGLE} {blue_team["JUNGLE"]["champion"]}\n' + 
+                                f'{dd.EMOJI_MIDDLE} {blue_team["MIDDLE"]["champion"]}\n' + 
+                                f'{dd.EMOJI_BOTTOM} {blue_team["BOTTOM"]["champion"]}\n' + 
+                                f'{dd.EMOJI_UTILITY} {blue_team["UTILITY"]["champion"]}\n' + 
+                                f'\n' + 
+                                f'{dd.EMOJI_TOP} {red_team["TOP"]["champion"]}\n' + 
+                                f'{dd.EMOJI_JUNGLE} {red_team["JUNGLE"]["champion"]}\n' + 
+                                f'{dd.EMOJI_MIDDLE} {red_team["MIDDLE"]["champion"]}\n' + 
+                                f'{dd.EMOJI_BOTTOM} {red_team["BOTTOM"]["champion"]}\n' + 
+                                f'{dd.EMOJI_UTILITY} {red_team["UTILITY"]["champion"]}\n',
+                                inline = True)
         
-        live_match_embed.add_field(name = 'Rank', value = 
-                                                      f'® {blue_team["TOP"]["rank"]}\n' + 
-                                                      f'® {blue_team["JUNGLE"]["rank"]}\n' + 
-                                                      f'® {blue_team["MIDDLE"]["rank"]}\n' + 
-                                                      f'® {blue_team["BOTTOM"]["rank"]}\n' + 
-                                                      f'® {blue_team["UTILITY"]["rank"]}\n' + 
-                                                      f'\n' + 
-                                                      f'® {red_team["TOP"]["rank"]}\n' + 
-                                                      f'® {red_team["JUNGLE"]["rank"]}\n' + 
-                                                      f'® {red_team["MIDDLE"]["rank"]}\n' + 
-                                                      f'® {red_team["BOTTOM"]["rank"]}\n' + 
-                                                      f'® {red_team["UTILITY"]["rank"]}\n',
-                                                      inline = True)
+        live_match_embed.add_field(name = 'Rank', 
+                                value = f'® {blue_team["TOP"]["rank"]}\n' + 
+                                f'® {blue_team["JUNGLE"]["rank"]}\n' + 
+                                f'® {blue_team["MIDDLE"]["rank"]}\n' + 
+                                f'® {blue_team["BOTTOM"]["rank"]}\n' + 
+                                f'® {blue_team["UTILITY"]["rank"]}\n' + 
+                                f'\n' + 
+                                f'® {red_team["TOP"]["rank"]}\n' + 
+                                f'® {red_team["JUNGLE"]["rank"]}\n' + 
+                                f'® {red_team["MIDDLE"]["rank"]}\n' + 
+                                f'® {red_team["BOTTOM"]["rank"]}\n' + 
+                                f'® {red_team["UTILITY"]["rank"]}\n',
+                                inline = True)
         
         message = await ctx.send(embed = live_match_embed)
         

@@ -35,8 +35,6 @@ class dataDragon:
         self.latest_version = get_current_version()
         self.all_champions = get_all_champions_json()
 
-            
-            
     
     #Métodos da classe
     def get_profile_icon(self, iconID: int):
