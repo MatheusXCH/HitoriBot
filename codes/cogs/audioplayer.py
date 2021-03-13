@@ -3,7 +3,8 @@ import codes.settings as st
 from discord.ext import commands
 from discord.utils import *
 
-#TODO É preciso configurar o FFmpeg no Heroku !!!!!
+# BUG Não toca no Heroku!!! É preciso ver qual é o motivo
+# Aparentemente, os arquivos estão armazenados corretamente no servidor. O problema pode ser com o FFmpeg 
 class AudioPlayer(commands.Cog):
     """Conecta o Bot em canais de voz para tocar áudios (similar ao Soundpad)"""
 
