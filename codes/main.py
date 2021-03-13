@@ -33,7 +33,7 @@ startup_extensions = [
                     "cogs.management",
                     "cogs.minigames",
                     "cogs.myanimelist",
-                    "cogs.howlongtobeat"
+                    "cogs.howlongtobeat",
                     #"cogs.leagueoflegends"
                     #"cogs.storesteam",
                     "cogs.audioplayer"
