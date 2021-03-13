@@ -71,7 +71,7 @@ class SteamBigPicture:
             app_id = game_info['appid']
             
             #Request to https://store.steampowered.com/api/appdetails/'
-            payload = {'appids' : app_id, 'l':'brazilian'}
+            payload = {'appids' : app_id, 'l':'brazilian', 'cc':'br'}
             response_game_info = requests.get('https://store.steampowered.com/api/appdetails/', params=payload)
             game_info = response_game_info.json()
             return game_info[str(app_id)]['data']
