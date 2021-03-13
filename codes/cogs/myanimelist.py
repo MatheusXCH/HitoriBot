@@ -320,7 +320,7 @@ class MyAnimeList(commands.Cog):
                 error_embed = discord.Embed(title = 'Erro:', description = 'Desculpe, o limite de consultas por minuto ao MyAnimeList foi atingido!\nPor favor, aguarde um pouco e tente novamente!')
                 await ctx.send(embed = error_embed)
             await message.clear_reactions()
- 
+
             
     # !manga-sin [title]
     #         - Procura por um mangá no MyAnimeList e obtém sua sinopse 
@@ -434,9 +434,9 @@ class MyAnimeList(commands.Cog):
             )
             
             page.set_image(url = str(character["image_url"]))
-           
+
             await ctx.send(content = None, embed = page)
-  
+
     
     #TODO Fazer um comando para pesquisar pelos TOP anime ou mangá
 

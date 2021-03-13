@@ -48,9 +48,9 @@ class Management(commands.Cog):
             text = f.read()
         
         embed = discord.Embed(
-            title = f'__**Regras do Servidor**__',
+            title = f'__**Regras e Diretrizes do Servidor**__',
             colour = discord.Colour(0xe82e2e),
-            description = "Leia as Regras atentamente"
+            description = "Leia as Regras e Diretrizes atentamente"
         )
         
         embed.add_field(name='Regras', value=text, inline=False)

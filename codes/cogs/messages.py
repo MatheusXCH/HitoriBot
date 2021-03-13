@@ -1,4 +1,4 @@
-import os, discord, codecs, random
+import os, discord, codecs, random, asyncio
 from discord.ext import commands
 from discord.ext.commands import has_permissions, MissingPermissions
 
@@ -25,7 +25,7 @@ class Messages(commands.Cog):
         response = (f'Isso aqui não é uma família, é um time!\n' + 
                     f'Se vai deixar morrer, teu irmão???\n\n' + 
                     f'*CLARO QUE VAI NÉ, PORRA!*'
-                   )
+                    )
         familia_embed = discord.Embed(description = response)
         await ctx.send(embed = familia_embed)
     
@@ -43,28 +43,14 @@ class Messages(commands.Cog):
             colour= discord.Colour(0x32a852),
             description='Aqui estão os **links das playlists** elaboradas para este servidor:',
         )
-        embed.add_field(name=':play_pause: Animezada:', value= 'https://www.youtube.com/playlist?list=PLlOJh8D_rbtt3u1U3XScS8iL-EvNOf_ap', inline=True)
-        embed.add_field(name=':play_pause: Biruta:', value= 'https://www.youtube.com/playlist?list=PLlOJh8D_rbtsYBFZWDPCqG4gqXSSkSj_m', inline=True)
-        embed.add_field(name=':play_pause: É o Ericks:', value= 'https://www.youtube.com/playlist?list=PLUou7E06dGsYeCeFykeBHCG7bXgx_VC4e', inline=True)
+        embed.add_field(name=':play_pause: Animezada:', value= 'https://www.youtube.com/playlist?list=PLlOJh8D_rbtt3u1U3XScS8iL-EvNOf_ap', inline = False)
+        embed.add_field(name=':play_pause: Biruta:', value= 'https://www.youtube.com/playlist?list=PLlOJh8D_rbtsYBFZWDPCqG4gqXSSkSj_m', inline = False)
+        embed.add_field(name=':play_pause: É o Ericks:', value= 'https://www.youtube.com/playlist?list=PLUou7E06dGsYeCeFykeBHCG7bXgx_VC4e', inline = False)
+        embed.add_field(name=':play_pause: Só o HYPE:', value = 'https://www.youtube.com/playlist?list=PLeOu0isxutGI693o9yg6d3BGSUbPPgU4X', inline = False)
         
-        await ctx.send(embed=embed)
-    
-    
-    #TODO Adicionar mais ofensas ao arquivo "ofenses.txt"
-    # !ofensa - O bot simplesmente vai xingar
-    @commands.command(name = 'ofensa')
-    async def ofensas(self, ctx, *, text):
-        """!ofensas
-        O bot simplesmente vai xingar, é só isso mesmo
-        """
-        with codecs.open(st.messages_path + 'ofenses.txt', 'r') as f:
-            ofense_list = f.readlines()
-        
-        choise = random.randint(1, len(ofense_list) - 1)
-        message = f'{text} {ofense_list[choise]}'
-        
-        await ctx.send(content = message)
-    
+        message = await ctx.send(embed=embed)
+        await asyncio.sleep(10)
+        await message.delete()
     
     #Listener - Diz ao usuário que não é pra dirigir a palavra ao BOT
     @commands.Cog.listener()

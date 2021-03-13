@@ -12,7 +12,7 @@ class AudioPlayer(commands.Cog):
 
 
     async def not_in_channel_msg(self, ctx):
-        """ Define mensagem padrão exibida sempre que o usuário utiliza um comando de voz sem estar conectado a um canal aproriado"""
+        """Define mensagem padrão exibida sempre que o usuário utiliza um comando de voz sem estar conectado a um canal aproriado"""
         
         except_message = await ctx.send(f'{ctx.author.mention}, você deve estar em um **canal de voz** para usar este comando!')
         await asyncio.sleep(5)
@@ -22,6 +22,7 @@ class AudioPlayer(commands.Cog):
 
     async def audio_play(self, ctx, audio_name):
         """Função responsável por gerenciar o áudio que deve ser tocado pelo Bot"""
+        
         try:
             voice_channel = ctx.author.voice.channel
         except:
@@ -29,12 +30,13 @@ class AudioPlayer(commands.Cog):
             return
     
         vc = await voice_channel.connect()
-        join_message = await ctx.send(f'Conectado ao canal **{voice_channel.name}**')
+        join_message = await ctx.send(embed = discord.Embed(title = f'Conectado ao canal *{voice_channel.name}*'))
         vc.play(discord.FFmpegPCMAudio(source = st.audio_path + f'{audio_name}'))
         while vc.is_playing():
             await asyncio.sleep(0.1)
         await vc.disconnect()
         await join_message.delete()
+        await ctx.message.delete()
 
 
     @commands.command(pass_context = True, name = 'join', invoke_without_subcommand=True)
@@ -70,6 +72,36 @@ class AudioPlayer(commands.Cog):
         """!rogers -> Toca o rogers do Grongos"""
         
         await self.audio_play(ctx, 'rogers.mp3')
+    
+    @commands.command(pass_context = True, name = 'monke')
+    async def monkey_flip(self, ctx):
+        """!monke -> Monkey Flip!!!"""
+        
+        await self.audio_play(ctx, 'monkey_flip.mp3')
+        
+    @commands.command(pass_context = True, name = 'tiltado')
+    async def tiltado(self, ctx):
+        """!tiltado -> Gratão tiltado"""
+        
+        await self.audio_play(ctx, 'tiltado.m4a')
+    
+    @commands.command(pass_context = True, name = 'naruto')
+    async def naruto_triste(self, ctx):
+        """!naruto -> Tururuuuuuuuu"""
+        
+        await self.audio_play(ctx, 'sadness_and_sorrow.m4a')
+        
+    @commands.command(pass_context = True, name = 'roblox')
+    async def roblox_ouf(self, ctx):
+        """!roblox -> Ouf"""
+        
+        await self.audio_play(ctx, 'roblox.m4a')
+        
+    @commands.command(pass_context = True, name = 'xaropinho')
+    async def xaropinho(self, ctx):
+        """!xaropinho -> Rapaaaaaiz"""
+        
+        await self.audio_play(ctx, 'xaropinho.m4a')
     
     
 def setup(bot):
