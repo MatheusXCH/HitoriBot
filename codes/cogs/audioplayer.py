@@ -42,7 +42,7 @@ class AudioPlayer(commands.Cog):
 
     @commands.command(pass_context = True, name = 'join', invoke_without_subcommand=True)
     async def join(self, ctx: commands.Context):
-        """!join -> Conecta o bot ao canal de voz do usuário"""
+        """!join => Conecta o bot ao canal de voz do usuário"""
         
         try:
             channel = ctx.author.voice.channel
@@ -53,7 +53,7 @@ class AudioPlayer(commands.Cog):
             
     @commands.command(pass_context = True, name = 'leave')
     async def leave(self, ctx):
-        """!leave -> Desconecta o bot do canal de voz"""
+        """!leave => Desconecta o bot do canal de voz"""
         
         try:
             guild = ctx.message.guild
@@ -70,37 +70,37 @@ class AudioPlayer(commands.Cog):
     #TODO Baixar mais áudios 
     @commands.command(pass_context = True, name = 'rogers')
     async def rogers(self, ctx):
-        """!rogers -> Toca o rogers do Grongos"""
+        """!rogers => Toca o rogers do Grongos"""
         
         await self.audio_play(ctx, 'rogers.mp3')
     
     @commands.command(pass_context = True, name = 'monke')
     async def monkey_flip(self, ctx):
-        """!monke -> Monkey Flip!!!"""
+        """!monke => Monkey Flip!!!"""
         
         await self.audio_play(ctx, 'monkey_flip.mp3')
         
     @commands.command(pass_context = True, name = 'tiltado')
     async def tiltado(self, ctx):
-        """!tiltado -> Gratão tiltado"""
+        """!tiltado => Gratão tiltado"""
         
         await self.audio_play(ctx, 'tiltado.m4a')
     
     @commands.command(pass_context = True, name = 'naruto')
     async def naruto_triste(self, ctx):
-        """!naruto -> Tururuuuuuuuu"""
+        """!naruto => Tururuuuuuuuu"""
         
         await self.audio_play(ctx, 'sadness_and_sorrow.m4a')
         
     @commands.command(pass_context = True, name = 'roblox')
     async def roblox_ouf(self, ctx):
-        """!roblox -> Ouf"""
+        """!roblox => Ouf"""
         
         await self.audio_play(ctx, 'roblox.m4a')
         
     @commands.command(pass_context = True, name = 'xaropinho')
     async def xaropinho(self, ctx):
-        """!xaropinho -> Rapaaaaaiz"""
+        """!xaropinho => Rapaaaaaiz"""
         
         await self.audio_play(ctx, 'xaropinho.m4a')
     

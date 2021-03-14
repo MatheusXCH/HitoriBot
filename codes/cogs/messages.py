@@ -8,17 +8,15 @@ import codes.settings as st #Get the globals from Settings
 #     - Contém alguns comandos simples, os quais consitem apenas de algumas mensagens que são exibidas pelo PyBOT
 class Messages(commands.Cog):
     """Módulo que contém alguns comandos simples, que retornam apenas mensagens de texto"""
+    
+    
     def __init__(self, bot):
         self.bot = bot
 
 
-    # !familia 
-    #     - Pergunta pro BRTT se isso aqui é uma família
     @commands.command(name='familia')
     async def familia(self, ctx):
-        """!familia
-        Pergunta pro BRTT se isso é uma família
-        """
+        """!familia => Pergunta pro BRTT se isso é uma família"""
 
         response = (f'Isso aqui não é uma família, é um time!\n' + 
                     f'Se vai deixar morrer, teu irmão???\n\n' + 
@@ -28,13 +26,9 @@ class Messages(commands.Cog):
         await ctx.send(embed = familia_embed)
     
     
-    # !playlist 
-    #     - Envia um Embed com todas as Playlists feitas para o Servidor
     @commands.command(name='playlist')
     async def playlist(self, ctx):
-        """!playlist
-        Lista as playlistis feitas para o Servidor
-        """
+        """!playlist => Lista as playlists feitas para o Servidor"""
 
         embed = discord.Embed(
             title=':notes: **Playlists do Servidor** :notes:',
@@ -50,10 +44,11 @@ class Messages(commands.Cog):
         await asyncio.sleep(10)
         await message.delete()
     
-    #Listener - Diz ao usuário que não é pra dirigir a palavra ao BOT
-
+    
     @commands.Cog.listener()
     async def on_message(self, message):
+        """Listener - Diz ao usuário que não é pra dirigir a palavra ao BOT"""
+        
         if self.bot.user.mentioned_in(message) and message.author != self.bot.user and not message.mention_everyone:
             await message.channel.send(f'Aí {message.author.mention}, não me dirigi a palavra não, faz o favor!')
 

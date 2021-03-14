@@ -17,12 +17,15 @@ steam_key = os.getenv('STEAM_KEY')
 big_picture = steambigpicture.SteamBigPicture()
 
 class StoreSteam(commands.Cog):
-    
+    """Módulo que permite a conexão do PyBOT com a Steam-BR"""
+
     def __init__(self, bot):
         self.bot = bot
     
     @commands.command(pass_context = True, name = 'steam-update')
     async def steam_update(self, ctx):
+        """!steam-update => Atualiza a base de dados da Steam"""
+        
         try:
             msg = await ctx.send(embed = discord.Embed(title = "Aguarde", description = "Atualizando os dados da Steam..."))
             big_picture.request_all_games(source = 'steam')
@@ -37,11 +40,12 @@ class StoreSteam(commands.Cog):
         
     # TODO Pensar em uma maneira com que a busca não dependa do nome do game ser passado de forma exata (isto é, retornar semelhante caso nome incorreto)
     # TODO Avaliar a necessidade ou não de implementar um Embed interativo (via reactions)
-    # TODO Avaliar a necessedidade da informação "Packages" (apareceria juntamente ao Price_Overview)
+    # TODO Avaliar a necessedidade da informação "Packages" (apareceria juntamente ao Price_Overview em um segundo Embed, sendo este interativo)
 
-    # !game - Retorna dados da Steam acerca do game passado como parâmetro
     @commands.command(pass_context = True, name = 'game')
     async def search_game(self, ctx, *, game_title):
+        """!game <game_title> => Retorna informações sobre um jogo na Steam"""
+        
         game_info = {}
         steamspy_info = {}
         try:
@@ -158,7 +162,7 @@ class StoreSteam(commands.Cog):
                                                                 inline = True)
         else:
             steam_game_embed.add_field(name = '**PREÇO**', value = f'💸 Gratuito para Jogar')
-         
+
         await ctx.send(embed = steam_game_embed)
     
 def setup(bot):
