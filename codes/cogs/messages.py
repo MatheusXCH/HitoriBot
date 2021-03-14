@@ -7,9 +7,7 @@ import codes.settings as st #Get the globals from Settings
 # Módulo: Messages
 #     - Contém alguns comandos simples, os quais consitem apenas de algumas mensagens que são exibidas pelo PyBOT
 class Messages(commands.Cog):
-    """Módulo que contém alguns comandos simples, que retornam apenas mensagens de texto
-    """
-    
+    """Módulo que contém alguns comandos simples, que retornam apenas mensagens de texto"""
     def __init__(self, bot):
         self.bot = bot
 
@@ -21,7 +19,7 @@ class Messages(commands.Cog):
         """!familia
         Pergunta pro BRTT se isso é uma família
         """
-        
+
         response = (f'Isso aqui não é uma família, é um time!\n' + 
                     f'Se vai deixar morrer, teu irmão???\n\n' + 
                     f'*CLARO QUE VAI NÉ, PORRA!*'
@@ -37,7 +35,7 @@ class Messages(commands.Cog):
         """!playlist
         Lista as playlistis feitas para o Servidor
         """
-        
+
         embed = discord.Embed(
             title=':notes: **Playlists do Servidor** :notes:',
             colour= discord.Colour(0x32a852),
@@ -47,18 +45,18 @@ class Messages(commands.Cog):
         embed.add_field(name=':play_pause: Biruta:', value= 'https://www.youtube.com/playlist?list=PLlOJh8D_rbtsYBFZWDPCqG4gqXSSkSj_m', inline = False)
         embed.add_field(name=':play_pause: É o Ericks:', value= 'https://www.youtube.com/playlist?list=PLUou7E06dGsYeCeFykeBHCG7bXgx_VC4e', inline = False)
         embed.add_field(name=':play_pause: Só o HYPE:', value = 'https://www.youtube.com/playlist?list=PLeOu0isxutGI693o9yg6d3BGSUbPPgU4X', inline = False)
-        
+
         message = await ctx.send(embed=embed)
         await asyncio.sleep(10)
         await message.delete()
     
     #Listener - Diz ao usuário que não é pra dirigir a palavra ao BOT
-    # BUG - Atualmente, o @everyone também chama o Listener ==> Indesejável
-    # @commands.Cog.listener()
-    # async def on_message(self, message):
-    #     if self.bot.user.mentioned_in(message) and message.author != self.bot.user:
-    #         await message.channel.send(f'Aí {message.author.mention}, não me dirigi a palavra não, faz o favor!')
 
-        
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        if self.bot.user.mentioned_in(message) and message.author != self.bot.user and not message.mention_everyone:
+            await message.channel.send(f'Aí {message.author.mention}, não me dirigi a palavra não, faz o favor!')
+
+
 def setup(bot):
     bot.add_cog(Messages(bot))

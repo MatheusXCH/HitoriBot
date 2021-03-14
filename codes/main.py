@@ -2,9 +2,11 @@
 #
 #
 
-import os, sys, traceback, discord, logging, time
+import os, sys, traceback, discord, logging, time, asyncio
 from dotenv import load_dotenv
 from discord.ext import commands
+from discord.ext.commands import has_permissions, MissingPermissions
+from discord.ext.commands import Bot, guild_only
 from discord import Member
 from pretty_help import PrettyHelp
 from pretty_help import Navigation
@@ -28,6 +30,7 @@ GUILD = os.getenv('DISCORD_GUILD')
 PREFIX = '!'
 
 startup_extensions = [
+                    "cogs.administrator",
                     "cogs.messages",
                     "cogs.stickers",
                     "cogs.management",
@@ -87,7 +90,7 @@ if __name__ == "__main__":
             bot.load_extension(extension)
         except Exception as e:
             exc = '{}: {}'.format(type(e).__name__, e)
-            print('Failed to load extension {}\n{}'.format(extension, exc))
+            print(f'Failed to load extension {extension}\n{exc}')
             loading_error_flag = 1
 
     if(not loading_error_flag):
