@@ -53,10 +53,11 @@ class Messages(commands.Cog):
         await message.delete()
     
     #Listener - Diz ao usuário que não é pra dirigir a palavra ao BOT
-    @commands.Cog.listener()
-    async def on_message(self, message):
-        if self.bot.user.mentioned_in(message) and message.author != self.bot.user:
-            await message.channel.send(f'Aí {message.author.mention}, não me dirigi a palavra não, faz o favor!')
+    # BUG - Atualmente, o @everyone também chama o Listener ==> Indesejável
+    # @commands.Cog.listener()
+    # async def on_message(self, message):
+    #     if self.bot.user.mentioned_in(message) and message.author != self.bot.user:
+    #         await message.channel.send(f'Aí {message.author.mention}, não me dirigi a palavra não, faz o favor!')
 
         
 def setup(bot):
