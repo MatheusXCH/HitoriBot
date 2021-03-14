@@ -8,8 +8,7 @@ import codes.settings as st #Get the globals from Settings
 #     - Sempre que um dos comandos por chamado, o PyBOT responderá com o sticker (imagem) correspondente
 #     - Todos os Stickers está disponível no diretório '/misc/stickers'
 class Stickers(commands.Cog):
-    """Módulo contendo todos os stickers disponíveis para uso
-    """
+    """Módulo contendo todos os stickers disponíveis para uso"""
     
     
     def __init__(self, bot):

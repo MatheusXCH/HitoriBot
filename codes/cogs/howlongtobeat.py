@@ -21,15 +21,10 @@ class HowLongToBeat(commands.Cog):
         self.bot = bot
 
 
-    # !hltb <game_title>
-    # - Procura um jogo no HowLongToBeat e retorna Título, Imagem, Main, Main+Extra e Completionist
-    # - Com o painel interativo, é possível avançar por todos os itens encontrados na primeira página do HowLongToBeat!
     @commands.command(pass_context = True, name = 'hltb')
     async def hltb(self, ctx, *, game_title):
-        """!hltb <game_title>
-        Retorna o resultado da busca no HowLongToBeat
-        """  
-          
+        """!hltb <game_title> => Retorna o resultado da busca no HowLongToBeat"""  
+
         results = hltb.search(game_title)
         
         def hltb_pages_layout(i):
@@ -39,8 +34,8 @@ class HowLongToBeat(commands.Cog):
                 url = results[i].game_web_link
             )
             embed_hltb.add_field(name = results[i].gameplay_main_label, 
-                             value = f'{results[i].gameplay_main} {results[i].gameplay_main_unit}',
-                             inline = False)
+                                value = f'{results[i].gameplay_main} {results[i].gameplay_main_unit}',
+                                inline = False)
         
             embed_hltb.add_field(name = results[i].gameplay_main_extra_label, 
                                 value = f'{results[i].gameplay_main_extra} {results[i].gameplay_main_extra_unit}',

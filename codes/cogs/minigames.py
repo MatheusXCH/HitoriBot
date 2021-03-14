@@ -6,20 +6,16 @@ import codes.settings as st #Get the globals from Settings
 # Módulo: Dices
 #     - Contém um minigame no qual o Almirante Fujitora (One Piece!!!) é invocado para tirar a sorte nos dados!
 class Minigames(commands.Cog):
-    """Possui minigames simples, como rodar dados e cara-corôa
-    """
+    """Possui minigames simples, como rodar dados e cara-corôa"""
+    
     
     def __init__(self, bot):
         self.bot = bot
 
 
-    # !dado [MdN]
-    #     - Invoca o Fujitora para tirar a sorte nos dados!
-    #     - Argumentos: dice (type str) 
-    #     ##### Ex: !dado 3d6 -> Joga 3 dados de 6 faces
     @commands.command(name='dado')
     async def dado(self, ctx, dice : str):
-        """!dado <dado> (Ex: !dado 1d6)
+        """!dado <dado> => Fujitora joga os dados (Ex: !dado 1d6)
         Invoca o Fujitora para tirar a sorte nos dados!
         """
         DICE_EMOJI = '<:dice:818478609806131240>'
@@ -68,11 +64,9 @@ class Minigames(commands.Cog):
         await dices_message.edit(embed = dices_embed)
 
 
-    # !coin
-    #  - Cara ou Corôa
     @commands.command(name = 'coin')
     async def coin(self, ctx):
-        """!coin
+        """!coin => Cara ou Corôa
         Retorna o resultado de um lance de cara ou corôa
         """
         
