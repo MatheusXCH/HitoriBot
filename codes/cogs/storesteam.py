@@ -42,31 +42,31 @@ class StoreSteam(commands.Cog):
     # TODO Avaliar a necessidade ou não de implementar um Embed interativo (via reactions)
     # TODO Avaliar a necessedidade da informação "Packages" (apareceria juntamente ao Price_Overview em um segundo Embed, sendo este interativo)
 
-    @commands.command(pass_context = True, name = 'game')
+    @commands.command(pass_context = True, name = 'steam')
     async def search_game(self, ctx, *, game_title):
         """!game <game_title> => Retorna informações sobre um jogo na Steam"""
         
-        game_info = {}
+        steam_game = {}
         steamspy_info = {}
         try:
-            game_info = big_picture.get_game_info(game_title = game_title, source = 'steam')
-            steamspy_info = big_picture.get_game_info(game_title = game_title, source ='steamspy')
+            steam_game = big_picture.get_steam_game(game_title = game_title)
+            steamspy_info = big_picture.get_steamspy_info(game_title = steam_game['name'])
         except:
             await ctx.send(embed = discord.Embed(title = 'Desculpe', description = f'Não consegui encontrar esse jogo!\nCaso seja a primeira consulta do dia, considere executar o comando "!steam-update" para atualizar os dados'))
         
         steam_game_embed = discord.Embed(
-            title = f'{game_info["name"]}',
+            title = f'{steam_game["name"]}',
             colour = discord.Colour(random.randint(0, 0xFFFFFF)),
-            description = f'📆 **Data de lançamento**: {game_info["release_date"]["date"]}\n{game_info["short_description"]}',
-            url = f'https://store.steampowered.com/app/{str(game_info["steam_appid"])}/{quote(game_info["name"])}'
+            description = f'📆 **Data de lançamento**: {steam_game["release_date"]["date"]}\n{steam_game["short_description"]}',
+            url = f'https://store.steampowered.com/app/{str(steam_game["steam_appid"])}/{quote(steam_game["name"])}'
         )
-        steam_game_embed.set_image(url = f'{game_info["header_image"]}')
+        steam_game_embed.set_image(url = f'{steam_game["header_image"]}')
         try:
-            steam_game_embed.set_footer(text = f'{game_info["legal_notice"]}')
+            steam_game_embed.set_footer(text = f'{steam_game["legal_notice"]}')
             if steam_game_embed.footer.__len__ > 2048:
                 raise Exception
         except:
-            steam_game_embed.set_footer(text = f'©{game_info["name"]}')
+            steam_game_embed.set_footer(text = f'©{steam_game["name"]}')
         
         def get_reviews_label(reviews_perc):
             if 0 <= reviews_perc <= 19: return '⛔ Muito negativas'
@@ -86,7 +86,7 @@ class StoreSteam(commands.Cog):
             tags = 'N/A'
         
         try:
-            developers_list = [item for item in game_info['developers']]
+            developers_list = [item for item in steam_game['developers']]
             developers = '\n'.join(developers_list)
             if developers == '':
                 raise Exception
@@ -94,7 +94,7 @@ class StoreSteam(commands.Cog):
             developers = 'N/A'
         
         try:
-            publishers_list = [item for item in game_info['publishers']]
+            publishers_list = [item for item in steam_game['publishers']]
             publishers = '\n'.join(publishers_list)
             if publishers == '':
                 raise Exception
@@ -102,7 +102,7 @@ class StoreSteam(commands.Cog):
             publishers = 'N/A'
         
         try:
-            categories_list = [item['description'] for item in game_info['categories']]
+            categories_list = [item['description'] for item in steam_game['categories']]
             categories_list_filtered = [item for item in categories_list if (item == 'Um jogador' or item == 'Multijogador' or 
                                                                             item == 'Cooperativo' or item == 'Cooperativo online' or 
                                                                             item == 'Conquistas Steam' or item == 'Compatibilidade total com controle' or
@@ -116,12 +116,12 @@ class StoreSteam(commands.Cog):
             categories = 'N/A'
         
         #TODO Arrumar os problemas possíveis de ocorrer no parâmetro 'Price_Overview'
-        if not game_info['is_free']:
+        if not steam_game['is_free']:
             try:
-                initial_value = str(game_info["price_overview"]["initial"])
+                initial_value = str(steam_game["price_overview"]["initial"])
                 base_price = f'R$ {initial_value[:-2]},{initial_value[-2:]}'
-                final_price = game_info["price_overview"]["final_formatted"]
-                discount = f'{game_info["price_overview"]["discount_percent"]}%'
+                final_price = steam_game["price_overview"]["final_formatted"]
+                discount = f'{steam_game["price_overview"]["discount_percent"]}%'
             except:
                 base_price = 'N/A'
                 final_price = 'N/A'
@@ -142,7 +142,7 @@ class StoreSteam(commands.Cog):
             languages = 'N/A'
         
         try:
-            metacritic_score = game_info["metacritic"]["score"]
+            metacritic_score = steam_game["metacritic"]["score"]
         except:
             metacritic_score = 'N/A'
         
@@ -155,11 +155,12 @@ class StoreSteam(commands.Cog):
         steam_game_embed.add_field(name = '📌 Idiomas: ', value = languages, inline = True)
         steam_game_embed.add_field(name = '📌 Recursos: ', value = categories, inline = True)
         
-        if not game_info['is_free']:
-            steam_game_embed.add_field(name = '**PREÇO**', value = f'🔸 **Base:** {base_price}\n' + 
-                                                                f'🔹 **Atual:** {final_price}\n' + 
-                                                                f'📉 **Desconto:** {discount}\n' ,
-                                                                inline = True)
+        if not steam_game['is_free']:
+            steam_game_embed.add_field(name = '**PREÇO**', value = 
+                                                                    f'🔸 **Base:** {base_price}\n' + 
+                                                                    f'🔹 **Atual:** {final_price}\n' + 
+                                                                    f'📉 **Desconto:** {discount}\n' ,
+                                                                    inline = True)
         else:
             steam_game_embed.add_field(name = '**PREÇO**', value = f'💸 Gratuito para Jogar')
 

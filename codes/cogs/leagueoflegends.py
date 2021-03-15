@@ -216,8 +216,8 @@ class LeagueOfLegends(commands.Cog):
             url = f'https://br.op.gg/summoner/userName=' + '+'.join(name.split(' '))
         )
 
-        live_match_embed.add_field(name = 'Summoner', 
-                                value = f'🔹 {blue_team["TOP"]["name"]}\n' + 
+        live_match_embed.add_field(name = 'Summoner', value = 
+                                f'🔹 {blue_team["TOP"]["name"]}\n' + 
                                 f'🔹 {blue_team["JUNGLE"]["name"]}\n' +
                                 f'🔹 {blue_team["MIDDLE"]["name"]}\n' +
                                 f'🔹 {blue_team["BOTTOM"]["name"]}\n' +
@@ -230,8 +230,8 @@ class LeagueOfLegends(commands.Cog):
                                 f'🔸 {red_team["UTILITY"]["name"]}\n',
                                 inline = True)
         
-        live_match_embed.add_field(name = 'Champion', 
-                                value = f'{dd.EMOJI_TOP} {blue_team["TOP"]["champion"]}\n' + 
+        live_match_embed.add_field(name = 'Champion', value = 
+                                f'{dd.EMOJI_TOP} {blue_team["TOP"]["champion"]}\n' + 
                                 f'{dd.EMOJI_JUNGLE} {blue_team["JUNGLE"]["champion"]}\n' + 
                                 f'{dd.EMOJI_MIDDLE} {blue_team["MIDDLE"]["champion"]}\n' + 
                                 f'{dd.EMOJI_BOTTOM} {blue_team["BOTTOM"]["champion"]}\n' + 
@@ -244,8 +244,8 @@ class LeagueOfLegends(commands.Cog):
                                 f'{dd.EMOJI_UTILITY} {red_team["UTILITY"]["champion"]}\n',
                                 inline = True)
         
-        live_match_embed.add_field(name = 'Rank', 
-                                value = f'® {blue_team["TOP"]["rank"]}\n' + 
+        live_match_embed.add_field(name = 'Rank', value = 
+                                f'® {blue_team["TOP"]["rank"]}\n' + 
                                 f'® {blue_team["JUNGLE"]["rank"]}\n' + 
                                 f'® {blue_team["MIDDLE"]["rank"]}\n' + 
                                 f'® {blue_team["BOTTOM"]["rank"]}\n' + 

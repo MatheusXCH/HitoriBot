@@ -50,7 +50,7 @@ class Messages(commands.Cog):
         """Listener - Diz ao usuário que não é pra dirigir a palavra ao BOT"""
         
         if self.bot.user.mentioned_in(message) and message.author != self.bot.user and not message.mention_everyone:
-            await message.channel.send(f'Aí {message.author.mention}, não me dirigi a palavra não, faz o favor!')
+            await message.channel.send(f'Aí {message.author.mention}, não me dirige a palavra não. Faz favor!')
 
 
 def setup(bot):
