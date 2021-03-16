@@ -1,10 +1,11 @@
-import os, discord, sys, json, requests, math, asyncio, random
+import os, discord, sys, json, requests, math, asyncio, random, pprint
 import codes.settings as st
 import dotenv
 from dotenv import load_dotenv
 from discord.ext import commands
 from discord.utils import *
 from urllib.parse import quote
+from pprint import pprint
 
 import steam
 
@@ -28,8 +29,7 @@ class StoreSteam(commands.Cog):
         
         try:
             msg = await ctx.send(embed = discord.Embed(title = "Aguarde", description = "Atualizando os dados da Steam..."))
-            big_picture.request_all_games(source = 'steam')
-            big_picture.request_all_games(source = 'steamspy')
+            big_picture.request_all_games()
             await msg.edit(embed = discord.Embed(title = "Sucesso!", description = "Base de dados do Steam atualizada!"))
             await asyncio.sleep(5)
             await msg.delete()
@@ -38,26 +38,33 @@ class StoreSteam(commands.Cog):
             await asyncio.sleep(5)
             await msg.delete()
         
-    # TODO Pensar em uma maneira com que a busca não dependa do nome do game ser passado de forma exata (isto é, retornar semelhante caso nome incorreto)
     # TODO Avaliar a necessidade ou não de implementar um Embed interativo (via reactions)
-    # TODO Avaliar a necessedidade da informação "Packages" (apareceria juntamente ao Price_Overview em um segundo Embed, sendo este interativo)
+    # TODO Informação "Packages" (apareceria juntamente ao Price_Overview em um segundo Embed, sendo este interativo)
 
     @commands.command(pass_context = True, name = 'steam')
     async def search_game(self, ctx, *, game_title):
         """!game <game_title> => Retorna informações sobre um jogo na Steam"""
         
+        steam_game_list = []
         steam_game = {}
         steamspy_info = {}
         try:
-            steam_game = big_picture.get_steam_game(game_title = game_title)
-            steamspy_info = big_picture.get_steamspy_info(game_title = steam_game['name'])
+            steam_game_list = big_picture.get_steam_game(game_title = game_title)
+            steam_game = steam_game_list[0] # Get only the first item
+            steamspy_info = big_picture.steamspy_complementary_info(app_id = steam_game['steam_appid'])
+            
+            if steam_game == []:
+                raise Exception
         except:
             await ctx.send(embed = discord.Embed(title = 'Desculpe', description = f'Não consegui encontrar esse jogo!\nCaso seja a primeira consulta do dia, considere executar o comando "!steam-update" para atualizar os dados'))
-        
+            return
+            
         steam_game_embed = discord.Embed(
             title = f'{steam_game["name"]}',
             colour = discord.Colour(random.randint(0, 0xFFFFFF)),
-            description = f'📆 **Data de lançamento**: {steam_game["release_date"]["date"]}\n{steam_game["short_description"]}',
+            description = f'📆 **Data de lançamento:** {steam_game["release_date"]["date"]}\n' + 
+                        f'🏷 **Tipo:** {steam_game["type"].upper()}\n'
+                        f'{steam_game["short_description"]}',
             url = f'https://store.steampowered.com/app/{str(steam_game["steam_appid"])}/{quote(steam_game["name"])}'
         )
         steam_game_embed.set_image(url = f'{steam_game["header_image"]}')
@@ -130,7 +137,7 @@ class StoreSteam(commands.Cog):
         try:
             reviews_perc = math.floor((steamspy_info['positive']/(steamspy_info['positive'] + steamspy_info['negative']))* 100)
             reviews_label = get_reviews_label(reviews_perc)
-            reviews_dict = {'score': reviews_perc, 'label': reviews_label}
+            reviews_dict = {'score': f'({reviews_perc}%)', 'label': reviews_label}
         except:
             reviews_dict = {'score': '\u200b', 'label': 'N/A'}
         
@@ -144,14 +151,14 @@ class StoreSteam(commands.Cog):
         try:
             metacritic_score = steam_game["metacritic"]["score"]
         except:
-            metacritic_score = 'N/A'
+            metacritic_score = '---'
         
         steam_game_embed.add_field(name = '📌 Desenvolvedor: ', value = developers, inline = True)
         steam_game_embed.add_field(name = '📌 Publisher: ', value = publishers, inline = True)
         steam_game_embed.add_field(name = '📌 Tags: ', value = tags, inline = True)
         
         steam_game_embed.add_field(name = '📌 Avaliações: ', value = f'{big_picture.EMOJI_METACRITIC} {metacritic_score}\n\n' + 
-                                                                    f'{reviews_dict["label"]} ({reviews_dict["score"]}%)', inline = True)
+                                                                    f'{reviews_dict["label"]}\n {reviews_dict["score"]}', inline = True)
         steam_game_embed.add_field(name = '📌 Idiomas: ', value = languages, inline = True)
         steam_game_embed.add_field(name = '📌 Recursos: ', value = categories, inline = True)
         
