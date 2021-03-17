@@ -63,14 +63,15 @@ class Administrator(commands.Cog):
 
         await self.clear_admin_messages(ctx, msg)
 
-
-    @commands.Cog.listener()
-    async def on_command_error(self, ctx, error):
-        """Envia mensagem padrão caso seja utilizado um comando inválido"""
+    # # FIXME A função atrapalha a identificar erros
+    # # TODO Buscar formas de melhoras o Listener responsável por notificar o usuário que o comando não existe
+    # @commands.Cog.listener()
+    # async def on_command_error(self, ctx, error):
+    #     """Envia mensagem padrão caso seja utilizado um comando inválido"""
         
-        unknown_command_msg = await ctx.send(embed = discord.Embed(title = f'Comando {ctx.message.content} desconhecido', description = 'Para saber quais são os comandos válidos, utilize "!help"'))
-        await asyncio.sleep(5)
-        await unknown_command_msg.delete()
+    #     unknown_command_msg = await ctx.send(embed = discord.Embed(title = f'Comando {ctx.message.content} desconhecido', description = 'Para saber quais são os comandos válidos, utilize "!help"'))
+    #     await asyncio.sleep(5)
+    #     await unknown_command_msg.delete()
 
 
 def setup(bot):
