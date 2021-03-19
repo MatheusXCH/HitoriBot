@@ -14,7 +14,7 @@ class Minigames(commands.Cog):
 
 
     @commands.command(name='dado')
-    async def dado(self, ctx, dice : str):
+    async def dado(self, ctx: commands.Context, dice : str):
         """!dado <dado> => Fujitora joga os dados (Ex: !dado 1d6)
         Invoca o Fujitora para tirar a sorte nos dados!
         """
@@ -65,7 +65,7 @@ class Minigames(commands.Cog):
 
 
     @commands.command(name = 'coin')
-    async def coin(self, ctx):
+    async def coin(self, ctx: commands.Context):
         """!coin => Cara ou Corôa
         Retorna o resultado de um lance de cara ou corôa
         """

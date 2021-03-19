@@ -15,62 +15,62 @@ class Stickers(commands.Cog):
         self.bot = bot
 
     @commands.command(name='bebero')
-    async def bebero(self, ctx):
+    async def bebero(self, ctx: commands.Context):
         """!bebero"""        
         await ctx.send(file = discord.File(st.image_path + 'Bebero.png'))
     
     @commands.command(name='analise')
-    async def analise(self, ctx):
+    async def analise(self, ctx: commands.Context):
         """!analise"""           
         await ctx.send(file = discord.File(st.image_path + 'Analise.png'))
     
     @commands.command(name='bença')
-    async def bença(self, ctx):
+    async def bença(self, ctx: commands.Context):
         """!bença"""           
         await ctx.send(file = discord.File(st.image_path + 'Bença.png'))
     
     @commands.command(name='broxa')
-    async def broxa(self, ctx):
+    async def broxa(self, ctx: commands.Context):
         """!broxa"""           
         await ctx.send(file = discord.File(st.image_path + 'Broxa.png'))
     
     @commands.command(name='entendi')
-    async def entendi(self, ctx):
+    async def entendi(self, ctx: commands.Context):
         """!entendi"""           
         await ctx.send(file = discord.File(st.image_path + 'Entendi.png'))
     
     @commands.command(name='perdemoS')
-    async def perdemoS(self, ctx): 
+    async def perdemoS(self, ctx: commands.Context): 
         """!perdemoS"""          
         await ctx.send(file = discord.File(st.image_path + 'PerdemoS.png'))
     
     @commands.command(name='pexe')
-    async def pexe(self, ctx):  
+    async def pexe(self, ctx: commands.Context):  
         """!pexe"""         
         await ctx.send(file = discord.File(st.image_path + 'Pexe.png'))
     
     @commands.command(name='sabo')
-    async def sabo(self, ctx):   
+    async def sabo(self, ctx: commands.Context):   
         """!sabo"""        
         await ctx.send(file = discord.File(st.image_path + 'Sabo.png'))      
     
     @commands.command(name='sorriso')
-    async def sorriso(self, ctx):  
+    async def sorriso(self, ctx: commands.Context):  
         """!sorriso"""         
         await ctx.send(file = discord.File(st.image_path + 'Sorriso.png'))
         
     @commands.command(name='rh')
-    async def rh(self, ctx):   
+    async def rh(self, ctx: commands.Context):   
         """!rh"""        
         await ctx.send(file = discord.File(st.image_path + 'RH.png'))      
     
     @commands.command(name='perdemo')
-    async def perdemo(self, ctx): 
+    async def perdemo(self, ctx: commands.Context): 
         """!perdemo"""          
         await ctx.send(file = discord.File(st.image_path + 'Perdemo.png'))
         
     @commands.command(name='soninho')
-    async def soninho(self, ctx):  
+    async def soninho(self, ctx: commands.Context):  
         """!soninho"""         
         await ctx.send(file = discord.File(st.image_path + 'Soninho.gif'))
 

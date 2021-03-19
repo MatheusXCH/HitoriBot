@@ -28,7 +28,7 @@ class LeagueOfLegends(commands.Cog):
     
     #TODO Pensar em mais informações úteis para serem mostradas aqui
     @commands.command(pass_context = True, name = 'summ')
-    async def get_summoner(self, ctx, *, name: str = 'Nothing Passed to Command', current_champion = None, command_call_flag = 0, msg = None):
+    async def get_summoner(self, ctx: commands.Context, *, name: str = 'Nothing Passed to Command', current_champion = None, command_call_flag = 0, msg = None):
         """!summ <summoner_name> => Retorna informações sobre o invocador"""
         
         if name == 'Nothing passed to command':
@@ -128,7 +128,7 @@ class LeagueOfLegends(commands.Cog):
     
     #TODO Tentar chamar a função dinamicamente através de um Listener
     @commands.command(pass_context = True, name = 'live')
-    async def live_match(self, ctx, *, name: str = 'Empadão de Tatu'):
+    async def live_match(self, ctx: commands.Context, *, name: str = 'Empadão de Tatu'):
         """!live <summoner_name> => Retorna o lobby da partida ao vivo do invocador
         O invocador DEVE estar em uma partida ao vivo
         É possível obter informações sobre os participantes da partida em tempo real, utilizando dos botões disponíveis no Embed

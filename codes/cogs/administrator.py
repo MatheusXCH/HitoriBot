@@ -8,7 +8,7 @@ class Administrator(commands.Cog):
         self.bot = bot
 
     
-    async def clear_admin_messages(self, ctx, message):
+    async def clear_admin_messages(self, ctx: commands.Context, message: discord.Message):
         """Limpa as mensagens do Módulo Administrator"""
         
         await asyncio.sleep(3)    
@@ -17,7 +17,7 @@ class Administrator(commands.Cog):
 
     @commands.command(hidden = True, name = 'm-load')
     @commands.is_owner()
-    async def load(self, ctx, *, module : str):
+    async def load(self, ctx: commands.Context, *, module : str):
         """Carrega um módulo"""
         
         await ctx.message.delete()
@@ -33,7 +33,7 @@ class Administrator(commands.Cog):
 
     @commands.command(hidden = True, name = 'm-unload')
     @commands.is_owner()
-    async def unload(self, ctx, *, module : str):
+    async def unload(self, ctx: commands.Context, *, module : str):
         """Descarrega um módulo"""
         
         await ctx.message.delete()
@@ -49,7 +49,7 @@ class Administrator(commands.Cog):
 
     @commands.command(hidden = True, name = 'm-reload')
     @commands.is_owner()
-    async def reload(self, ctx, *, module : str):
+    async def reload(self, ctx: commands.Context, *, module : str):
         """Recarrega um módulo"""
         
         await ctx.message.delete()

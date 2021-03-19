@@ -27,9 +27,9 @@ class Messages(commands.Cog):
     
     
     @commands.command(name='playlist')
-    async def playlist(self, ctx):
+    async def playlist(self, ctx: commands.Context):
         """!playlist => Lista as playlists feitas para o Servidor"""
-
+        
         embed = discord.Embed(
             title=':notes: **Playlists do Servidor** :notes:',
             colour= discord.Colour(0x32a852),
@@ -46,7 +46,7 @@ class Messages(commands.Cog):
     
     
     @commands.Cog.listener()
-    async def on_message(self, message):
+    async def on_message(self, message: discord.Message):
         """Listener - Diz ao usuário que não é pra dirigir a palavra ao BOT"""
         
         if self.bot.user.mentioned_in(message) and message.author != self.bot.user and not message.mention_everyone:

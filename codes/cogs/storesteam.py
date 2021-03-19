@@ -13,13 +13,13 @@ sys.path.append("D:\\python-codes\\Discordzada") #Config the PYTHONPATH to impor
 from codes.steamcontent import steambigpicture
 
 load_dotenv()
-my_steam_id = '76561198058563121'
 steam_key = os.getenv('STEAM_KEY')
 big_picture = steambigpicture.SteamBigPicture()
 
 # EMOJIS
 EMOJI_ORANGE_BACK = '<:orange_back:821841259282956318>'
 EMOJI_ORANGE_PLAY = '<:orange_play:821840997037244437>'
+
 
 class StoreSteam(commands.Cog):
     """Módulo que permite a conexão do PyBOT com a Steam-BR"""
@@ -46,7 +46,7 @@ class StoreSteam(commands.Cog):
     # TODO Informação "Packages" (apareceria juntamente ao Price_Overview em um segundo Embed, sendo este interativo)
 
     @commands.command(pass_context = True, name = 'steam')
-    async def search_game(self, ctx, *, game_title):
+    async def search_game(self, ctx: commands.Context, *, game_title: str):
         """!game <game_title> => Retorna informações sobre um jogo na Steam"""
         
         def __get_reviews_label(reviews_perc):
@@ -163,7 +163,10 @@ class StoreSteam(commands.Cog):
             try:
                 includes_list = [item['name'] for item in package['apps']]
                 includes = '\n'.join(includes_list)
+                if includes == '':
+                    raise Exception
             except:
+                includes = '\u200b'
                 pass
             
             # Price
@@ -178,6 +181,7 @@ class StoreSteam(commands.Cog):
                 else:
                     price = f'💸 GRATUITO'
             except:
+                price = '\u200b'
                 pass
             
             # # EMBED
@@ -219,7 +223,7 @@ class StoreSteam(commands.Cog):
                 steam_game_embed.add_field(name = f'**PACOTE**\n📌 {package["name"]}: ', value = f'{includes}', inline = False)
                 steam_game_embed.add_field(name = '📌 Preço: ', value = price, inline = True)
             else:
-                steam_game_embed.add_field(name = '📌 Preço: ', value = f'💸 GRATUITO', inline = True)
+                steam_game_embed.add_field(name = '📌 Preço: ', value = f'---', inline = True)
             
             return steam_game_embed # Return the resultant page
 

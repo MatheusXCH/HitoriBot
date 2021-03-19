@@ -5,11 +5,9 @@ import steam
 
 import codes.settings as st
 
-
-# TODO Melhorar ainda mais a busca ao converter todos os nomes de jogos (Input, Output e Arquivos Salvos) para UPPERCASE
 class SteamBigPicture:
     """Handles GET requests to Steamworks Web API, Steam StorefrontAPI and SteamSpy API to return info about Games or DLCs in JSON format
-    
+
     Some usefull links:
     - 'Steamworks Web API' Documentation: https://partner.steamgames.com/doc/webapi
     - 'SteamSpy API' Documentation: https://steamspy.com/api.php
@@ -79,64 +77,84 @@ class SteamBigPicture:
             json.dump(all_steam_apps['applist']['apps'], outfile)
 
 
-    def __search_game(self, game_title: str, source: str):
+    def __search_game(self, game_title: str, max_items: int):
         """Implements the 'Precise' and 'Imprecise' search
 
-        - Precise Search = Returns the exactly key that matches < game_title >
+        - Precise Search = Returns first the exactly key that matches < game_title >
         - Imprecise Search = Returns all the keys that contains the substring < game_title >
         
         The search handles < game_title >, as well as the game database titles, in uppercase. This makes 
         it possible for the user to do a successfull search by even writting "Dota 2", "DOTA 2", "dota 2",
         and so go on.
+        
+        The searching process start by founding the games on SteamSpy database, because by it's default ordered by 'Owners'.
+        After finished this first step, if the search result has less elements than < max_items >, then search for other 
+        possible matching items on Steam database directly.
 
         Parameters
         ----------
         - game_title : str \\
         [Title of the game to search for]
-        - source : str \\
-        ['steam' to search Steam database, 'steamspy' to search SteamSpy database]
+        - max_items : int \\
+        [Maximum number of items to return in the result list]
 
         Returns
         -------
         - search : list \\
         [List of games appids found by 'Precise' or 'Imprecise' search on the select database]\\ 
-        [Empty list if nothing found or missing <source> attribute]
+        [Empty list if nothing is found]
         """
-        # Get games from selected source
-        all_games_json = self.get_all_games(source)
-        game_title = game_title.upper() # Uppercase to make a broader search
         
-        if source == 'steamspy':
-            # # # STEAMSPY:
-            # # PRECISE SEARCH
-            # Case <game_title> matches a game name on the database
-            search = [item for item in all_games_json if all_games_json[item]['name'].upper() == game_title]
+        # Get all games from sources
+        spy_all_games_json = self.get_all_games('steamspy')
+        steam_all_games_json = self.get_all_games('steam')
+        
+        game_title = game_title.upper() # Uppercase to make a broader search
+        spy_search = []
+        steam_search = []
+        search = []
 
-            if search != []:
-                print("Não funcionou!")
-                return search
-            else:
-                # # IMPRECISE SEARCH
-                # Case there isn't a game name equal to <game_title>, search for all items that contais <game_title> as a substring
-                search = [item for item in all_games_json if game_title in all_games_json[item]['name'].upper()]
-                return search
-
-        elif source == 'steam':
-            # # # STEAM:
-            # # PRECISE SEARCH
-            # Case <game_title> matches a game name on the database
-            search = [item['appid'] for item in all_games_json if item['name'].upper() == game_title]
-            if search != []:            
-                return search
-            else:
-                # # IMPRECISE SEARCH
-                # Case there isn't a game name equal to <game_title>, search for all items that contais <game_title> as a substring
-                search = [item['appid'] for item in all_games_json if game_title in item['name'].upper()]
-                return search
-
-        # If 'source' missing
+        # # # STEAMSPY:
+        # # PRECISE SEARCH
+        # Case <game_title> matches a game name on the SteamSpy database
+        spy_psearch = [item for item in spy_all_games_json if spy_all_games_json[item]['name'].upper() == game_title]
+        if spy_psearch == []:
+            # # IMPRECISE SEARCH ONLY
+            # Case there isn't a game name equal to <game_title>, search only for all items that contais <game_title> as a substring on SteamSpy
+            spy_isearch = [item for item in spy_all_games_json if game_title in spy_all_games_json[item]['name'].upper()]
         else:
-            return []
+            # # PRECISE + IMPRECISE SEARCH
+            # Search for all items that contais <game_title> as a substring on SteamSpy
+            spy_isearch = [item for item in spy_all_games_json if game_title in spy_all_games_json[item]['name'].upper() if item != spy_psearch[0]]
+        spy_search = spy_psearch + spy_isearch # Merge SteamSpy 'Precise' and 'Imprecise'
+        
+        if len(spy_search) > max_items:
+            search = spy_search[:max_items]
+            return search
+
+        # # # STEAM:
+        # # PRECISE SEARCH
+        # Case <game_title> matches a game name on the Steam database
+        else:
+            steam_psearch = [item['appid'] for item in steam_all_games_json if item['name'].upper() == game_title if str(item['appid']) != spy_psearch[0]]
+            if steam_psearch == [] and spy_psearch == []:
+                # # IMPRECISE SEARCH ONLY (if none of the precises searches has founded something)
+                # Case there isn't a game name equal to <game_title>, search for all items that contais <game_title> as a substring on Steam
+                steam_isearch = [item['appid'] for item in steam_all_games_json if game_title in item['name'].upper()]
+            else:
+                # # PRECISE + IMPRECISE SEARCH
+                # Search for all items that contais <game_title> as a substring on Steam
+                steam_isearch = [item['appid'] for item in steam_all_games_json if game_title in item['name'].upper() if str(item['appid']) != spy_psearch[0]]
+            steam_search = steam_psearch + steam_isearch # Merge Steam 'Precise' and 'Imprecise'
+
+        search = spy_search + steam_search
+
+        if len(search) > max_items:
+            search = search[:max_items]
+            return search
+        else:
+            return search
+
 
     def get_steam_game(self, game_title: str, max_items = 5):
         """Get detailed information about games \\
@@ -154,22 +172,17 @@ class SteamBigPicture:
         -------
         - steam_game_info_list : list \\
         [List of JSON, where each one contains info about the games found on the search] \\
-        [Empty list if nothing found on search]
+        [Empty list if nothing is found on search]
         """
 
-        # First, search for the game on SteamSpy database (more accurate, but with less amount of items)
-        search = self.__search_game(game_title, 'steamspy')
-        
-        # If there's no matching item on SteamSpy after 'Precise' and 'Imprecise' search, 
-        # try to search for it directly on Steam database (lesse accurate, but with higher amount of items)
+        # Call function to search for the game
+        search = self.__search_game(game_title, max_items)
+
+        # If no matching item, then the search result is an empty list
         if search == []:
-            search = self.__search_game(game_title, 'steam')
+            return search
 
-            # If still no matching item, then the search result is 'None'
-            if search == []:
-                return search
-
-        # Limit the searched items to only 'max_items' or less values (for best performance)
+        # Handles the case which the search length is less then the < max_items >
         if len(search) < max_items: 
             max_range = len(search)
         else: 
@@ -220,7 +233,7 @@ class SteamBigPicture:
         -------
         - steamspy_game_info : JSON \\
         [Game info found on SteamSpy database as JSON] \\
-        [Empty JSON if nothing found on search]
+        [Empty JSON if nothing is found on search]
         """
 
         #Request to 'steamspy.com/api.php?'
@@ -228,28 +241,10 @@ class SteamBigPicture:
         payload = {'request':'appdetails', 'appid':app_id}
         response_steamspy_game_info = requests.get('https://steamspy.com/api.php', params=payload)
         steamspy_game_info = response_steamspy_game_info.json()
-        
+
         # When you request an invalid 'appid' to SteamSpy, the default response are information about CS:GO
         # Handle this scenario to turns it into an empty JSON is required
         if app_id != steamspy_game_info['appid']:
             return {}
         else:
             return steamspy_game_info
-
-
-# steam = SteamBigPicture()
-# print('Iniciando...')
-# steam.request_all_games()
-# print('Finalizado!')
-
-# steam = SteamBigPicture()
-# game_title = input('Game: ')
-# steam_games = steam.get_steam_game(game_title)
-# steamspy_games_info = [steam.steamspy_complementary_info(app['steam_appid']) for app in steam_games]
-# pprint(steamspy_games_info)
-
-# packages = [steam.get_steam_package(app['packages']) for app in steam_games]
-# pprint(packages)
-# package = steam.get_steam_package(steam_game[0]['packages'])
-# print(type(package))
-# pprint(package)

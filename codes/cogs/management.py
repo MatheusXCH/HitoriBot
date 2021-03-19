@@ -26,7 +26,7 @@ class Management(commands.Cog):
     
     #TODO Criar estrutura de dados para as palavras indesejadas
     @commands.Cog.listener()
-    async def on_message(self, message):
+    async def on_message(self, message: discord.Message):
         """ Bad Words [Listener]
             - Monitora o chat de texto, identificando palavras indesejadas e limpando-as logo em sequência
         """
@@ -39,7 +39,7 @@ class Management(commands.Cog):
                 await message.channel.send(f'Mensagem deletada - Uso de expressão indevida! (||{sentence})||')
 
     @commands.command(name='rules')
-    async def rules(self, ctx):
+    async def rules(self, ctx: commands.Context):
         """!rules => Exibe as regras do servidor"""
         
         with codecs.open(st.rule_path + 'rules.txt', 'r', encoding='utf8') as f:
@@ -58,7 +58,7 @@ class Management(commands.Cog):
     
 
     @commands.command(name='invite')
-    async def invite(self, ctx):
+    async def invite(self, ctx: commands.Context):
         """!invite => Recebe um convite para o servidor na DM"""
         
         invitelink = await ctx.channel.create_invite(max_uses=1, unique=True, max_age=300)
@@ -68,7 +68,7 @@ class Management(commands.Cog):
 
     @commands.command(pass_context=True, name='nick')
     @has_permissions(manage_nicknames=True)
-    async def nick(self, ctx, member: discord.Member, *, newnick):
+    async def nick(self, ctx: commands.Context, member: discord.Member, *, newnick):
         """!nick <@Member> <new_nick> => Troca o nick do 'Membro' para 'new_nick'
         # É necessário ter permissão para trocar apelidos
         """
@@ -77,7 +77,7 @@ class Management(commands.Cog):
         await ctx.send(f'Apelido de {member.name} mudado para {member.mention} com sucesso!')
     #Trata o erro de 'Nick'
     @nick.error
-    async def nick_error(self, ctx, error):
+    async def nick_error(self, ctx: commands.Context, error):
         if isinstance(error, MissingPermissions):
             text = f'Desculpe {ctx.message.author}, você não tem permissão para fazer isso!'
             await ctx.send(text)
@@ -85,7 +85,7 @@ class Management(commands.Cog):
     
     @commands.command(pass_context=True, name='kick')
     @has_permissions(manage_roles=True, kick_members=True)
-    async def kick(self, ctx, member: Member):
+    async def kick(self, ctx: commands.Context, member: Member):
         """!kick <@Member> => Expulsa um membro do servidor
         # É necessário ter permissão para expulsar membros
         """
@@ -95,7 +95,7 @@ class Management(commands.Cog):
         await ctx.send(file = discord.File(st.image_path + 'RH.png'))
     #Trata o erro de 'Nick'
     @kick.error
-    async def kick_error(self, ctx, error):
+    async def kick_error(self, ctx: commands.Context, error):
         if isinstance(error, MissingPermissions):
             text = f'Desculpe {ctx.message.author}, você não tem permissão para fazer isso!'
             await ctx.send(text)
@@ -103,7 +103,7 @@ class Management(commands.Cog):
     
     @commands.command(pass_context=True, name='ban')
     @has_permissions(administrator=True)
-    async def ban(self, ctx, member: Member):
+    async def ban(self, ctx: commands.Context, member: Member):
         """!ban <@Member> => Bane um membro do servidor
         # É necessário ter permissão para banir membros
         """
@@ -113,7 +113,7 @@ class Management(commands.Cog):
         await ctx.send(file = discord.File(st.image_path + 'RH.png'))
     #Trata o erro de 'Ban'
     @ban.error
-    async def ban_error(self, ctx, error):
+    async def ban_error(self, ctx: commands.Context, error):
         if isinstance(error, MissingPermissions):
             text = f'Desculpe {ctx.message.author}, você não tem permissão para fazer isso!'
             await ctx.send(text)
@@ -122,7 +122,7 @@ class Management(commands.Cog):
     @commands.command(pass_context=True, hidden = True)
     @has_permissions(administrator=True)
     @guild_only()
-    async def unban(self, ctx, id: int):
+    async def unban(self, ctx: commands.Context, id: int):
         user = await bot.fetch_user(id)
         if(ctx.guild.fetch_ban(user)):
             await ctx.guild.unban(user)
@@ -130,7 +130,7 @@ class Management(commands.Cog):
             await ctx.send(f'O usuário {user} não está banido no servidor!')
     #Trata o erro de 'Unban'
     @unban.error
-    async def unban_error(self, ctx, error):
+    async def unban_error(self, ctx: commands.Context, error):
         if isinstance(error, MissingPermissions):
             text = f'Desculpe {ctx.message.author}, você não tem permissão para fazer isso!'
             await ctx.send(text)
@@ -138,7 +138,7 @@ class Management(commands.Cog):
 
     @commands.command(pass_context=True, name='role')
     @has_permissions(administrator=True)
-    async def get_role(self, ctx, member: Member):
+    async def get_role(self, ctx: commands.Context, member: Member):
         """!role <@Member> => Lista as roles de um membro da guilda
         # É necessário ter permissão de administrador
         """
@@ -155,7 +155,7 @@ class Management(commands.Cog):
     #TODO Tornar possível setar mais de uma role por vez    
     @commands.command(pass_context=True, name='set-role')
     @has_permissions(administrator=True)
-    async def set_role(self, ctx, member: Member, *, role: Role):
+    async def set_role(self, ctx: commands.Context, member: Member, *, role: Role):
         """!set-role <@Member> <Role> => Troca a role de um membro
         # É necessário ter permissão de administrador
         """
@@ -167,7 +167,7 @@ class Management(commands.Cog):
     #TODO Tornar possível dropar mais de uma role por vez
     @commands.command(pass_context=True, name='drop-role')
     @has_permissions(administrator=True)
-    async def drop_role(self, ctx, member: Member, *, role: Role):    
+    async def drop_role(self, ctx: commands.Context, member: Member, *, role: Role):    
         """!drop-role => Retira uma role de um membro
         # É necessário ter permissão de administrador
         """
@@ -177,14 +177,14 @@ class Management(commands.Cog):
         
     #TODO Arrumar - Função apenas envia o ID da permissão via DM 
     @commands.command(pass_context=True, hidden = True)
-    async def permissions(self, ctx, member: Member):
+    async def permissions(self, ctx: commands.Context, member: Member):
         perm = member.permissions_in(ctx.channel)
         await ctx.author.send(f'Solicitação atendida!\n{member.display_name} tem permissões para {perm}')
     
     
     @commands.command(pass_context=True, name='clear')
     @has_permissions(manage_messages=True, send_messages=True)
-    async def clear(self, ctx, number = 5, member : Member = None):  
+    async def clear(self, ctx: commands.Context, number = 5, member: Member = None):  
         """!clear [num] [@Member] => Limpa as últimas [num] mensagens do usuário [@Member] no chat
         # [num] e [@Member] são opcionais, de modo que:
             !clear => Limpa 5 mensagens do bot
