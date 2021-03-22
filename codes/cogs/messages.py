@@ -10,8 +10,18 @@ class Messages(commands.Cog):
     """Módulo que contém alguns comandos simples, que retornam apenas mensagens de texto"""
     
     
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
+
+
+    @commands.command(name = 'say')
+    async def say(self, ctx: commands.Context, *, text: str):
+        """!say <text> => O Bot repete o que for passado para ele como <text>
+        Passa um texto para o Bot repetir. A mensagem original enviada é deletada.
+        """
+
+        await ctx.message.delete()
+        await ctx.send(text)
 
 
     @commands.command(name='familia')
@@ -27,9 +37,9 @@ class Messages(commands.Cog):
     
     
     @commands.command(name='playlist')
-    async def playlist(self, ctx):
+    async def playlist(self, ctx: commands.Context):
         """!playlist => Lista as playlists feitas para o Servidor"""
-
+        
         embed = discord.Embed(
             title=':notes: **Playlists do Servidor** :notes:',
             colour= discord.Colour(0x32a852),
@@ -46,11 +56,11 @@ class Messages(commands.Cog):
     
     
     @commands.Cog.listener()
-    async def on_message(self, message):
+    async def on_message(self, message: discord.Message):
         """Listener - Diz ao usuário que não é pra dirigir a palavra ao BOT"""
         
         if self.bot.user.mentioned_in(message) and message.author != self.bot.user and not message.mention_everyone:
-            await message.channel.send(f'Aí {message.author.mention}, não me dirigi a palavra não, faz o favor!')
+            await message.channel.send(f'Aí {message.author.mention}, não me dirige a palavra não. Faz favor!')
 
 
 def setup(bot):

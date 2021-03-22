@@ -13,3 +13,5 @@ git+https://github.com/meraki-analytics/role-identification.git
 steam==1.2.0
 urllib3==1.26.3
 requests==2.25.1
+praw==7.2.0
+asyncpraw==7.2.0

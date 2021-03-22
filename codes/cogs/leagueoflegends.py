@@ -22,13 +22,13 @@ class LeagueOfLegends(commands.Cog):
     """Obtém informações sobre o LOL direto da API da Riot Games
     """
 
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
     
     
     #TODO Pensar em mais informações úteis para serem mostradas aqui
     @commands.command(pass_context = True, name = 'summ')
-    async def get_summoner(self, ctx, *, name: str = 'Nothing Passed to Command', current_champion = None, command_call_flag = 0, msg = None):
+    async def get_summoner(self, ctx: commands.Context, *, name: str = 'Nothing Passed to Command', current_champion = None, command_call_flag = 0, msg = None):
         """!summ <summoner_name> => Retorna informações sobre o invocador"""
         
         if name == 'Nothing passed to command':
@@ -128,7 +128,7 @@ class LeagueOfLegends(commands.Cog):
     
     #TODO Tentar chamar a função dinamicamente através de um Listener
     @commands.command(pass_context = True, name = 'live')
-    async def live_match(self, ctx, *, name: str = 'Empadão de Tatu'):
+    async def live_match(self, ctx: commands.Context, *, name: str = 'Empadão de Tatu'):
         """!live <summoner_name> => Retorna o lobby da partida ao vivo do invocador
         O invocador DEVE estar em uma partida ao vivo
         É possível obter informações sobre os participantes da partida em tempo real, utilizando dos botões disponíveis no Embed
@@ -216,8 +216,8 @@ class LeagueOfLegends(commands.Cog):
             url = f'https://br.op.gg/summoner/userName=' + '+'.join(name.split(' '))
         )
 
-        live_match_embed.add_field(name = 'Summoner', 
-                                value = f'🔹 {blue_team["TOP"]["name"]}\n' + 
+        live_match_embed.add_field(name = 'Summoner', value = 
+                                f'🔹 {blue_team["TOP"]["name"]}\n' + 
                                 f'🔹 {blue_team["JUNGLE"]["name"]}\n' +
                                 f'🔹 {blue_team["MIDDLE"]["name"]}\n' +
                                 f'🔹 {blue_team["BOTTOM"]["name"]}\n' +
@@ -230,8 +230,8 @@ class LeagueOfLegends(commands.Cog):
                                 f'🔸 {red_team["UTILITY"]["name"]}\n',
                                 inline = True)
         
-        live_match_embed.add_field(name = 'Champion', 
-                                value = f'{dd.EMOJI_TOP} {blue_team["TOP"]["champion"]}\n' + 
+        live_match_embed.add_field(name = 'Champion', value = 
+                                f'{dd.EMOJI_TOP} {blue_team["TOP"]["champion"]}\n' + 
                                 f'{dd.EMOJI_JUNGLE} {blue_team["JUNGLE"]["champion"]}\n' + 
                                 f'{dd.EMOJI_MIDDLE} {blue_team["MIDDLE"]["champion"]}\n' + 
                                 f'{dd.EMOJI_BOTTOM} {blue_team["BOTTOM"]["champion"]}\n' + 
@@ -244,8 +244,8 @@ class LeagueOfLegends(commands.Cog):
                                 f'{dd.EMOJI_UTILITY} {red_team["UTILITY"]["champion"]}\n',
                                 inline = True)
         
-        live_match_embed.add_field(name = 'Rank', 
-                                value = f'® {blue_team["TOP"]["rank"]}\n' + 
+        live_match_embed.add_field(name = 'Rank', value = 
+                                f'® {blue_team["TOP"]["rank"]}\n' + 
                                 f'® {blue_team["JUNGLE"]["rank"]}\n' + 
                                 f'® {blue_team["MIDDLE"]["rank"]}\n' + 
                                 f'® {blue_team["BOTTOM"]["rank"]}\n' + 

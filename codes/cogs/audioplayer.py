@@ -8,11 +8,11 @@ from discord.utils import *
 class AudioPlayer(commands.Cog):
     """Conecta o Bot em canais de voz para tocar áudios (similar ao Soundpad)"""
 
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
 
 
-    async def not_in_channel_msg(self, ctx):
+    async def not_in_channel_msg(self, ctx: commands.Context):
         """Define mensagem padrão exibida sempre que o usuário utiliza um comando de voz sem estar conectado a um canal aproriado"""
         
         except_message = await ctx.send(f'{ctx.author.mention}, você deve estar em um **canal de voz** para usar este comando!')
@@ -21,7 +21,7 @@ class AudioPlayer(commands.Cog):
         return
 
 
-    async def audio_play(self, ctx, audio_name):
+    async def audio_play(self, ctx: commands.Context, audio_name: str):
         """Função responsável por gerenciar o áudio que deve ser tocado pelo Bot"""
         
         try:
@@ -52,7 +52,7 @@ class AudioPlayer(commands.Cog):
             
             
     @commands.command(pass_context = True, name = 'leave')
-    async def leave(self, ctx):
+    async def leave(self, ctx: commands.Context):
         """!leave => Desconecta o bot do canal de voz"""
         
         try:
@@ -69,37 +69,37 @@ class AudioPlayer(commands.Cog):
     
     #TODO Baixar mais áudios 
     @commands.command(pass_context = True, name = 'rogers')
-    async def rogers(self, ctx):
+    async def rogers(self, ctx: commands.Context):
         """!rogers => Toca o rogers do Grongos"""
         
         await self.audio_play(ctx, 'rogers.mp3')
     
     @commands.command(pass_context = True, name = 'monke')
-    async def monkey_flip(self, ctx):
+    async def monkey_flip(self, ctx: commands.Context):
         """!monke => Monkey Flip!!!"""
         
         await self.audio_play(ctx, 'monkey_flip.mp3')
         
     @commands.command(pass_context = True, name = 'tiltado')
-    async def tiltado(self, ctx):
+    async def tiltado(self, ctx: commands.Context):
         """!tiltado => Gratão tiltado"""
         
         await self.audio_play(ctx, 'tiltado.m4a')
     
     @commands.command(pass_context = True, name = 'naruto')
-    async def naruto_triste(self, ctx):
+    async def naruto_triste(self, ctx: commands.Context):
         """!naruto => Tururuuuuuuuu"""
         
         await self.audio_play(ctx, 'sadness_and_sorrow.m4a')
         
     @commands.command(pass_context = True, name = 'roblox')
-    async def roblox_ouf(self, ctx):
+    async def roblox_ouf(self, ctx: commands.Context):
         """!roblox => Ouf"""
         
         await self.audio_play(ctx, 'roblox.m4a')
         
     @commands.command(pass_context = True, name = 'xaropinho')
-    async def xaropinho(self, ctx):
+    async def xaropinho(self, ctx: commands.Context):
         """!xaropinho => Rapaaaaaiz"""
         
         await self.audio_play(ctx, 'xaropinho.m4a')

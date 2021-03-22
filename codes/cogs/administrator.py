@@ -4,11 +4,11 @@ from discord.ext.commands import has_permissions, MissingPermissions
 
 class Administrator(commands.Cog):
     
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
 
     
-    async def clear_admin_messages(self, ctx, message):
+    async def clear_admin_messages(self, ctx: commands.Context, message: discord.Message):
         """Limpa as mensagens do Módulo Administrator"""
         
         await asyncio.sleep(3)    
@@ -17,7 +17,7 @@ class Administrator(commands.Cog):
 
     @commands.command(hidden = True, name = 'm-load')
     @commands.is_owner()
-    async def load(self, ctx, *, module : str):
+    async def load(self, ctx: commands.Context, *, module : str):
         """Carrega um módulo"""
         
         await ctx.message.delete()
@@ -33,7 +33,7 @@ class Administrator(commands.Cog):
 
     @commands.command(hidden = True, name = 'm-unload')
     @commands.is_owner()
-    async def unload(self, ctx, *, module : str):
+    async def unload(self, ctx: commands.Context, *, module : str):
         """Descarrega um módulo"""
         
         await ctx.message.delete()
@@ -49,7 +49,7 @@ class Administrator(commands.Cog):
 
     @commands.command(hidden = True, name = 'm-reload')
     @commands.is_owner()
-    async def reload(self, ctx, *, module : str):
+    async def reload(self, ctx: commands.Context, *, module : str):
         """Recarrega um módulo"""
         
         await ctx.message.delete()
@@ -63,14 +63,15 @@ class Administrator(commands.Cog):
 
         await self.clear_admin_messages(ctx, msg)
 
-
-    @commands.Cog.listener()
-    async def on_command_error(self, ctx, error):
-        """Envia mensagem padrão caso seja utilizado um comando inválido"""
+    # # FIXME A função atrapalha a identificar erros
+    # # TODO Buscar formas de melhoras o Listener responsável por notificar o usuário que o comando não existe
+    # @commands.Cog.listener()
+    # async def on_command_error(self, ctx, error):
+    #     """Envia mensagem padrão caso seja utilizado um comando inválido"""
         
-        unknown_command_msg = await ctx.send(embed = discord.Embed(title = f'Comando {ctx.message.content} desconhecido', description = 'Para saber quais são os comandos válidos, utilize "!help"'))
-        await asyncio.sleep(5)
-        await unknown_command_msg.delete()
+    #     unknown_command_msg = await ctx.send(embed = discord.Embed(title = f'Comando {ctx.message.content} desconhecido', description = 'Para saber quais são os comandos válidos, utilize "!help"'))
+    #     await asyncio.sleep(5)
+    #     await unknown_command_msg.delete()
 
 
 def setup(bot):
