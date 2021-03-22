@@ -84,7 +84,7 @@ class Reddit(commands.Cog):
         post = {'title': '', 'url': ''}
         
         while(True):
-            newest_list = [apply_filters(submission) async for submission in subreddit.new(limit = 200)] # Get 15 newest posts
+            newest_list = [apply_filters(submission) async for submission in subreddit.new(limit = 10)] # Get 15 newest posts
             newest_list = [item for item in newest_list if item] # Clear 'None' from the list
             newest = newest_list[0]
 
@@ -97,17 +97,17 @@ class Reddit(commands.Cog):
                         break
 
                 while(post_stack != []):
-                    if first_entry_flag:
-                        await text_channel.send('**CONFIRMAÇÃO**: Este canal está recebendo novas postagens de jogos grátis!')
-                        first_entry_flag = False
-                        break
-
                     item = post_stack.pop()
                     post['title'] = item.title
                     post['url'] = item.url
                     for platform in PLATFORMS:
                         if platform in post['title'].upper():
                             icon = ICONS_DICT[platform]
+
+                    if first_entry_flag:
+                        await text_channel.send('**CONFIRMAÇÃO**: Este canal está recebendo novas postagens de jogos grátis!')
+                        first_entry_flag = False
+                        break
                     
                     embed_post = discord.Embed(title = post['title'], description = post['url'])
                     embed_post.set_thumbnail(url = icon)
