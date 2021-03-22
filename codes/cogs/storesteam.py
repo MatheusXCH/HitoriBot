@@ -50,7 +50,7 @@ class StoreSteam(commands.Cog):
         """!game <game_title> => Retorna informações sobre um jogo na Steam"""
         
         def __get_reviews_label(reviews_perc):
-            """Returns custom str labels accord to the value of < reviews_perc >"""
+            """Returns custom str labels accord to the value of <reviews_perc>"""
             
             if 0 <= reviews_perc <= 19: return '⛔ Muito negativas'
             if 20 <= reviews_perc <= 39: return '⛔ Levemente negativas'

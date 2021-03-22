@@ -82,6 +82,14 @@ class Minigames(commands.Cog):
             file = discord.File(st.minigame_path + "Coroa.png", filename = "Coroa.png")
             embed_coroa.set_image(url = 'attachment://Coroa.png')
             await ctx.send(file = file, embed = embed_coroa)
+    
+    @commands.command(name = 'choose')
+    async def choose(self, ctx: commands.Context, *, input: str):
+        """!choose <input> => O Bot escolhe entre as opções dadas. Separe as opções por vírgula!"""
+        
+        options = input.split(',')
+        choice = random.choice(options)
+        await ctx.send(content = f'Hmmm... Eu escolho **{choice}**!')
 
 
 def setup(bot):

@@ -14,6 +14,16 @@ class Messages(commands.Cog):
         self.bot = bot
 
 
+    @commands.command(name = 'say')
+    async def say(self, ctx: commands.Context, *, text: str):
+        """!say <text> => O Bot repete o que for passado para ele como <text>
+        Passa um texto para o Bot repetir. A mensagem original enviada é deletada.
+        """
+
+        await ctx.message.delete()
+        await ctx.send(text)
+
+
     @commands.command(name='familia')
     async def familia(self, ctx):
         """!familia => Pergunta pro BRTT se isso é uma família"""
