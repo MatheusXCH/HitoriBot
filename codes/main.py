@@ -39,7 +39,8 @@ startup_extensions = [
                     "cogs.howlongtobeat",
                     "cogs.leagueoflegends",
                     "cogs.storesteam",
-                    "cogs.audioplayer"
+                    "cogs.audioplayer",
+                    "cogs.reddit"
                     ]
 
 #bot = commands.Bot(command_prefix=PREFIX, help_command=None)
