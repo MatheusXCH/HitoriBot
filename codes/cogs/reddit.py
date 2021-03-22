@@ -6,6 +6,8 @@ from discord.ext import commands, tasks
 from discord.utils import *
 from pprint import pprint
 
+import codes.settings as st #Get the globals from Settings
+
 import asyncpraw
 
 load_dotenv()
@@ -18,13 +20,24 @@ reddit = asyncpraw.Reddit(
                     )
 
 PLATFORMS = ['STEAM', 'EPIC GAMES', 'EPICGAMES', 'GOG', 'UPLAY', 'ORIGIN', 'PC', 'UBISOFT']
-CATEGORIES = ['GAME', 'DLC']
+CATEGORIES = ['GAME', 'DLC', 'OTHER', 'ALPHA', 'BETA', 'ALPHA/BETA']
+ICONS_DICT = {
+    'STEAM' : 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Steam_icon_logo.svg/512px-Steam_icon_logo.svg.png',
+    'EPIC GAMES' : 'https://cdn2.unrealengine.com/Epic+Games+Node%2Fxlarge_whitetext_blackback_epiclogo_504x512_1529964470588-503x512-ac795e81c54b27aaa2e196456dd307bfe4ca3ca4.jpg',
+    'EPICGAMES' : 'https://cdn2.unrealengine.com/Epic+Games+Node%2Fxlarge_whitetext_blackback_epiclogo_504x512_1529964470588-503x512-ac795e81c54b27aaa2e196456dd307bfe4ca3ca4.jpg',
+    'GOG' : 'https://static.wikia.nocookie.net/this-war-of-mine/images/1/1a/Logo_GoG.png/revision/latest/scale-to-width-down/220?cb=20160711062658',
+    'UPLAY' : 'https://play-lh.googleusercontent.com/f868E2XQBpfl677hykMnZ4_HlKqrOs0fUhuwy0TC9ZI_PQLn99RtBV2kQ7Z50OtQkw=s180-rw',
+    'UBISOFT' : 'https://play-lh.googleusercontent.com/f868E2XQBpfl677hykMnZ4_HlKqrOs0fUhuwy0TC9ZI_PQLn99RtBV2kQ7Z50OtQkw=s180-rw',
+    'ORIGIN' : 'https://cdn2.iconfinder.com/data/icons/gaming-platforms-logo-shapes/250/origin_logo-512.png',
+    'PC' : 'https://pbs.twimg.com/profile_images/300829764/pc-gamer-avatar.jpg'
+}
 
 class Reddit(commands.Cog):
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.channel_id = 822619833396101163
+
 
     @commands.command(name = 'free-game-channel', hidden = True)
     async def set_channel_id(self, ctx: commands.Context):
@@ -33,13 +46,8 @@ class Reddit(commands.Cog):
         await ctx.author.send(f'Olá *{ctx.author.name}*!\nO canal **{ctx.message.channel.name}** do servidor **{ctx.message.channel.guild}** receberá as mensagens de jogos gratuitos a partir de agora! 😉')
 
 
-    # FUNCIONANDO!
-    # Após iniciado o Bot, exporadicamente compara o post mais recente com o enviado anteriormente
-    # Se eles forem diferentes, envia e atualiza a informação
-    # TODO Decidir os filtros (CONST)
-    # TODO Selecionar os ícones a serem mostrados para cada uma das plataformas!
     @tasks.loop()
-    async def free_game_findings(self, channel_id):
+    async def free_game_findings(self, channel_id = None):
         """ Confere continuamente as postagens no 'r/FreeGamesFindings', obtendo aquelas que atendem aos filtros 
         definidos e enviando-as ao canal selecionado (que corresponde ao ID < channel_id >)
 
@@ -74,10 +82,10 @@ class Reddit(commands.Cog):
         subreddit = await reddit.subreddit('FreeGameFindings')
         text_channel = self.bot.get_channel(channel_id)
         post = {'title': '', 'url': ''}
+        
         while(True):
-            newest_list = [apply_filters(submission) async for submission in subreddit.new(limit = 15)] # Get 15 newest posts
+            newest_list = [apply_filters(submission) async for submission in subreddit.new(limit = 200)] # Get 15 newest posts
             newest_list = [item for item in newest_list if item] # Clear 'None' from the list
-            pprint(newest_list)
             newest = newest_list[0]
 
             if newest.title != post['title']:
@@ -97,19 +105,15 @@ class Reddit(commands.Cog):
                     item = post_stack.pop()
                     post['title'] = item.title
                     post['url'] = item.url
+                    for platform in PLATFORMS:
+                        if platform in post['title'].upper():
+                            icon = ICONS_DICT[platform]
+                    
                     embed_post = discord.Embed(title = post['title'], description = post['url'])
+                    embed_post.set_thumbnail(url = icon)
                     await text_channel.send(embed = embed_post)
 
             await asyncio.sleep(3600) # Sleep for 1 hour
-
-
-    @tasks.loop(seconds = 360)
-    async def test(self):
-        subreddit = await reddit.subreddit('FreeGameFindings')
-        print('TEST:')
-        async for submission in subreddit.new(limit = 15):
-            print(f'{submission.title}')
-        print('\n\n')
 
 
     @commands.command(name = 'free-game-start', hidden = True)
@@ -144,9 +148,8 @@ class Reddit(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        # self.free_game_findings.start()
-        # await self.free_game_findings()
-        pass
+        self.free_game_findings.start()
+        print('Free-Game-Findings is RUNNING!')
 
 
 def setup(bot):
