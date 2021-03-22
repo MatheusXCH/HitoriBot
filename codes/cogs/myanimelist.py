@@ -19,7 +19,7 @@ translator = google_translator()
 class MyAnimeList(commands.Cog):
     """Obtém dados sobre animes, mangás e personagens diretamente do MyAnimeList (MAL)"""
     
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
 
 

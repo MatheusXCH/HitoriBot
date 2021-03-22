@@ -8,7 +8,7 @@ from discord.utils import *
 class AudioPlayer(commands.Cog):
     """Conecta o Bot em canais de voz para tocar áudios (similar ao Soundpad)"""
 
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
 
 

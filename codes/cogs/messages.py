@@ -10,7 +10,7 @@ class Messages(commands.Cog):
     """Módulo que contém alguns comandos simples, que retornam apenas mensagens de texto"""
     
     
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
 
 

@@ -21,7 +21,7 @@ class Management(commands.Cog):
     OBS: É preciso ter permissão para utilizar alguns dos comandos deste módulo
     """
     
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
     
     #TODO Criar estrutura de dados para as palavras indesejadas

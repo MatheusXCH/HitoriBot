@@ -9,7 +9,7 @@ class Minigames(commands.Cog):
     """Possui minigames simples, como rodar dados e cara-corôa"""
     
     
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
 
 

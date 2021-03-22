@@ -17,7 +17,7 @@ class HowLongToBeat(commands.Cog):
     """Obtém dados de tempo de jogo dos games cadastrados no 'HowLongToBeat'
     """
     
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
 
 

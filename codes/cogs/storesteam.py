@@ -24,7 +24,7 @@ EMOJI_ORANGE_PLAY = '<:orange_play:821840997037244437>'
 class StoreSteam(commands.Cog):
     """Módulo que permite a conexão do PyBOT com a Steam-BR"""
 
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
     
     @commands.command(pass_context = True, name = 'steam-update')

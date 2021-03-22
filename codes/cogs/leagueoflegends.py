@@ -22,7 +22,7 @@ class LeagueOfLegends(commands.Cog):
     """Obtém informações sobre o LOL direto da API da Riot Games
     """
 
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
     
     
