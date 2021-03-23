@@ -21,7 +21,7 @@ class HowLongToBeat(commands.Cog):
         self.bot = bot
 
 
-    @commands.command(pass_context = True, name = 'hltb')
+    @commands.command(name = 'hltb')
     async def hltb(self, ctx: commands.Context, *, game_title: str):
         """!hltb <game_title> => Retorna o resultado da busca no HowLongToBeat"""  
 

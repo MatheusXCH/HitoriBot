@@ -45,7 +45,7 @@ class Reddit(commands.Cog):
         await ctx.message.delete()
         await ctx.author.send(f'Olá *{ctx.author.name}*!\nO canal **{ctx.message.channel.name}** do servidor **{ctx.message.channel.guild}** receberá as mensagens de jogos gratuitos a partir de agora! 😉')
 
-
+    # BUG (???) Ao ler um novo post que não atende aos requisitos, o BOT envia mensagens que já foram mandadas anteriormente
     @tasks.loop()
     async def free_game_findings(self, channel_id = None):
         """ Confere continuamente as postagens no 'r/FreeGamesFindings', obtendo aquelas que atendem aos filtros 
@@ -108,7 +108,7 @@ class Reddit(commands.Cog):
                         await text_channel.send('**CONFIRMAÇÃO**: Este canal está recebendo novas postagens de jogos grátis!')
                         first_entry_flag = False
                         break
-                    
+
                     embed_post = discord.Embed(title = post['title'], description = post['url'])
                     embed_post.set_thumbnail(url = icon)
                     await text_channel.send(embed = embed_post)

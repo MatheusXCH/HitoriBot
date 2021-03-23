@@ -23,7 +23,7 @@ class MyAnimeList(commands.Cog):
         self.bot = bot
 
 
-    @commands.command(pass_context = True, name = 'anime')
+    @commands.command(name = 'anime')
     async def anime(self, ctx: commands.Context, *, anime_title: str = 'Nothing Passed to Command'):
         """!anime <anime_title> => Pesquisa um anime no MAL
         Retorna os animes encontrados no MyAnimeList que correspondem à busca
@@ -144,7 +144,7 @@ class MyAnimeList(commands.Cog):
             await message.clear_reactions()
 
 
-    @commands.command(pass_context = True, name = 'anime-sin')
+    @commands.command(name = 'anime-sin')
     async def anime_sin(self, ctx: commands.Context, *, anime_sin_title: str = 'Nothing Passed to Command'):
         """!anime-sin <anime_title> => Pesquisa a sinopse de um anime no MAL
         Retorna as sinopses dos animes encontrados no MyAnimeList que correspondem à busca
@@ -172,7 +172,7 @@ class MyAnimeList(commands.Cog):
             await ctx.send(content = None, embed=embed_anime_sin)
 
 
-    @commands.command(pass_context = True, name = 'manga')
+    @commands.command(name = 'manga')
     async def manga(self, ctx: commands.Context, *, manga_title : str = 'Nothing Passed to Command'):
         """!manga <manga_title> => Pesquisa um mangá no MAL
         Retorna os mangás encontrados no MyAnimeList que correspondem à busca
@@ -302,7 +302,7 @@ class MyAnimeList(commands.Cog):
             await message.clear_reactions()
 
             
-    @commands.command(pass_context = True, name = 'manga-sin')
+    @commands.command(name = 'manga-sin')
     async def manga_sin(self, ctx: commands.Context, *, manga_sin_title: str = 'Nothing Passed to Command'):
         """!manga-sin <manga_title> => Pesquisa a sinopse de um mangá no MAL
         Retorna as sinopses dos mangás encontrados no MyAnimeList que correspondem à busca
@@ -335,7 +335,7 @@ class MyAnimeList(commands.Cog):
     # - Devido a forma como o MAL busca por personagens, ao passar o nome incompleto a API nem sempre retorna o resultado mais popular
     # - Diante disso, buscando amenizar a situação, essa função busca os 10 primeiros resultados e retorna o mais popular deles
     # - Ainda assim, nem sempre é garantido que o resultado mais popular de todo o MAL estará entre os 10 primeiros    
-    @commands.command(pass_context = True, name = 'mal-char')
+    @commands.command(name = 'mal-char')
     async def mal_char(self, ctx: commands.Context, *, char_name: str = 'Nothing Passed to Command'):
         """!mal-char <character_name> => Pesquisa um personagem no MAL
         Retorna personagem de anime mais famoso de acordo com a busca requisitada

@@ -27,7 +27,7 @@ class StoreSteam(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
     
-    @commands.command(pass_context = True, name = 'steam-update')
+    @commands.command(name = 'steam-update')
     async def steam_update(self, ctx):
         """!steam-update => Atualiza a base de dados da Steam"""
         
@@ -45,7 +45,7 @@ class StoreSteam(commands.Cog):
     # TODO Avaliar a necessidade ou não de implementar um Embed interativo (via reactions)
     # TODO Informação "Packages" (apareceria juntamente ao Price_Overview em um segundo Embed, sendo este interativo)
 
-    @commands.command(pass_context = True, name = 'steam')
+    @commands.command(name = 'steam')
     async def search_game(self, ctx: commands.Context, *, game_title: str):
         """!game <game_title> => Retorna informações sobre um jogo na Steam"""
         

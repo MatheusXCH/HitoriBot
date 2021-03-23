@@ -27,7 +27,7 @@ class LeagueOfLegends(commands.Cog):
     
     
     #TODO Pensar em mais informações úteis para serem mostradas aqui
-    @commands.command(pass_context = True, name = 'summ')
+    @commands.command(name = 'summ')
     async def get_summoner(self, ctx: commands.Context, *, name: str = 'Nothing Passed to Command', current_champion = None, command_call_flag = 0, msg = None):
         """!summ <summoner_name> => Retorna informações sobre o invocador"""
         
@@ -102,7 +102,7 @@ class LeagueOfLegends(commands.Cog):
 
     #TODO Match History Command - Ainda não há nada feito aqui!
     #TODO Passar o nome do comando para o @commands.command
-    # @commands.command(pass_context = True, name = 'hist')
+    # @commands.command(name = 'hist')
     # async def match_history(self, ctx, *, name: str = 'Empadão de Tatu'):
     #     """!hist <summoner_name>
     #     Retorna o histórico recente do invocador
@@ -127,7 +127,7 @@ class LeagueOfLegends(commands.Cog):
         
     
     #TODO Tentar chamar a função dinamicamente através de um Listener
-    @commands.command(pass_context = True, name = 'live')
+    @commands.command(name = 'live')
     async def live_match(self, ctx: commands.Context, *, name: str = 'Empadão de Tatu'):
         """!live <summoner_name> => Retorna o lobby da partida ao vivo do invocador
         O invocador DEVE estar em uma partida ao vivo
