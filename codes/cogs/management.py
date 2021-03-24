@@ -1,6 +1,7 @@
 import codecs
 import os
 import time
+import asyncio
 
 import codes.settings as st  # Get the globals from Settings
 import discord
@@ -65,7 +66,7 @@ class Management(commands.Cog):
         await ctx.author.send("Aqui está o seu convite para o servidor: ")
         await ctx.author.send(invitelink)
 
-    @commands.command(pass_context=True, name="nick")
+    @commands.command(name="nick")
     @has_permissions(manage_nicknames=True)
     async def nick(self, ctx: commands.Context, member: discord.Member, *, newnick):
         """!nick <@Member> <new_nick> => Troca o nick do 'Membro' para 'new_nick'
@@ -82,7 +83,7 @@ class Management(commands.Cog):
             text = f"Desculpe {ctx.message.author}, você não tem permissão para fazer isso!"
             await ctx.send(text)
 
-    @commands.command(pass_context=True, name="kick")
+    @commands.command(name="kick")
     @has_permissions(manage_roles=True, kick_members=True)
     async def kick(self, ctx: commands.Context, member: Member):
         """!kick <@Member> => Expulsa um membro do servidor
@@ -100,7 +101,7 @@ class Management(commands.Cog):
             text = f"Desculpe {ctx.message.author}, você não tem permissão para fazer isso!"
             await ctx.send(text)
 
-    @commands.command(pass_context=True, name="ban")
+    @commands.command(name="ban")
     @has_permissions(administrator=True)
     async def ban(self, ctx: commands.Context, member: Member):
         """!ban <@Member> => Bane um membro do servidor
@@ -119,7 +120,7 @@ class Management(commands.Cog):
             await ctx.send(text)
 
     # FIXME UNBAN - Não funciona! Função está com erros!
-    @commands.command(pass_context=True, hidden=True)
+    @commands.command(hidden=True)
     @has_permissions(administrator=True)
     @guild_only()
     async def unban(self, ctx: commands.Context, id: int):
@@ -136,7 +137,7 @@ class Management(commands.Cog):
             text = f"Desculpe {ctx.message.author}, você não tem permissão para fazer isso!"
             await ctx.send(text)
 
-    @commands.command(pass_context=True, name="role")
+    @commands.command(name="role")
     @has_permissions(administrator=True)
     async def get_role(self, ctx: commands.Context, member: Member):
         """!role <@Member> => Lista as roles de um membro da guilda
@@ -152,7 +153,7 @@ class Management(commands.Cog):
         await ctx.send(f"As roles de {member.mention} são: {list_roles}")
 
     # TODO Tornar possível setar mais de uma role por vez
-    @commands.command(pass_context=True, name="set-role")
+    @commands.command(name="set-role")
     @has_permissions(administrator=True)
     async def set_role(self, ctx: commands.Context, member: Member, *, role: Role):
         """!set-role <@Member> <Role> => Troca a role de um membro
@@ -163,7 +164,7 @@ class Management(commands.Cog):
         await ctx.send(f"A role de {member.mention} foi definida como: {role.name}")
 
     # TODO Tornar possível dropar mais de uma role por vez
-    @commands.command(pass_context=True, name="drop-role")
+    @commands.command(name="drop-role")
     @has_permissions(administrator=True)
     async def drop_role(self, ctx: commands.Context, member: Member, *, role: Role):
         """!drop-role => Retira uma role de um membro
@@ -174,12 +175,12 @@ class Management(commands.Cog):
         await ctx.send(f'A role "{role.name}" de {member.mention} foi retirada!')
 
     # TODO Arrumar - Função apenas envia o ID da permissão via DM
-    @commands.command(pass_context=True, hidden=True)
+    @commands.command(hidden=True)
     async def permissions(self, ctx: commands.Context, member: Member):
         perm = member.permissions_in(ctx.channel)
         await ctx.author.send(f"Solicitação atendida!\n{member.display_name} tem permissões para {perm}")
 
-    @commands.command(pass_context=True, name="clear")
+    @commands.command(name="clear")
     @has_permissions(manage_messages=True, send_messages=True)
     async def clear(self, ctx: commands.Context, number=5, member: Member = None):
         """!clear [num] [@Member] => Limpa as últimas [num] mensagens do usuário [@Member] no chat
@@ -188,19 +189,16 @@ class Management(commands.Cog):
             !clear [num] => Limpa [num] mensagens do bot
             !clear [num] [@Member] => Limpa [num] mensagens de [@Member]
         """
-
+        await ctx.message.delete()
         success = 0
         failed = 0
 
         # Verifica se o Member foi passado, caso não, escolhe o BOT como default
         if member == None:
-            member_id = self.bot.user.id
-        else:
-            member_id = member.id
-            number += 1
+            member = self.bot.user
 
         async for msg in ctx.message.channel.history(limit=100):
-            if msg.author.id == member_id:
+            if msg.author.id == member.id:
                 number -= 1
                 try:
                     await msg.delete()
@@ -211,19 +209,47 @@ class Management(commands.Cog):
                 if number == 0:
                     break
 
-        embed = discord.Embed(
-            title="Completo!",
-            description=f"Foram limpas {success} mensagens. Houveram {failed} falhas!",
-        )
-        await ctx.send(embed=embed)
+        embed = discord.Embed(title=f"♻ Foram limpas {success} mensagens!")
+        msg = await ctx.send(embed=embed)
         time.sleep(3)
-        async for msg in ctx.message.channel.history(limit=100):
-            if msg.author.id == self.bot.user.id:
-                try:
-                    await msg.delete()
-                    break
-                except:
-                    break
+        await msg.delete()
+
+    @commands.command(name="clean")
+    @has_permissions(manage_messages=True, send_messages=True)
+    async def clean(self, ctx: commands.Context, limit: int = 100):
+        """!clean [limit] => Avalia as últimas [limit] mensagens e deleta todas que foram enviadas pelo bot
+        O atribuito [limit] é opcional e, por padrão, está definido como limit=100.
+        """
+
+        def check(message):
+            return message.author == self.bot.user
+
+        await ctx.message.delete()
+        deleted = await ctx.channel.purge(limit=limit, check=check)
+        msg = await ctx.send(
+            embed=discord.Embed(
+                title=f"♻ Foram limpas {len(deleted)} mensagens de {ctx.guild.get_member(self.bot.user.id).nick}!"
+            )
+        )
+        await asyncio.sleep(5)
+        await msg.delete()
+
+    @commands.command(name="purge")
+    @has_permissions(administrator=True)
+    async def channel_purge(self, ctx: commands.Context, limit: int = 20):
+        """!purge [limit] => Deleta as últimas [limit] mensagens do canal, independente de quem as tenha enviado. Admin Only
+        O atributo [limit] é opcioanl e, por padrão, está definido como limit=20. Apenas Administradores podem utilizar este comando.
+        """
+
+        await ctx.message.delete()
+        deleted = await ctx.channel.purge(limit=limit)
+        msg = await ctx.send(
+            embed=discord.Embed(
+                title=f"♻ As últimas {len(deleted)} mensagens do canal {ctx.channel.name} foram limpas!"
+            )
+        )
+        await asyncio.sleep(5)
+        await msg.delete()
 
 
 def setup(bot):
