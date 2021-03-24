@@ -54,11 +54,8 @@ class MyAnimeList(commands.Cog):
                     description=f'*{anime["title_english"]}*\n *{anime["premiered"]}*\n *{anime["status"]}*\n *{anime["type"]}*\n *{anime["episodes"]} episódios*',
                     url=anime["url"],
                 )
-                studio_list = []
-                studios = ""
-                for std in anime["studios"]:
-                    studio_list.append(std["name"])
-                studios = ", ".join(studio_list)
+
+                studios = ", ".join([studio["name"] for studio in anime["studios"]])
                 if studios == "":
                     studios = "Unknown"
 
@@ -74,11 +71,11 @@ class MyAnimeList(commands.Cog):
                 genres = ", ".join(genres_list)
                 if genres == "":
                     genres = "Unknown"
+
                 # Tratando os 'Enters'
                 genres = genres.replace("line_feed,", "\n")
-                genres = genres.replace(
-                    ", line_feed", "\n"
-                )  # Caso o valor seja múltiplo de 3, apaga o último line_feed
+                # Caso o valor seja múltiplo de 3, apaga o último line_feed
+                genres = genres.replace(", line_feed", "\n")
 
                 embed_anime.add_field(name="**Nota: **", value=str(anime["score"]), inline=True)
                 embed_anime.add_field(name="**#Rank: **", value=str(anime["rank"]))
@@ -227,20 +224,12 @@ class MyAnimeList(commands.Cog):
                     url=manga["url"],
                 )
                 # Pegando todos os autores e revistas que publicam o mangá, caso mais de um
-                authors_list = []
-                author = ""
-                for std in manga["authors"]:
-                    authors_list.append(std["name"])
-                author = "; ".join(authors_list)
-                if author == "":
-                    author = "Unknown"  # É preciso tratar, pois o caso no qual
-                # author == "" gera um erro no discord.Embed
 
-                magazines_list = []
-                magazine = ""
-                for std in manga["serializations"]:
-                    magazines_list.append(std["name"])
-                magazine = "; ".join(magazines_list)
+                author = "; ".join([author["name"] for author in manga["authors"]])
+                if author == "":
+                    author = "Unknown"
+
+                magazine = "; ".join([magazine["name"] for magazine in manga["serializations"]])
                 if magazine == "":
                     magazine = "Unknown"
 
@@ -258,9 +247,8 @@ class MyAnimeList(commands.Cog):
                     genres = "Unknown"
                 # Tratando os 'Enters'
                 genres = genres.replace("line_feed,", "\n")
-                genres = genres.replace(
-                    ", line_feed", "\n"
-                )  # Caso o valor seja múltiplo de 3, apaga o último line_feed
+                # Caso o valor seja múltiplo de 3, apaga o último line_feed
+                genres = genres.replace(", line_feed", "\n")
 
                 embed_manga.add_field(name="**Nota: **", value=str(manga["score"]), inline=True)
                 embed_manga.add_field(name="**#Rank: **", value=str(manga["rank"]))
@@ -404,13 +392,9 @@ class MyAnimeList(commands.Cog):
                 else:
                     size_of_search = 10
 
-                print(size_of_search)  # DEBUG
-
                 for i in range(size_of_search):
-                    print(f"CHEGOU AQUI {i} VEZES!")  # DEBUG
                     character_aux = jikan.character(search["results"][i]["mal_id"])
                     members_favorites_list.append(character_aux["member_favorites"])
-                    print(f"Membros{i}: {members_favorites_list}")  # DEBUG
 
                 index = members_favorites_list.index(max(members_favorites_list))
                 members_favorites_list.clear()
@@ -424,12 +408,7 @@ class MyAnimeList(commands.Cog):
                 await ctx.send(embed=char_error_embed)
                 return
 
-            japan_voice_list = []
-            voice = ""
-            for dub in character["voice_actors"]:
-                if dub["language"] == "Japanese":
-                    japan_voice_list.append(dub["name"])
-            voice = "; ".join(japan_voice_list)
+            voice = "; ".join([dub["name"] for dub in character["voice_actors"] if dub["language"] == "Japanese"])
             if voice == "":
                 voice = "Unknown"
 
