@@ -176,13 +176,14 @@ class Reddit(commands.Cog):
 
         await ctx.message.delete()
         self.free_game_findings.cancel()
+        await asyncio.sleep(3)
         self.free_game_findings.start()
         await ctx.author.send("FreeGameFindings> RESTARTED!")
 
-    # @commands.Cog.listener()
-    # async def on_ready(self):
-    #     self.free_game_findings.start()
-    #     print('Free-Game-Findings is RUNNING!')
+    @commands.Cog.listener()
+    async def on_ready(self):
+        self.free_game_findings.start()
+        print("Free-Game-Findings is RUNNING!")
 
 
 def setup(bot):
