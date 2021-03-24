@@ -8,7 +8,6 @@ import discord
 from discord.ext import commands
 from discord.ext.commands import MissingPermissions, has_permissions
 
-
 # Módulo: Messages
 #     - Contém alguns comandos simples, os quais consitem apenas de algumas mensagens que são exibidas pelo PyBOT
 class Messages(commands.Cog):

@@ -61,7 +61,6 @@ class Reddit(commands.Cog):
             f"Olá *{ctx.author.name}*!\nO canal **{ctx.message.channel.name}** do servidor **{ctx.message.channel.guild}** receberá as mensagens de jogos gratuitos a partir de agora! 😉"
         )
 
-    # BUG A primeira leitura do Bot sempre retorna mais itens que o necessário (não acontece nas seguintes execuções da Task)
     @tasks.loop()
     async def free_game_findings(self, channel_id=None):
         """ Confere continuamente as postagens no 'r/FreeGamesFindings', obtendo aquelas que atendem aos filtros 
@@ -108,30 +107,32 @@ class Reddit(commands.Cog):
 
             if newest.title != post["title"]:
                 post_stack = []
-                for submission in newest_list:
-                    if submission.title != post["title"]:
-                        post_stack.append(submission)
-                    else:
-                        break
 
-                while post_stack != []:
-                    item = post_stack.pop()
-                    post["title"] = item.title
-                    post["url"] = item.url
-                    for platform in PLATFORMS:
-                        if platform in post["title"].upper():
-                            icon = ICONS_DICT[platform]
+                if first_entry_flag:
+                    post["title"] = newest.title
+                    post["url"] = newest.url
+                    await text_channel.send(
+                        "**CONFIRMAÇÃO**: Este canal está recebendo novas postagens de jogos grátis!"
+                    )  # Temporário - Apenas durante o período de testes
+                    first_entry_flag = False
+                else:
+                    for submission in newest_list:
+                        if submission.title != post["title"]:
+                            post_stack.append(submission)
+                        else:
+                            break
 
-                    if first_entry_flag:
-                        await text_channel.send(
-                            "**CONFIRMAÇÃO**: Este canal está recebendo novas postagens de jogos grátis!"
+                    while post_stack != []:
+                        item = post_stack.pop()
+                        post["title"] = item.title
+                        post["url"] = item.url
+                        icon = "".join(
+                            [ICONS_DICT[platform] for platform in PLATFORMS if platform in post["title"].upper()]
                         )
-                        first_entry_flag = False
-                        break
 
-                    embed_post = discord.Embed(title=post["title"], description=post["url"])
-                    embed_post.set_thumbnail(url=icon)
-                    await text_channel.send(embed=embed_post)
+                        embed_post = discord.Embed(title=post["title"], description=post["url"])
+                        embed_post.set_thumbnail(url=icon)
+                        await text_channel.send(embed=embed_post)
 
             await asyncio.sleep(3600)  # Sleep for 1 hour
 
