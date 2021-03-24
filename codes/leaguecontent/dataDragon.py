@@ -48,6 +48,3 @@ class dataDragon:
             if row['key'] == str(championID):
                 champion_name = row['name']
         return champion_name
-
-# dd = dataDragon()
-# print(dd.latest_version)
