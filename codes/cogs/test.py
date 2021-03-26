@@ -16,24 +16,19 @@ from howlongtobeatpy import HowLongToBeat
 from jikanpy import Jikan
 from riotwatcher import ApiError, LolWatcher
 from roleidentification import *
+from pymongo import MongoClient
 
 # load_dotenv()
-# reddit = asyncpraw.Reddit(
-#                     client_id = os.getenv('PRAW_CLIENT_ID'),
-#                     client_secret = os.getenv('PRAW_CLIENT_SECRET'),
-#                     username = os.getenv('PRAW_USERNAME'),
-#                     password = os.getenv('PRAW_PASSWORD'),
-#                     user_agent = os.getenv('PRAW_USER_AGENT')
-#                     )
+# CONNECT_STRING = os.getenv("MONGO_CONNECT_STRING")
 
-# async def test(subreddit):
-#     await print(subreddit.name)
+# client = MongoClient(CONNECT_STRING)
 
-# async def main():
-#     subreddit = await reddit.subreddit('FreeGameFindings')
-#     call = await test(subreddit)
-#     await call.close()
+# # print(client.list_database_names())
 
-response_riot = requests.get("https://127.0.0.1:2999/liveclientdata/allgamedata")
-riot_json = response_riot.json()
-pprint(riot_json)
+# db = client.get_database(name="discordzada")
+# collection = db.get_collection(name="free-game-findings-channels")
+
+# data = {"name": "Test", "email": "TESTANDO_MUITO@Test.com", "phone": "1299999999"}
+# data2 = {"name": "Test2", "email": "Test2@Test2.com", "phone": "1289999999"}
+
+# collection.update_one({"name": data["name"]}, {"$set": data}, upsert=True)

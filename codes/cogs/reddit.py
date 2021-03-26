@@ -15,6 +15,7 @@ import requests
 from discord.ext import commands, tasks
 from discord.utils import *
 from dotenv import load_dotenv
+from pymongo import MongoClient
 
 load_dotenv()
 reddit = asyncpraw.Reddit(
@@ -24,6 +25,8 @@ reddit = asyncpraw.Reddit(
     password=os.getenv("PRAW_PASSWORD"),
     user_agent=os.getenv("PRAW_USER_AGENT"),
 )
+load_dotenv()
+CONNECT_STRING = os.getenv("MONGO_CONNECT_STRING")
 
 PLATFORMS = [
     "STEAM",
@@ -51,15 +54,40 @@ ICONS_DICT = {
 class Reddit(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.channel_id = 822619833396101163
+        # self.channel_id = 822619833396101163
+
+    def freegames_collection(self):
+        client = MongoClient(CONNECT_STRING)
+        db = client.get_database(name="discordzada")
+        collection = db.get_collection(name="free-game-findings-channels")
+        return collection
 
     @commands.command(name="free-game-channel", hidden=True)
     async def set_channel_id(self, ctx: commands.Context):
-        self.channel_id = ctx.message.channel.id
+        collection = self.freegames_collection()
+
+        try:
+            data = {
+                "guild_id": ctx.guild.id,
+                "guild_name": ctx.guild.name,
+                "channel_id": ctx.channel.id,
+                "channel_name": ctx.channel.name,
+            }
+            collection.update_one({"guild_id": data["guild_id"]}, {"$set": data}, upsert=True)
+        except:
+            await ctx.send(
+                "Desculpe, **houve um problema** ao salvar essa informação. Por favor, **tente novamente** em alguns instantes!"
+            )
+            return
+
         await ctx.message.delete()
-        await ctx.author.send(
-            f"Olá *{ctx.author.name}*!\nO canal **{ctx.message.channel.name}** do servidor **{ctx.message.channel.guild}** receberá as mensagens de jogos gratuitos a partir de agora! 😉"
+        msg = await ctx.send(
+            f"O canal **{ctx.channel.name}** receberá as mensagens de jogos gratuitos a partir de agora! 😉"
         )
+        await asyncio.sleep(5)
+        await msg.delete()
+
+        collection.database.client.close()
 
     @tasks.loop()
     async def free_game_findings(self, channel_id=None):
@@ -71,8 +99,6 @@ class Reddit(commands.Cog):
         - channel_id : int, optional \\
             [ID do canal para o qual as mensagens devem ser enviadas], by default < self.channel_id >
         """
-
-        channel_id = self.channel_id
 
         def apply_filters(submission):
             """Apply PLATFORMS and CATEGORIES filters on r/FreeGameFingings submissions
@@ -94,9 +120,11 @@ class Reddit(commands.Cog):
                         if category in submission.title.upper():
                             return submission
 
+        collection = self.freegames_collection()
+
         first_entry_flag = True
         subreddit = await reddit.subreddit("FreeGameFindings")
-        text_channel = self.bot.get_channel(channel_id)
+        channel_id_list = [item["channel_id"] for item in collection.find({}, {"channel_id": 1})]
         post = {"title": "", "url": ""}
 
         while True:
@@ -111,9 +139,12 @@ class Reddit(commands.Cog):
                 if first_entry_flag:
                     post["title"] = newest.title
                     post["url"] = newest.url
-                    await text_channel.send(
-                        "**CONFIRMAÇÃO**: Este canal está recebendo novas postagens de jogos grátis!"
-                    )  # Temporário - Apenas durante o período de testes
+
+                    for channel_id in channel_id_list:
+                        text_channel = self.bot.get_channel(id=channel_id)
+                        await text_channel.send(
+                            "**CONFIRMAÇÃO**: Este canal está recebendo novas postagens de jogos grátis!"
+                        )  # Temporário - Apenas durante o período de testes
                     first_entry_flag = False
                 else:
                     for submission in newest_list:
@@ -132,8 +163,12 @@ class Reddit(commands.Cog):
 
                         embed_post = discord.Embed(title=post["title"], description=post["url"])
                         embed_post.set_thumbnail(url=icon)
-                        await text_channel.send(embed=embed_post)
 
+                        for channel_id in channel_id_list:
+                            text_channel = self.bot.get_channel(id=channel_id)
+                            await text_channel.send(embed=embed_post)
+
+            collection.database.client.close()
             await asyncio.sleep(3600)  # Sleep for 1 hour
 
     @commands.command(name="free-game-start", hidden=True)
@@ -148,7 +183,9 @@ class Reddit(commands.Cog):
 
         await ctx.message.delete()
         self.free_game_findings.start()
-        await ctx.author.send("FreeGameFindings> RUNNING!")
+        msg = await ctx.send("**FreeGameFindings is RUNNING!**")
+        await asyncio.sleep(3)
+        await msg.delete()
 
     @commands.command(name="free-game-stop", hidden=True)
     async def free_game_stop(self, ctx: commands.Context):
@@ -162,7 +199,9 @@ class Reddit(commands.Cog):
 
         await ctx.message.delete()
         self.free_game_findings.cancel()
-        await ctx.author.send("FreeGameFindings> STOPED!")
+        msg = await ctx.send("**FreeGameFindings has been STOPPED!**")
+        await asyncio.sleep(3)
+        await msg.delete()
 
     @commands.command(name="free-game-restart", hidden=True)
     async def free_game_restart(self, ctx: commands.Context):
@@ -178,12 +217,13 @@ class Reddit(commands.Cog):
         self.free_game_findings.cancel()
         await asyncio.sleep(3)
         self.free_game_findings.start()
-        await ctx.author.send("FreeGameFindings> RESTARTED!")
+        msg = await ctx.send("**FreeGameFindings has been RESTARTED!**")
+        await asyncio.sleep(3)
+        await msg.delete()
 
     @commands.Cog.listener()
     async def on_ready(self):
         self.free_game_findings.start()
-        print("Free-Game-Findings is RUNNING!")
 
 
 def setup(bot):
