@@ -26,7 +26,7 @@ reddit = asyncpraw.Reddit(
     user_agent=os.getenv("PRAW_USER_AGENT"),
 )
 load_dotenv()
-CONNECT_STRING = os.getenv("MONGO_CONNECT_STRING")
+CONNECT_STRING = os.environ.get("MONGODB_URI")
 
 PLATFORMS = [
     "STEAM",
