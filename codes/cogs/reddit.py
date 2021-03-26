@@ -122,7 +122,7 @@ class Reddit(commands.Cog):
 
         collection = self.freegames_collection()
 
-        first_entry_flag = True
+        first_entry_flag = True  # Handles the Heroku's server restart to not resend a post
         subreddit = await reddit.subreddit("FreeGameFindings")
         channel_id_list = [item["channel_id"] for item in collection.find({}, {"channel_id": 1})]
         post = {"title": "", "url": ""}
