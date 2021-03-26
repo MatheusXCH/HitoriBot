@@ -141,6 +141,8 @@ class SteamBigPicture:
         # # PRECISE SEARCH
         # Case <game_title> matches a game name on the Steam database
         else:
+            if spy_psearch == []:
+                spy_psearch = ["_Nothing_Founded_"]  # This is needed due the cases wich spy_psearch founds nothing
             steam_psearch = [
                 item["appid"]
                 for item in steam_all_games_json
