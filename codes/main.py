@@ -41,6 +41,7 @@ startup_extensions = [
     "cogs.storesteam",
     "cogs.audioplayer",
     "cogs.reddit",
+    "cogs.guild_settings",
 ]
 
 # bot = commands.Bot(command_prefix=PREFIX, help_command=None)
@@ -53,7 +54,7 @@ custom_pretty_help = PrettyHelp(
     show_index=True,
 )
 
-bot = commands.Bot(command_prefix=PREFIX, help_command=custom_pretty_help)
+bot = commands.Bot(command_prefix=PREFIX, help_command=custom_pretty_help, intents=intents)
 
 # Evento que dispara quando o bot conecta
 @bot.event

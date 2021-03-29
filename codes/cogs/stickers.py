@@ -1,6 +1,7 @@
 import os
 
-import codes.settings as st  # Get the globals from Settings
+# Get the globals from Settings
+import codes.settings as st
 import discord
 from discord.ext import commands
 

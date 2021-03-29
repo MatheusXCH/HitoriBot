@@ -1,0 +1,189 @@
+{
+    "_id": 808694752383336458,
+    "guild": {
+        "guild_id": 808694752383336458,
+        "guild_name": "PyBOT Test Environment",
+        "channels_info": {
+            "text_channels": [
+                {
+                    "channel_id": 808694752383336461,
+                    "channel_name": "geral",
+                    "channel_category": "Canais de Texto"
+                },
+                {
+                    "channel_id": 814698446870020107,
+                    "channel_name": "ziencia",
+                    "channel_category": "Canais de Texto"
+                },
+                {
+                    "channel_id": 822619833396101163,
+                    "channel_name": "reddit",
+                    "channel_category": "Canais de Texto"
+                },
+                {
+                    "channel_id": 824064391577337866,
+                    "channel_name": "reddit-2",
+                    "channel_category": "Canais de Texto"
+                }
+            ],
+            "voice_channels": [
+                {
+                    "channel_id": 808694752383336462,
+                    "channel_name": "Geral",
+                    "channel_category": "Canais de Voz"
+                },
+                {
+                    "channel_id": 826152883190890566,
+                    "channel_name": "canalzada50",
+                    "channel_category": "Canais de Voz"
+                }
+            ]
+        },
+        "roles_info": [
+            {
+                "role_name": "Groovy",
+                "role_id": 824076603893350410,
+                "permissions": [
+                    "administrator"
+                ]
+            },
+            {
+                "role_name": "Normal",
+                "role_id": 809126670044102737,
+                "permissions": [
+                    "create_instant_invite",
+                    "add_reactions",
+                    "stream",
+                    "read_messages",
+                    "send_messages",
+                    "embed_links",
+                    "attach_files",
+                    "read_message_history",
+                    "mention_everyone",
+                    "external_emojis",
+                    "connect",
+                    "speak",
+                    "use_voice_activation",
+                    "change_nickname"
+                ]
+            },
+            {
+                "role_name": "Admin",
+                "role_id": 809126590750916609,
+                "permissions": [
+                    "create_instant_invite",
+                    "kick_members",
+                    "ban_members",
+                    "administrator",
+                    "manage_channels",
+                    "manage_guild",
+                    "add_reactions",
+                    "view_audit_log",
+                    "priority_speaker",
+                    "stream",
+                    "read_messages",
+                    "send_messages",
+                    "send_tts_messages",
+                    "manage_messages",
+                    "embed_links",
+                    "attach_files",
+                    "read_message_history",
+                    "mention_everyone",
+                    "external_emojis",
+                    "connect",
+                    "speak",
+                    "mute_members",
+                    "deafen_members",
+                    "move_members",
+                    "use_voice_activation",
+                    "change_nickname",
+                    "manage_nicknames",
+                    "manage_roles",
+                    "manage_webhooks",
+                    "manage_emojis"
+                ]
+            },
+            {
+                "role_name": "Discord-Bot",
+                "role_id": 808695148716359722,
+                "permissions": [
+                    "administrator"
+                ]
+            }
+        ],
+        "members_info": {
+            "members_count": 5,
+            "members": [
+                {
+                    "member_name": "Groovy",
+                    "member_id": 234395307759108106,
+                    "member_is_bot": true,
+                    "member_nick": null,
+                    "member_joined_at": "2021-03-24 00:26:13.068896",
+                    "member_roles": {
+                        "top_role": "Groovy",
+                        "roles": [
+                            "Groovy"
+                        ]
+                    }
+                },
+                {
+                    "member_name": "Kirishima",
+                    "member_id": 272201474501640192,
+                    "member_is_bot": false,
+                    "member_nick": null,
+                    "member_joined_at": "2021-02-11 19:42:51.916000",
+                    "member_roles": {
+                        "top_role": "@everyone",
+                        "roles": []
+                    }
+                },
+                {
+                    "member_name": "Matheusote",
+                    "member_id": 304991219245776896,
+                    "member_is_bot": false,
+                    "member_nick": null,
+                    "member_joined_at": "2021-02-09 13:44:13.794000",
+                    "member_roles": {
+                        "top_role": "Admin",
+                        "roles": [
+                            "Admin"
+                        ]
+                    }
+                },
+                {
+                    "member_name": "Trevoso",
+                    "member_id": 330126837432975360,
+                    "member_is_bot": false,
+                    "member_nick": null,
+                    "member_joined_at": "2021-03-29 18:40:44.016409",
+                    "member_roles": {
+                        "top_role": "@everyone",
+                        "roles": []
+                    }
+                },
+                {
+                    "member_name": "PyBOT",
+                    "member_id": 808693909126381600,
+                    "member_is_bot": true,
+                    "member_nick": "Gasai Yuno",
+                    "member_joined_at": "2021-02-09 13:45:48.361000",
+                    "member_roles": {
+                        "top_role": "Discord-Bot",
+                        "roles": [
+                            "Admin",
+                            "Discord-Bot"
+                        ]
+                    }
+                }
+            ]
+        },
+        "config": {
+            "prefix": "!",
+            "free_game": {
+                "channel_id": null,
+                "channel_name": null
+            }
+        }
+    }
+}

@@ -4,7 +4,8 @@ import random
 import sys
 import time
 
-import codes.settings as st  # Get the globals from Settings
+# Get the globals from Settings
+import codes.settings as st
 import discord
 from discord.ext import commands
 
@@ -20,7 +21,7 @@ class Minigames(commands.Cog):
     @commands.command(name="dado")
     async def dado(self, ctx: commands.Context, dice: str):
         """!dado <dado> => Fujitora joga os dados (Ex: !dado 1d6)
-        Invoca o Fujitora para tirar a sorte nos dados!
+        - Invoca o Fujitora para tirar a sorte nos dados!
         """
         DICE_EMOJI = "<:dice:818478609806131240>"
 
@@ -74,7 +75,7 @@ class Minigames(commands.Cog):
     @commands.command(name="coin")
     async def coin(self, ctx: commands.Context):
         """!coin => Cara ou Corôa
-        Retorna o resultado de um lance de cara ou corôa
+        - Retorna o resultado de um lance de cara ou corôa
         """
 
         coin_flip = random.randint(0, 1)

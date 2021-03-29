@@ -13,9 +13,8 @@ from dotenv import load_dotenv
 from riotwatcher import ApiError, LolWatcher
 from roleidentification import *
 
-sys.path.append(
-    "D:\\python-codes\\Discordzada"
-)  # Config the PYTHONPATH to import "codes.leaguecontent" without warnings
+# Config the PYTHONPATH to import "codes.leaguecontent" without warnings
+sys.path.append("D:\\python-codes\\Discordzada")
 from codes.leaguecontent import dataDragon
 
 load_dotenv()
@@ -33,6 +32,7 @@ class LeagueOfLegends(commands.Cog):
         self.bot = bot
 
     # TODO Pensar em mais informações úteis para serem mostradas aqui
+    # TODO Trocar a lógica do "Nothing Passed to Command" por algo mais elegante
     @commands.command(name="summ")
     async def get_summoner(
         self,

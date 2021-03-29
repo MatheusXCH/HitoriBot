@@ -26,7 +26,7 @@ class MyAnimeList(commands.Cog):
     @commands.command(name="anime")
     async def anime(self, ctx: commands.Context, *, anime_title: str = "Nothing Passed to Command"):
         """!anime <anime_title> => Pesquisa um anime no MAL
-        Retorna os animes encontrados no MyAnimeList que correspondem à busca
+        - Retorna os animes encontrados no MyAnimeList que correspondem à busca
         """
 
         if anime_title == "Nothing Passed to Command":
@@ -162,7 +162,7 @@ class MyAnimeList(commands.Cog):
         anime_sin_title: str = "Nothing Passed to Command",
     ):
         """!anime-sin <anime_title> => Pesquisa a sinopse de um anime no MAL
-        Retorna as sinopses dos animes encontrados no MyAnimeList que correspondem à busca
+        - Retorna as sinopses dos animes encontrados no MyAnimeList que correspondem à busca
         """
 
         if anime_sin_title == "Nothing Passed to Command":
@@ -194,7 +194,7 @@ class MyAnimeList(commands.Cog):
     @commands.command(name="manga")
     async def manga(self, ctx: commands.Context, *, manga_title: str = "Nothing Passed to Command"):
         """!manga <manga_title> => Pesquisa um mangá no MAL
-        Retorna os mangás encontrados no MyAnimeList que correspondem à busca
+        - Retorna os mangás encontrados no MyAnimeList que correspondem à busca
         """
 
         if manga_title == "Nothing Passed to Command":
@@ -335,7 +335,7 @@ class MyAnimeList(commands.Cog):
         manga_sin_title: str = "Nothing Passed to Command",
     ):
         """!manga-sin <manga_title> => Pesquisa a sinopse de um mangá no MAL
-        Retorna as sinopses dos mangás encontrados no MyAnimeList que correspondem à busca
+        - Retorna as sinopses dos mangás encontrados no MyAnimeList que correspondem à busca
         """
 
         if manga_sin_title == "Nothing Passed to Command":
@@ -372,8 +372,8 @@ class MyAnimeList(commands.Cog):
     @commands.command(name="mal-char")
     async def mal_char(self, ctx: commands.Context, *, char_name: str = "Nothing Passed to Command"):
         """!mal-char <character_name> => Pesquisa um personagem no MAL
-        Retorna personagem de anime mais famoso de acordo com a busca requisitada
-        # OBS: Essa função nem sempre retorna o personagem mais popular, devido a uma limitação da busca do MAL
+        - Retorna personagem de anime mais famoso de acordo com a busca requisitada
+        - OBS: Essa função nem sempre retorna o personagem mais popular, devido a uma limitação da busca do MAL
         """
 
         if char_name == "Nothing Passed to Command":

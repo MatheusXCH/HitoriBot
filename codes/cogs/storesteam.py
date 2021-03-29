@@ -17,9 +17,8 @@ from discord.ext import commands
 from discord.utils import *
 from dotenv import load_dotenv
 
-sys.path.append(
-    "D:\\python-codes\\Discordzada"
-)  # Config the PYTHONPATH to import "codes.leaguecontent" without warnings
+# Config the PYTHONPATH to import "codes.leaguecontent" without warnings
+sys.path.append("D:\\python-codes\\Discordzada")
 from codes.steamcontent import steambigpicture
 
 load_dotenv()
@@ -153,7 +152,6 @@ class StoreSteam(commands.Cog):
                 categories = "N/A"
 
             # Getting PRICE_OVERVIEW
-            # TODO Arrumar os problemas possíveis de ocorrer no parâmetro 'Price_Overview'
             if not steam_game["is_free"]:
                 try:
                     initial_value = str(steam_game["price_overview"]["initial"])
@@ -271,7 +269,8 @@ class StoreSteam(commands.Cog):
             else:
                 steam_game_embed.add_field(name="📌 Preço: ", value=f"---", inline=True)
 
-            return steam_game_embed  # Return the resultant page
+            # Return the resultant page
+            return steam_game_embed
 
         # # # END OF INTERN FUNCTIONS
         #

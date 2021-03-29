@@ -3,7 +3,8 @@ import os
 import time
 import asyncio
 
-import codes.settings as st  # Get the globals from Settings
+# Get the globals from Settings
+import codes.settings as st
 import discord
 from discord import Member, Role, User
 from discord.ext import commands
@@ -26,7 +27,7 @@ class Management(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    # TODO Criar estrutura de dados para as palavras indesejadas
+    # TODO Criar estrutura de dados para as palavras indesejadas e armazená-las no banco de dados
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
         """Bad Words [Listener]
@@ -70,7 +71,7 @@ class Management(commands.Cog):
     @has_permissions(manage_nicknames=True)
     async def nick(self, ctx: commands.Context, member: discord.Member, *, newnick):
         """!nick <@Member> <new_nick> => Troca o nick do 'Membro' para 'new_nick'
-        # É necessário ter permissão para trocar apelidos
+        - É necessário ter permissão para trocar apelidos
         """
 
         await member.edit(nick=newnick)
@@ -87,7 +88,7 @@ class Management(commands.Cog):
     @has_permissions(manage_roles=True, kick_members=True)
     async def kick(self, ctx: commands.Context, member: Member):
         """!kick <@Member> => Expulsa um membro do servidor
-        # É necessário ter permissão para expulsar membros
+        - É necessário ter permissão para expulsar membros
         """
 
         await member.kick()
@@ -105,7 +106,7 @@ class Management(commands.Cog):
     @has_permissions(administrator=True)
     async def ban(self, ctx: commands.Context, member: Member):
         """!ban <@Member> => Bane um membro do servidor
-        # É necessário ter permissão para banir membros
+        - É necessário ter permissão para banir membros
         """
 
         await member.ban()
@@ -141,7 +142,7 @@ class Management(commands.Cog):
     @has_permissions(administrator=True)
     async def get_role(self, ctx: commands.Context, member: Member):
         """!role <@Member> => Lista as roles de um membro da guilda
-        # É necessário ter permissão de administrador
+        - É necessário ter permissão de administrador
         """
 
         list_roles = []
@@ -157,7 +158,7 @@ class Management(commands.Cog):
     @has_permissions(administrator=True)
     async def set_role(self, ctx: commands.Context, member: Member, *, role: Role):
         """!set-role <@Member> <Role> => Troca a role de um membro
-        # É necessário ter permissão de administrador
+        - É necessário ter permissão de administrador
         """
 
         await member.add_roles(role)
@@ -168,7 +169,7 @@ class Management(commands.Cog):
     @has_permissions(administrator=True)
     async def drop_role(self, ctx: commands.Context, member: Member, *, role: Role):
         """!drop-role => Retira uma role de um membro
-        # É necessário ter permissão de administrador
+        - É necessário ter permissão de administrador
         """
 
         await member.remove_roles(role)
@@ -184,9 +185,9 @@ class Management(commands.Cog):
     @has_permissions(manage_messages=True, send_messages=True)
     async def clear(self, ctx: commands.Context, number=5, member: Member = None):
         """!clear [num] [@Member] => Limpa as últimas [num] mensagens do usuário [@Member] no chat
-        # [num] e [@Member] são opcionais, de modo que:
-            !clear => Limpa 5 mensagens do bot
-            !clear [num] => Limpa [num] mensagens do bot
+        - [num] e [@Member] são opcionais, de modo que:\\
+            !clear => Limpa 5 mensagens do bot\\
+            !clear [num] => Limpa [num] mensagens do bot\\
             !clear [num] [@Member] => Limpa [num] mensagens de [@Member]
         """
         await ctx.message.delete()
@@ -218,7 +219,7 @@ class Management(commands.Cog):
     @has_permissions(manage_messages=True, send_messages=True)
     async def clean(self, ctx: commands.Context, limit: int = 100):
         """!clean [limit] => Avalia as últimas [limit] mensagens e deleta todas que foram enviadas pelo bot
-        O atribuito [limit] é opcional e, por padrão, está definido como limit=100.
+        - O atribuito [limit] é opcional e, por padrão, está definido como limit=100.
         """
 
         def check(message):
@@ -238,7 +239,7 @@ class Management(commands.Cog):
     @has_permissions(administrator=True)
     async def channel_purge(self, ctx: commands.Context, limit: int = 20):
         """!purge [limit] => Deleta as últimas [limit] mensagens do canal, independente de quem as tenha enviado. Admin Only
-        O atributo [limit] é opcioanl e, por padrão, está definido como limit=20. Apenas Administradores podem utilizar este comando.
+        - O atributo [limit] é opcioanl e, por padrão, está definido como limit=20. Apenas Administradores podem utilizar este comando.
         """
 
         await ctx.message.delete()

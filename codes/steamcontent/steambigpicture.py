@@ -61,13 +61,14 @@ class SteamBigPicture:
                 response_steamspy_app = requests.get("https://steamspy.com/api.php", params=payload)
                 all_steamspy_apps.update(response_steamspy_app.json())
 
-            except ValueError:  # ValueError includes 'simplejson.decoder.JSONDecodeError'
+            # ValueError includes 'simplejson.decoder.JSONDecodeError'
+            except ValueError:
                 break
 
         with open(st.steam_data_path + "steam_spy_data.txt", "w") as outfile:
             json.dump(all_steamspy_apps, outfile)
 
-        # # STEAM:
+        # # # STEAM:
         all_steam_apps = {}
         response_all_steam_apps = requests.get("https://api.steampowered.com/ISteamApps/GetAppList/v2/")
         all_steam_apps.update(response_all_steam_apps.json())
@@ -107,7 +108,8 @@ class SteamBigPicture:
         spy_all_games_json = self.get_all_games("steamspy")
         steam_all_games_json = self.get_all_games("steam")
 
-        game_title = game_title.upper()  # Uppercase to make a broader search
+        # Uppercase to make a broader search
+        game_title = game_title.upper()
         spy_search = []
         steam_search = []
         search = []
@@ -131,7 +133,8 @@ class SteamBigPicture:
                 if game_title in spy_all_games_json[item]["name"].upper()
                 if item != spy_psearch[0]
             ]
-        spy_search = spy_psearch + spy_isearch  # Merge SteamSpy 'Precise' and 'Imprecise'
+        # Merge SteamSpy 'Precise' and 'Imprecise'
+        spy_search = spy_psearch + spy_isearch
 
         if len(spy_search) > max_items:
             search = spy_search[:max_items]
@@ -142,7 +145,8 @@ class SteamBigPicture:
         # Case <game_title> matches a game name on the Steam database
         else:
             if spy_psearch == []:
-                spy_psearch = ["_Nothing_Founded_"]  # This is needed due the cases wich spy_psearch founds nothing
+                # This is needed due the cases wich spy_psearch founds nothing
+                spy_psearch = ["_Nothing_Founded_"]
             steam_psearch = [
                 item["appid"]
                 for item in steam_all_games_json
@@ -162,7 +166,8 @@ class SteamBigPicture:
                     if game_title in item["name"].upper()
                     if str(item["appid"]) != spy_psearch[0]
                 ]
-            steam_search = steam_psearch + steam_isearch  # Merge Steam 'Precise' and 'Imprecise'
+            # Merge Steam 'Precise' and 'Imprecise'
+            steam_search = steam_psearch + steam_isearch
 
         search = spy_search + steam_search
 
@@ -220,7 +225,8 @@ class SteamBigPicture:
                 continue
             steam_game_info_list.append(steam_game_info)
 
-        return steam_game_info_list  # Returns the list of founded items, ordered by 'Owners' in case those were obtained on SteamSpy database
+        # Returns the list of founded items, ordered by 'Owners' in case those were obtained on SteamSpy database
+        return steam_game_info_list
 
     def get_steam_package(self, app_id_list: list):
 
