@@ -97,7 +97,7 @@ class HowLongToBeat(commands.Cog):
             try:
                 reaction, user = await self.bot.wait_for("reaction_add", timeout=30.0, check=check)
                 await message.remove_reaction(reaction, user)
-            except:
+            except Exception:
                 break
 
         await message.clear_reactions()

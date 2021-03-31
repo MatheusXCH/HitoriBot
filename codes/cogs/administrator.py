@@ -99,7 +99,12 @@ class Administrator(commands.Cog):
         # async def on_command_error(self, ctx, error):
         #     """Envia mensagem padrão caso seja utilizado um comando inválido"""
 
-        #     unknown_command_msg = await ctx.send(embed = discord.Embed(title = f'Comando {ctx.message.content} desconhecido', description = 'Para saber quais são os comandos válidos, utilize "!help"'))
+        #     unknown_command_msg = await ctx.send(
+        # embed = discord.Embed(
+        # title = f'Comando {ctx.message.content} desconhecido',
+        # description = 'Para saber quais são os comandos válidos, utilize "!help"'
+        # )
+        # )
         #     await asyncio.sleep(5)
         #     await unknown_command_msg.delete()
 

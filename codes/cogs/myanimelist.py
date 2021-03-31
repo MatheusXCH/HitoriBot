@@ -26,12 +26,12 @@ class MyAnimeList(commands.Cog):
     @commands.command(name="anime")
     async def anime(self, ctx: commands.Context, *, anime_title: str = "Nothing Passed to Command"):
         """!anime <anime_title> => Pesquisa um anime no MAL
-        Retorna os animes encontrados no MyAnimeList que correspondem à busca
+        - Retorna os animes encontrados no MyAnimeList que correspondem à busca
         """
 
         if anime_title == "Nothing Passed to Command":
             nothing_passed_embed = discord.Embed(
-                description=f"É preciso passar o nome do anime junto ao comando !anime"
+                description="É preciso passar o nome do anime junto ao comando !anime"
             )
             await ctx.send(embed=nothing_passed_embed)
         else:
@@ -85,7 +85,7 @@ class MyAnimeList(commands.Cog):
                 embed_anime.add_field(name="**Fonte Original:**", value=anime["source"], inline=True)
                 embed_anime.add_field(name="**Gêneros: **", value=genres, inline=False)
 
-                embed_anime.set_footer(text=f"Clique em 📄 para ver a sinopse")
+                embed_anime.set_footer(text="Clique em 📄 para ver a sinopse")
                 embed_anime.set_image(url=str(anime["image_url"]))
 
                 return embed_anime
@@ -144,9 +144,9 @@ class MyAnimeList(commands.Cog):
                     try:
                         reaction, user = await self.bot.wait_for("reaction_add", timeout=30.0, check=check)
                         await message.remove_reaction(reaction, user)
-                    except:
+                    except Exception:
                         break
-            except:
+            except Exception:
                 error_embed = discord.Embed(
                     title="Erro:",
                     description="Desculpe, o limite de consultas por minuto ao MyAnimeList foi atingido!\nPor favor, aguarde um pouco e tente novamente!",
@@ -162,12 +162,12 @@ class MyAnimeList(commands.Cog):
         anime_sin_title: str = "Nothing Passed to Command",
     ):
         """!anime-sin <anime_title> => Pesquisa a sinopse de um anime no MAL
-        Retorna as sinopses dos animes encontrados no MyAnimeList que correspondem à busca
+        - Retorna as sinopses dos animes encontrados no MyAnimeList que correspondem à busca
         """
 
         if anime_sin_title == "Nothing Passed to Command":
             nothing_passed_embed = discord.Embed(
-                description=f"É preciso passar o nome do anime junto ao comando !anime-sin"
+                description="É preciso passar o nome do anime junto ao comando !anime-sin"
             )
             await ctx.send(embed=nothing_passed_embed)
         else:
@@ -194,12 +194,12 @@ class MyAnimeList(commands.Cog):
     @commands.command(name="manga")
     async def manga(self, ctx: commands.Context, *, manga_title: str = "Nothing Passed to Command"):
         """!manga <manga_title> => Pesquisa um mangá no MAL
-        Retorna os mangás encontrados no MyAnimeList que correspondem à busca
+        - Retorna os mangás encontrados no MyAnimeList que correspondem à busca
         """
 
         if manga_title == "Nothing Passed to Command":
             nothing_passed_embed = discord.Embed(
-                description=f"É preciso passar o nome do mangá junto ao comando !manga"
+                description="É preciso passar o nome do mangá junto ao comando !manga"
             )
             await ctx.send(embed=nothing_passed_embed)
         else:
@@ -258,7 +258,7 @@ class MyAnimeList(commands.Cog):
                 embed_manga.add_field(name="**Revista:**", value=magazine, inline=False)
                 embed_manga.add_field(name="**Gêneros:**", value=genres, inline=False)
 
-                embed_manga.set_footer(text=f"Clique em 📄 para ver a sinopse")
+                embed_manga.set_footer(text="Clique em 📄 para ver a sinopse")
                 embed_manga.set_image(url=str(manga["image_url"]))
 
                 return embed_manga
@@ -317,9 +317,9 @@ class MyAnimeList(commands.Cog):
                     try:
                         reaction, user = await self.bot.wait_for("reaction_add", timeout=30.0, check=check)
                         await message.remove_reaction(reaction, user)
-                    except:
+                    except Exception:
                         break
-            except:
+            except Exception:
                 error_embed = discord.Embed(
                     title="Erro:",
                     description="Desculpe, o limite de consultas por minuto ao MyAnimeList foi atingido!\nPor favor, aguarde um pouco e tente novamente!",
@@ -335,12 +335,12 @@ class MyAnimeList(commands.Cog):
         manga_sin_title: str = "Nothing Passed to Command",
     ):
         """!manga-sin <manga_title> => Pesquisa a sinopse de um mangá no MAL
-        Retorna as sinopses dos mangás encontrados no MyAnimeList que correspondem à busca
+        - Retorna as sinopses dos mangás encontrados no MyAnimeList que correspondem à busca
         """
 
         if manga_sin_title == "Nothing Passed to Command":
             nothing_passed_embed = discord.Embed(
-                description=f"É preciso passar o nome do mangá junto ao comando !anime-sin"
+                description="É preciso passar o nome do mangá junto ao comando !anime-sin"
             )
             await ctx.send(embed=nothing_passed_embed)
         else:
@@ -372,13 +372,13 @@ class MyAnimeList(commands.Cog):
     @commands.command(name="mal-char")
     async def mal_char(self, ctx: commands.Context, *, char_name: str = "Nothing Passed to Command"):
         """!mal-char <character_name> => Pesquisa um personagem no MAL
-        Retorna personagem de anime mais famoso de acordo com a busca requisitada
-        # OBS: Essa função nem sempre retorna o personagem mais popular, devido a uma limitação da busca do MAL
+        - Retorna personagem de anime mais famoso de acordo com a busca requisitada
+        - OBS: Essa função nem sempre retorna o personagem mais popular, devido a uma limitação da busca do MAL
         """
 
         if char_name == "Nothing Passed to Command":
             nothing_passed_embed = discord.Embed(
-                description=f"É preciso passar o nome do personagem junto ao comando !mal-char"
+                description="É preciso passar o nome do personagem junto ao comando !mal-char"
             )
             await ctx.send(embed=nothing_passed_embed)
         else:
@@ -403,7 +403,7 @@ class MyAnimeList(commands.Cog):
             except exceptions.APIException:
                 char_error_embed = discord.Embed(
                     title="Erro",
-                    description=f"Hmm... Não consegui encontrar este personagem no MyAnimeList!\nEspere alguns segundos e tente novamente!",
+                    description="Hmm... Não consegui encontrar este personagem no MyAnimeList!\nEspere alguns segundos e tente novamente!",
                 )
                 await ctx.send(embed=char_error_embed)
                 return
@@ -417,15 +417,15 @@ class MyAnimeList(commands.Cog):
             descrição = ""
             try:
                 descrição += f'**Anime:** *{character["animeography"][0]["name"]}* \n'
-            except:
+            except Exception:
                 descrição += "None \n"
             try:
                 descrição += f'**Mangá/Light Novel:** *{character["mangaography"][0]["name"]}* \n'
-            except:
+            except Exception:
                 descrição += "None \n"
             try:
                 descrição += f"**Dublador:** *{voice}* \n"
-            except:
+            except Exception:
                 descrição += "None \n"
 
             page = discord.Embed(

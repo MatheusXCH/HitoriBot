@@ -2,13 +2,15 @@ import asyncio
 import json
 import math
 import os
-import pprint
 import random
 import sys
 from pprint import pprint
 
+
 import asyncpraw
-import codes.settings as st  # Get the globals from Settings
+
+# Get the globals from Settings
+import codes.settings as st
 import discord
 import dotenv
 import requests
@@ -54,7 +56,6 @@ ICONS_DICT = {
 class Reddit(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        # self.channel_id = 822619833396101163
 
     def freegames_collection(self):
         client = MongoClient(CONNECT_STRING)
@@ -74,7 +75,7 @@ class Reddit(commands.Cog):
                 "channel_name": ctx.channel.name,
             }
             collection.update_one({"guild_id": data["guild_id"]}, {"$set": data}, upsert=True)
-        except:
+        except Exception:
             await ctx.send(
                 "Desculpe, **houve um problema** ao salvar essa informação. Por favor, **tente novamente** em alguns instantes!"
             )
@@ -91,7 +92,7 @@ class Reddit(commands.Cog):
 
     @tasks.loop()
     async def free_game_findings(self, channel_id=None):
-        """ Confere continuamente as postagens no 'r/FreeGamesFindings', obtendo aquelas que atendem aos filtros 
+        """ Confere continuamente as postagens no 'r/FreeGamesFindings', obtendo aquelas que atendem aos filtros
         definidos e enviando-as ao canal selecionado (que corresponde ao ID < channel_id >)
 
         Parameters
@@ -122,7 +123,8 @@ class Reddit(commands.Cog):
 
         collection = self.freegames_collection()
 
-        first_entry_flag = True  # Handles the Heroku's server restart to not resend a post
+        # Handles the Heroku's server restart to not resend a post
+        first_entry_flag = True
         subreddit = await reddit.subreddit("FreeGameFindings")
         channel_id_list = [item["channel_id"] for item in collection.find({}, {"channel_id": 1})]
         post = {"title": "", "url": ""}
@@ -130,7 +132,8 @@ class Reddit(commands.Cog):
         while True:
             # Get newest posts
             newest_list = [apply_filters(submission) async for submission in subreddit.new(limit=10)]
-            newest_list = [item for item in newest_list if item]  # Clear 'None' from the list
+            # Clear 'None' from the list
+            newest_list = [item for item in newest_list if item]
             newest = newest_list[0]
 
             if newest.title != post["title"]:
@@ -139,12 +142,6 @@ class Reddit(commands.Cog):
                 if first_entry_flag:
                     post["title"] = newest.title
                     post["url"] = newest.url
-
-                    for channel_id in channel_id_list:
-                        text_channel = self.bot.get_channel(id=channel_id)
-                        await text_channel.send(
-                            "**CONFIRMAÇÃO**: Este canal está recebendo novas postagens de jogos grátis!"
-                        )  # Temporário - Apenas durante o período de testes
                     first_entry_flag = False
                 else:
                     for submission in newest_list:
@@ -169,7 +166,8 @@ class Reddit(commands.Cog):
                             await text_channel.send(embed=embed_post)
 
             collection.database.client.close()
-            await asyncio.sleep(3600)  # Sleep for 1 hour
+            # Sleep for 1 hour
+            await asyncio.sleep(3600)
 
     @commands.command(name="free-game-start", hidden=True)
     async def free_game_start(self, ctx: commands.Context):

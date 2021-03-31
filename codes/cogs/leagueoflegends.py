@@ -1,5 +1,4 @@
 import os
-import pprint
 import random
 import sys
 from pprint import pprint
@@ -11,11 +10,10 @@ from discord.ext import commands
 from discord.utils import *
 from dotenv import load_dotenv
 from riotwatcher import ApiError, LolWatcher
-from roleidentification import *
+from roleidentification import pull_data, get_roles
 
-sys.path.append(
-    "D:\\python-codes\\Discordzada"
-)  # Config the PYTHONPATH to import "codes.leaguecontent" without warnings
+# Config the PYTHONPATH to import "codes.leaguecontent" without warnings
+sys.path.append("D:\\python-codes\\Discordzada")
 from codes.leaguecontent import dataDragon
 
 load_dotenv()
@@ -33,6 +31,7 @@ class LeagueOfLegends(commands.Cog):
         self.bot = bot
 
     # TODO Pensar em mais informações úteis para serem mostradas aqui
+    # TODO Trocar a lógica do "Nothing Passed to Command" por algo mais elegante
     @commands.command(name="summ")
     async def get_summoner(
         self,
@@ -53,7 +52,7 @@ class LeagueOfLegends(commands.Cog):
         else:
             try:
                 summoner = watcher.summoner.by_name(region, name)
-            except:
+            except Exception:
                 no_summ_embed = discord.Embed(description=f"Não consegui encontrar o invocador **{name}**!")
                 await ctx.send(embed=no_summ_embed)
                 return
@@ -61,7 +60,7 @@ class LeagueOfLegends(commands.Cog):
             try:
                 ranks = watcher.league.by_summoner(region, summoner["id"])
                 masteries = watcher.champion_mastery.by_summoner(region, summoner["id"])
-            except:
+            except Exception:
                 ranks_masteries_except_embed = discord.Embed(
                     description=f'Houve um problema ao carregar informações sobre o invocador **{summoner["name"]}**'
                 )
@@ -79,7 +78,7 @@ class LeagueOfLegends(commands.Cog):
             summoner_info_embed = discord.Embed(
                 title=f'{summoner["name"]}',
                 description=f'Level: {summoner["summonerLevel"]}\n',
-                url=f"https://br.op.gg/summoner/userName=" + "+".join(name.split(" ")),
+                url="https://br.op.gg/summoner/userName=" + "+".join(name.split(" ")),
             )
 
             soloQ = ""
@@ -99,7 +98,7 @@ class LeagueOfLegends(commands.Cog):
             summoner_info_embed.add_field(name="**Ranked Solo**: ", value=f"{soloQ}", inline=True)
             summoner_info_embed.add_field(name="**Ranked Flex:** ", value=f"{flexQ}", inline=True)
 
-            summoner_info_embed.add_field(name=f"\u200b", value="_**CAMPEÕES MAIS MASTERIZADOS**_", inline=False)
+            summoner_info_embed.add_field(name="\u200b", value="_**CAMPEÕES MAIS MASTERIZADOS**_", inline=False)
 
             for i in range(len(top3_champions)):
                 if top3_champions != []:
@@ -119,11 +118,11 @@ class LeagueOfLegends(commands.Cog):
                         champion_points = item.get("championPoints")
                 try:
                     summoner_info_embed.add_field(
-                        name=f"\u200b",
+                        name="\u200b",
                         value=f"Maestria com **{champion_name}:**  {champion_points} MP",
                         inline=False,
                     )
-                except:
+                except Exception:
                     pass
                 await msg.edit(embed=summoner_info_embed)
 
@@ -162,14 +161,14 @@ class LeagueOfLegends(commands.Cog):
 
         try:
             summoner = watcher.summoner.by_name(region, name)
-        except:
+        except Exception:
             no_summ_embed = discord.Embed(description=f"Não consegui encontrar o invocador **{name}**!")
             await ctx.send(embed=no_summ_embed)
             return
 
         try:
             spec = watcher.spectator.by_summoner(region, summoner["id"])
-        except:
+        except Exception:
             no_live_match_embed = discord.Embed(
                 description=f'Parece que o invocador **{summoner["name"]}** não está em uma partida no momento!'
             )
@@ -341,7 +340,7 @@ class LeagueOfLegends(commands.Cog):
 
         live_match_embed = discord.Embed(
             title=f'Partida ao vivo de {summoner["name"]}',
-            url=f"https://br.op.gg/summoner/userName=" + "+".join(name.split(" ")),
+            url="https://br.op.gg/summoner/userName=" + "+".join(name.split(" ")),
         )
 
         live_match_embed.add_field(
@@ -351,7 +350,7 @@ class LeagueOfLegends(commands.Cog):
             + f'🔹 {blue_team["MIDDLE"]["name"]}\n'
             + f'🔹 {blue_team["BOTTOM"]["name"]}\n'
             + f'🔹 {blue_team["UTILITY"]["name"]}\n'
-            + f"\n"
+            + "\n"
             + f'🔸 {red_team["TOP"]["name"]}\n'
             + f'🔸 {red_team["JUNGLE"]["name"]}\n'
             + f'🔸 {red_team["MIDDLE"]["name"]}\n'
@@ -367,7 +366,7 @@ class LeagueOfLegends(commands.Cog):
             + f'{dd.EMOJI_MIDDLE} {blue_team["MIDDLE"]["champion"]}\n'
             + f'{dd.EMOJI_BOTTOM} {blue_team["BOTTOM"]["champion"]}\n'
             + f'{dd.EMOJI_UTILITY} {blue_team["UTILITY"]["champion"]}\n'
-            + f"\n"
+            + "\n"
             + f'{dd.EMOJI_TOP} {red_team["TOP"]["champion"]}\n'
             + f'{dd.EMOJI_JUNGLE} {red_team["JUNGLE"]["champion"]}\n'
             + f'{dd.EMOJI_MIDDLE} {red_team["MIDDLE"]["champion"]}\n'
@@ -383,7 +382,7 @@ class LeagueOfLegends(commands.Cog):
             + f'® {blue_team["MIDDLE"]["rank"]}\n'
             + f'® {blue_team["BOTTOM"]["rank"]}\n'
             + f'® {blue_team["UTILITY"]["rank"]}\n'
-            + f"\n"
+            + "\n"
             + f'® {red_team["TOP"]["rank"]}\n'
             + f'® {red_team["JUNGLE"]["rank"]}\n'
             + f'® {red_team["MIDDLE"]["rank"]}\n'
@@ -530,7 +529,7 @@ class LeagueOfLegends(commands.Cog):
                     await message.remove_reaction("🔹", user)
                 else:
                     await message.remove_reaction(reaction, user)
-            except:
+            except Exception:
                 break
         await message.clear_reactions()
 

@@ -1,9 +1,14 @@
-import os, dotenv, requests, json, pprint, random, time
-from dotenv import load_dotenv
+import json
+import os
+import random
+import time
 from pprint import pprint
-import steam
 
 import codes.settings as st
+import dotenv
+import requests
+import steam
+from dotenv import load_dotenv
 
 
 class SteamBigPicture:
@@ -61,13 +66,14 @@ class SteamBigPicture:
                 response_steamspy_app = requests.get("https://steamspy.com/api.php", params=payload)
                 all_steamspy_apps.update(response_steamspy_app.json())
 
-            except ValueError:  # ValueError includes 'simplejson.decoder.JSONDecodeError'
+            # ValueError includes 'simplejson.decoder.JSONDecodeError'
+            except ValueError:
                 break
 
         with open(st.steam_data_path + "steam_spy_data.txt", "w") as outfile:
             json.dump(all_steamspy_apps, outfile)
 
-        # # STEAM:
+        # # # STEAM:
         all_steam_apps = {}
         response_all_steam_apps = requests.get("https://api.steampowered.com/ISteamApps/GetAppList/v2/")
         all_steam_apps.update(response_all_steam_apps.json())
@@ -80,13 +86,13 @@ class SteamBigPicture:
 
         - Precise Search = Returns first the exactly key that matches < game_title >
         - Imprecise Search = Returns all the keys that contains the substring < game_title >
-        
-        The search handles < game_title >, as well as the game database titles, in uppercase. This makes 
+
+        The search handles < game_title >, as well as the game database titles, in uppercase. This makes
         it possible for the user to do a successfull search by even writting "Dota 2", "DOTA 2", "dota 2",
         and so go on.
-        
+
         The searching process start by founding the games on SteamSpy database, because by it's default ordered by 'Owners'.
-        After finished this first step, if the search result has less elements than < max_items >, then search for other 
+        After finished this first step, if the search result has less elements than < max_items >, then search for other
         possible matching items on Steam database directly.
 
         Parameters
@@ -99,7 +105,7 @@ class SteamBigPicture:
         Returns
         -------
         - search : list \\
-        [List of games appids found by 'Precise' or 'Imprecise' search on the select database]\\ 
+        [List of games appids found by 'Precise' or 'Imprecise' search on the select database]\\
         [Empty list if nothing is found]
         """
 
@@ -107,7 +113,8 @@ class SteamBigPicture:
         spy_all_games_json = self.get_all_games("steamspy")
         steam_all_games_json = self.get_all_games("steam")
 
-        game_title = game_title.upper()  # Uppercase to make a broader search
+        # Uppercase to make a broader search
+        game_title = game_title.upper()
         spy_search = []
         steam_search = []
         search = []
@@ -131,7 +138,8 @@ class SteamBigPicture:
                 if game_title in spy_all_games_json[item]["name"].upper()
                 if item != spy_psearch[0]
             ]
-        spy_search = spy_psearch + spy_isearch  # Merge SteamSpy 'Precise' and 'Imprecise'
+        # Merge SteamSpy 'Precise' and 'Imprecise'
+        spy_search = spy_psearch + spy_isearch
 
         if len(spy_search) > max_items:
             search = spy_search[:max_items]
@@ -142,7 +150,8 @@ class SteamBigPicture:
         # Case <game_title> matches a game name on the Steam database
         else:
             if spy_psearch == []:
-                spy_psearch = ["_Nothing_Founded_"]  # This is needed due the cases wich spy_psearch founds nothing
+                # This is needed due the cases wich spy_psearch founds nothing
+                spy_psearch = ["_Nothing_Founded_"]
             steam_psearch = [
                 item["appid"]
                 for item in steam_all_games_json
@@ -162,7 +171,8 @@ class SteamBigPicture:
                     if game_title in item["name"].upper()
                     if str(item["appid"]) != spy_psearch[0]
                 ]
-            steam_search = steam_psearch + steam_isearch  # Merge Steam 'Precise' and 'Imprecise'
+            # Merge Steam 'Precise' and 'Imprecise'
+            steam_search = steam_psearch + steam_isearch
 
         search = spy_search + steam_search
 
@@ -214,13 +224,14 @@ class SteamBigPicture:
 
             # If there's an error on the data obtained via GET, ignore and continue to next iterate
             try:
-                if steam_game_info_json[str(search[item])]["success"] == True:
+                if steam_game_info_json[str(search[item])]["success"] is True:
                     steam_game_info = steam_game_info_json[str(search[item])]["data"]
-            except:
+            except Exception:
                 continue
             steam_game_info_list.append(steam_game_info)
 
-        return steam_game_info_list  # Returns the list of founded items, ordered by 'Owners' in case those were obtained on SteamSpy database
+        # Returns the list of founded items, ordered by 'Owners' in case those were obtained on SteamSpy database
+        return steam_game_info_list
 
     def get_steam_package(self, app_id_list: list):
 
@@ -230,7 +241,7 @@ class SteamBigPicture:
             response_steam_package = requests.get("http://store.steampowered.com/api/packagedetails/", params=payload)
             steam_package_json = response_steam_package.json()
 
-            if steam_package_json[str(item)]["success"] == True:
+            if steam_package_json[str(item)]["success"] is True:
                 steam_package = steam_package_json[str(item)]["data"]
                 steam_packages_list.append(steam_package)
 
