@@ -2,7 +2,6 @@ import asyncio
 import json
 import math
 import os
-import pprint
 import random
 import sys
 from pprint import pprint
@@ -76,7 +75,7 @@ class Reddit(commands.Cog):
                 "channel_name": ctx.channel.name,
             }
             collection.update_one({"guild_id": data["guild_id"]}, {"$set": data}, upsert=True)
-        except:
+        except Exception:
             await ctx.send(
                 "Desculpe, **houve um problema** ao salvar essa informação. Por favor, **tente novamente** em alguns instantes!"
             )
@@ -93,7 +92,7 @@ class Reddit(commands.Cog):
 
     @tasks.loop()
     async def free_game_findings(self, channel_id=None):
-        """ Confere continuamente as postagens no 'r/FreeGamesFindings', obtendo aquelas que atendem aos filtros 
+        """ Confere continuamente as postagens no 'r/FreeGamesFindings', obtendo aquelas que atendem aos filtros
         definidos e enviando-as ao canal selecionado (que corresponde ao ID < channel_id >)
 
         Parameters

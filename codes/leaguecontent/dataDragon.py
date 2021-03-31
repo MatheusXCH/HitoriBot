@@ -1,6 +1,11 @@
-import os, dotenv, pprint, requests, json
+import json
+import os
+import pprint
+
+import dotenv
+import requests
 from dotenv import load_dotenv
-from riotwatcher import LolWatcher, ApiError
+from riotwatcher import ApiError, LolWatcher
 
 load_dotenv()
 RIOT_KEY = os.getenv("RIOT_KEY")

@@ -27,7 +27,7 @@ class Minigames(commands.Cog):
 
         try:
             rolls, faces = map(int, dice.split("d"))
-        except:
+        except Exception:
             format_error_embed = discord.Embed(description="O formato deve ser <dados>d<lados> (Ex: !dado 1d6)")
             await ctx.send(embed=format_error_embed)
             return
@@ -46,10 +46,10 @@ class Minigames(commands.Cog):
             sum_flag = ":red_circle:"
 
         # First Embed - Fujitora
-        fujitora_embed = discord.Embed(title=f"***FUJITORA FOI INVOCADO!!!***")
+        fujitora_embed = discord.Embed(title="***FUJITORA FOI INVOCADO!!!***")
         fujitora_embed.add_field(
             name="Lembre-se: ",
-            value=f"JAMAIS QUESTIONE O RESULTADO DOS DADOS!",
+            value="JAMAIS QUESTIONE O RESULTADO DOS DADOS!",
             inline=False,
         )
         file = discord.File(st.image_path + "Dado.png", filename="Dado.png")
@@ -59,16 +59,16 @@ class Minigames(commands.Cog):
 
         # Second Embed - Countdown
         dices_embed = discord.Embed()
-        dices_embed.add_field(name=f"**Resultados: **", value="\u200b", inline=False)
-        dices_embed.add_field(name=f"**Somatório: **", value="\u200b", inline=False)
+        dices_embed.add_field(name="**Resultados: **", value="\u200b", inline=False)
+        dices_embed.add_field(name="**Somatório: **", value="\u200b", inline=False)
         dices_message = await ctx.send(embed=dices_embed)
 
         dices_embed.set_thumbnail(url="https://media0.giphy.com/media/RiEW6mSQqjRiDy51MI/200.gif")
         await dices_message.edit(embed=dices_embed)
         await asyncio.sleep(5)
 
-        dices_embed.set_field_at(0, name=f"**Resultados: **", value=f"{result}", inline=False)
-        dices_embed.set_field_at(1, name=f"**Somatório: **", value=f"{sum} {sum_flag}", inline=False)
+        dices_embed.set_field_at(0, name="**Resultados: **", value=f"{result}", inline=False)
+        dices_embed.set_field_at(1, name="**Somatório: **", value=f"{sum} {sum_flag}", inline=False)
         dices_embed.set_thumbnail(url="")
         await dices_message.edit(embed=dices_embed)
 

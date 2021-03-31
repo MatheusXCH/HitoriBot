@@ -1,4 +1,6 @@
-import os, discord
+import os
+
+import discord
 
 # GLOBAL PATHS:
 

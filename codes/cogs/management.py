@@ -49,7 +49,7 @@ class Management(commands.Cog):
             text = f.read()
 
         embed = discord.Embed(
-            title=f"__**Regras e Diretrizes do Servidor**__",
+            title="__**Regras e Diretrizes do Servidor**__",
             colour=discord.Colour(0xE82E2E),
             description="Leia as Regras e Diretrizes atentamente",
         )
@@ -125,7 +125,7 @@ class Management(commands.Cog):
     @has_permissions(administrator=True)
     @guild_only()
     async def unban(self, ctx: commands.Context, id: int):
-        user = await bot.fetch_user(id)
+        user = await self.bot.fetch_user(id)
         if ctx.guild.fetch_ban(user):
             await ctx.guild.unban(user)
         else:
@@ -192,10 +192,9 @@ class Management(commands.Cog):
         """
         await ctx.message.delete()
         success = 0
-        failed = 0
 
         # Verifica se o Member foi passado, caso não, escolhe o BOT como default
-        if member == None:
+        if member is None:
             member = self.bot.user
 
         async for msg in ctx.message.channel.history(limit=100):
@@ -204,8 +203,8 @@ class Management(commands.Cog):
                 try:
                     await msg.delete()
                     success += 1
-                except:
-                    failed += 1
+                except Exception:
+                    pass
 
                 if number == 0:
                     break

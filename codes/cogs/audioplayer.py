@@ -28,7 +28,7 @@ class AudioPlayer(commands.Cog):
 
         try:
             voice_channel = ctx.author.voice.channel
-        except:
+        except Exception:
             await self.not_in_channel_msg(ctx)
             return
 
@@ -48,7 +48,7 @@ class AudioPlayer(commands.Cog):
         try:
             channel = ctx.author.voice.channel
             await channel.connect()
-        except:
+        except Exception:
             await self.not_in_channel_msg(ctx)
 
     @commands.command(name="leave")
@@ -59,7 +59,7 @@ class AudioPlayer(commands.Cog):
             guild = ctx.message.guild
             voice_client = guild.voice_client
             await voice_client.disconnect()
-        except:
+        except Exception:
             await self.not_in_channel_msg(ctx)
 
     # # A partir desse ponto começam os comandos de áudio mp3

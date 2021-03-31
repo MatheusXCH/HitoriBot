@@ -6,10 +6,9 @@ import codes.settings as st
 import discord
 import dotenv
 import json
-import pprint
 import inspect
 from pprint import pprint
-from discord.ext import commands
+from discord.ext import commands, tasks
 from discord.ext.commands import MissingPermissions, has_permissions
 from pymongo import MongoClient
 from dotenv import load_dotenv
@@ -17,9 +16,9 @@ from dotenv import load_dotenv
 load_dotenv()
 CONNECT_STRING = os.environ.get("MONGODB_URI")
 
-
+# TODO Trocar todos os blocos TRY/EXCEPT por blocos que utilizam WITH Statement
 class Guild_Settings(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
 
     def freegames_collection(self):
@@ -37,7 +36,7 @@ class Guild_Settings(commands.Cog):
     def get_text_channel_data(self, text_channel: discord.TextChannel):
         try:
             category = text_channel.category.name
-        except:
+        except Exception:
             category = None
 
         text_channel_data = {
@@ -51,7 +50,7 @@ class Guild_Settings(commands.Cog):
     def get_voice_channel_data(self, voice_channel: discord.VoiceChannel):
         try:
             category = voice_channel.category.name
-        except:
+        except Exception:
             category = None
 
         voice_channel_data = {
@@ -86,13 +85,6 @@ class Guild_Settings(commands.Cog):
 
         return member_data
 
-    def get_config_data(self, guild: discord.Guild):
-        prefix = "!"
-        free_game = {"channel_id": None, "channel_name": None}
-        config_data = {"prefix": prefix, "free_game": free_game}
-
-        return config_data
-
     def create_guild_data(self, guild: discord.Guild):
         guild_data = {
             "_id": guild.id,
@@ -112,7 +104,6 @@ class Guild_Settings(commands.Cog):
                     "members_count": guild.member_count,
                     "members": [self.get_member_data(member) for member in guild.members],
                 },
-                "config": self.get_config_data(guild),
             },
         }
 
@@ -128,8 +119,9 @@ class Guild_Settings(commands.Cog):
             collection.insert_one(guild_data)
             collection.database.client.close()
             print(f"'on_guild_join' SUCCESS: A Guilda com ID:{guild_data['_id']} foi INSERIDO no database")
-        except:
+        except Exception as e:
             print(f"'on_guild_join' ERROR: Houve um erro ao inserir a Guilda ID:{guild.id} no database.")
+            print(e)
 
     # WORKING
     @commands.Cog.listener()
@@ -141,8 +133,9 @@ class Guild_Settings(commands.Cog):
             collection.delete_one({"_id": guild.id})
             collection.database.client.close()
             print(f"'on_guild_remove' SUCCESS: A Guilda ID:{guild_data['_id']} foi EXCLUÍDO do database")
-        except:
+        except Exception as e:
             print(f"on_guild_remove' ERROR: Houve um erro ao excluir a Guilda ID:{guild.id} do database")
+            print(e)
 
     # WORKING
     @commands.Cog.listener()
@@ -369,13 +362,12 @@ class Guild_Settings(commands.Cog):
     # WORKING
     @commands.Cog.listener()
     async def on_member_update(self, before: discord.Member, after: discord.Member):
-        guild = after.guild
         member_after_data = self.get_member_data(after)
 
         try:
             collection = self.guilds_settings_collection()
             collection.update_one(
-                {"_id": guild.id, "guild.members_info.members.member_id": after.id},
+                {"_id": after.id, "guild.members_info.members.member_id": after.id},
                 {"$set": {"guild.members_info.members.$": member_after_data}},
             )
             collection.database.client.close()
@@ -386,8 +378,25 @@ class Guild_Settings(commands.Cog):
             )
             print(e)
 
-    # TODO Elaborar uma task que, exporadicamente, atualiza TODAS as informações de TODAS as guildas cadastradas no banco
-    # TODO 'all_guilds_update'
+    # TODO Decidir entre TASK ou COMMAND. Se TASK, definir o período de execução de cada instância
+    # @tasks.loop(hours=24)
+    @commands.command(name="guilds-update", hidden=True)
+    async def all_guilds_update(self, ctx: commands.Context):
+        collection = self.guilds_settings_collection()
+
+        guild_data_list = [
+            self.create_guild_data(self.bot.get_guild(guild["guild"]["guild_id"]))
+            for guild in collection.find({}, {"guild.guild_id": 1})
+        ]
+
+        for guild_data in guild_data_list:
+            print(f"Atualizando informações da Guilda ID: {guild_data['_id']}")
+            collection.update_one({"_id": guild_data["_id"]}, {"$set": {"guild": guild_data["guild"]}})
+        collection.database.client.close()
+        print("Todas as informações foram atualizadas com sucesso!")
+
+    # # # NOTE: Elaborar a lógica do BSON responsável pelas configurações do servidor
+    # TODO "BSON._id.config". Consultar o arquivo 'guild_settings_structure' para ver o layout
 
     # # Comandos abaixo são, pelo menos inicialmente, para fins de TEST e DEBUG
     #

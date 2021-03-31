@@ -2,20 +2,29 @@
 #
 #
 
-import os, sys, traceback, discord, logging, time, asyncio
-from dotenv import load_dotenv
-from discord.ext import commands
-from discord.ext.commands import has_permissions, MissingPermissions
-from discord.ext.commands import Bot, guild_only
+import asyncio
+import logging
+import os
+import sys
+import time
+import traceback
+
+import discord
 from discord import Member
-from pretty_help import PrettyHelp
-from pretty_help import Navigation
+from discord.ext import commands
+from discord.ext.commands import Bot, MissingPermissions, guild_only, has_permissions
+from dotenv import load_dotenv
+from pretty_help import Navigation, PrettyHelp
 
 sys.path.append("D:\\python-codes\\Discordzada")  # Config the PYTHONPATH to import "codes.settings" without warnings
 import codes.settings as st  # Get the globals from Settings
 
 logging.basicConfig(level=logging.INFO)
-clear = lambda: os.system("cls")
+
+
+def clear():
+    os.system("cls")
+
 
 # Carrega todas as intents para uso do Bot
 intents = intents = discord.Intents.all()
@@ -40,16 +49,16 @@ startup_extensions = [
     "cogs.leagueoflegends",
     "cogs.storesteam",
     "cogs.audioplayer",
-    "cogs.reddit",
-    "cogs.guild_settings",
+    "cogs.reddit"
+    # "cogs.guild_manager"
 ]
 
 # bot = commands.Bot(command_prefix=PREFIX, help_command=None)
 custom_pretty_help = PrettyHelp(
     active_time=60,
     color=discord.Color(0xA632A8),
-    index_title=f"Módulos",
-    ending_note=f"Help - PyBOT",
+    index_title="Módulos",
+    ending_note="Help - PyBOT",
     sort_commands=True,
     show_index=True,
 )

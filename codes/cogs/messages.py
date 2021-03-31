@@ -39,9 +39,9 @@ class Messages(commands.Cog):
         """!familia => Pergunta pro BRTT se isso é uma família"""
 
         response = (
-            f"Isso aqui não é uma família, é um time!\n"
-            + f"Se vai deixar morrer, teu irmão???\n\n"
-            + f"*CLARO QUE VAI NÉ, PORRA!*"
+            "Isso aqui não é uma família, é um time!\n"
+            + "Se vai deixar morrer, teu irmão???\n\n"
+            + "*CLARO QUE VAI NÉ, PORRA!*"
         )
         familia_embed = discord.Embed(description=response)
         await ctx.send(embed=familia_embed)
@@ -72,7 +72,7 @@ class Messages(commands.Cog):
         )
         embed.add_field(
             name=":play_pause: Só o HYPE:",
-            value="https://www.youtube.com/playlist?list=PLeOu0isxutGI693o9yg6d3BGSUbPPgU4X",
+            value="https://open.spotify.com/playlist/4XsVHUylRyislcTEJWdkiE?si=-Kt1GXOuSgKJfDuOhcgupg",
             inline=False,
         )
 

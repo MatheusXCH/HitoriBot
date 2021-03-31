@@ -2,7 +2,6 @@ import asyncio
 import json
 import math
 import os
-import pprint
 import random
 import sys
 from pprint import pprint
@@ -46,7 +45,7 @@ class StoreSteam(commands.Cog):
             await msg.edit(embed=discord.Embed(title="Sucesso!", description="Base de dados do Steam atualizada!"))
             await asyncio.sleep(5)
             await msg.delete()
-        except:
+        except Exception:
             error_msg = await ctx.send(
                 embed=discord.Embed(
                     title="Erro",
@@ -103,7 +102,7 @@ class StoreSteam(commands.Cog):
                 tags = "\n".join([tag for tag in tags_dict])
                 if tags == "":
                     raise Exception
-            except:
+            except Exception:
                 tags = "N/A"
 
             # Getting DEVELOPERS
@@ -112,7 +111,7 @@ class StoreSteam(commands.Cog):
                 developers = "\n".join(developers_list)
                 if developers == "":
                     raise Exception
-            except:
+            except Exception:
                 developers = "N/A"
 
             # Getting PUBLISHERS
@@ -121,7 +120,7 @@ class StoreSteam(commands.Cog):
                 publishers = "\n".join(publishers_list)
                 if publishers == "":
                     raise Exception
-            except:
+            except Exception:
                 publishers = "N/A"
 
             # Getting CATEGORIES (FEATURES)
@@ -148,7 +147,7 @@ class StoreSteam(commands.Cog):
                 categories = "\n".join(categories_list_filtered)
                 if categories == "":
                     raise Exception
-            except:
+            except Exception:
                 categories = "N/A"
 
             # Getting PRICE_OVERVIEW
@@ -158,7 +157,7 @@ class StoreSteam(commands.Cog):
                     base_price = f"R$ {initial_value[:-2]},{initial_value[-2:]}"
                     final_price = steam_game["price_overview"]["final_formatted"]
                     discount = f'{steam_game["price_overview"]["discount_percent"]}%'
-                except:
+                except Exception:
                     base_price = "N/A"
                     final_price = "N/A"
                     discount = "N/A"
@@ -170,7 +169,7 @@ class StoreSteam(commands.Cog):
                 )
                 reviews_label = __get_reviews_label(reviews_perc)
                 reviews_dict = {"score": f"({reviews_perc}%)", "label": reviews_label}
-            except:
+            except Exception:
                 reviews_dict = {"score": "\u200b", "label": "N/A"}
 
             # Getting LANGUAGES
@@ -187,13 +186,13 @@ class StoreSteam(commands.Cog):
                     )
                 ]
                 languages = "\n".join(languages_list_filtered)
-            except:
+            except Exception:
                 languages = "N/A"
 
             # Getting METACRITIC
             try:
                 metacritic_score = steam_game["metacritic"]["score"]
-            except:
+            except Exception:
                 metacritic_score = "---"
 
             # Included Items
@@ -202,7 +201,7 @@ class StoreSteam(commands.Cog):
                 includes = "\n".join(includes_list)
                 if includes == "":
                     raise Exception
-            except:
+            except Exception:
                 includes = "\u200b"
                 pass
 
@@ -216,8 +215,8 @@ class StoreSteam(commands.Cog):
                     discount = f'{package["price"]["discount_percent"]}%'
                     price = f"🔸 Base: {base_price} \n🔹 Atual: {current_price} \n 📉 Desconto: {discount}"
                 else:
-                    price = f"💸 GRATUITO"
-            except:
+                    price = "💸 GRATUITO"
+            except Exception:
                 price = "\u200b"
                 pass
 
@@ -238,7 +237,7 @@ class StoreSteam(commands.Cog):
                 steam_game_embed.set_footer(text=f'{steam_game["legal_notice"]}')
                 if steam_game_embed.footer.__len__ > 2048:
                     raise Exception
-            except:
+            except Exception:
                 steam_game_embed.set_footer(text=f'©{steam_game["name"]}')
 
             # Adding Fields
@@ -267,7 +266,7 @@ class StoreSteam(commands.Cog):
                 )
                 steam_game_embed.add_field(name="📌 Preço: ", value=price, inline=True)
             else:
-                steam_game_embed.add_field(name="📌 Preço: ", value=f"---", inline=True)
+                steam_game_embed.add_field(name="📌 Preço: ", value="---", inline=True)
 
             # Return the resultant page
             return steam_game_embed
@@ -291,13 +290,13 @@ class StoreSteam(commands.Cog):
             for app in steam_games:
                 try:
                     packages.append(big_picture.get_steam_package(app["packages"]))
-                except:
+                except Exception:
                     packages.append([[]])
-        except:
+        except Exception:
             await ctx.send(
                 embed=discord.Embed(
                     title="Desculpe",
-                    description=f'Não consegui encontrar esse jogo!\nCaso seja a primeira consulta do dia, considere executar o comando "!steam-update" para atualizar os dados',
+                    description='Não consegui encontrar esse jogo!\nCaso seja a primeira consulta do dia, considere executar o comando "!steam-update" para atualizar os dados',
                 )
             )
             return
@@ -371,7 +370,7 @@ class StoreSteam(commands.Cog):
             try:
                 reaction, user = await self.bot.wait_for("reaction_add", timeout=30.0, check=check)
                 await message.remove_reaction(reaction, user)
-            except:
+            except Exception:
                 break
 
         await message.clear_reactions()

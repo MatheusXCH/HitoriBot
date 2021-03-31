@@ -1,9 +1,14 @@
-import os, dotenv, requests, json, pprint, random, time
-from dotenv import load_dotenv
+import json
+import os
+import random
+import time
 from pprint import pprint
-import steam
 
 import codes.settings as st
+import dotenv
+import requests
+import steam
+from dotenv import load_dotenv
 
 
 class SteamBigPicture:
@@ -81,13 +86,13 @@ class SteamBigPicture:
 
         - Precise Search = Returns first the exactly key that matches < game_title >
         - Imprecise Search = Returns all the keys that contains the substring < game_title >
-        
-        The search handles < game_title >, as well as the game database titles, in uppercase. This makes 
+
+        The search handles < game_title >, as well as the game database titles, in uppercase. This makes
         it possible for the user to do a successfull search by even writting "Dota 2", "DOTA 2", "dota 2",
         and so go on.
-        
+
         The searching process start by founding the games on SteamSpy database, because by it's default ordered by 'Owners'.
-        After finished this first step, if the search result has less elements than < max_items >, then search for other 
+        After finished this first step, if the search result has less elements than < max_items >, then search for other
         possible matching items on Steam database directly.
 
         Parameters
@@ -100,7 +105,7 @@ class SteamBigPicture:
         Returns
         -------
         - search : list \\
-        [List of games appids found by 'Precise' or 'Imprecise' search on the select database]\\ 
+        [List of games appids found by 'Precise' or 'Imprecise' search on the select database]\\
         [Empty list if nothing is found]
         """
 
@@ -219,9 +224,9 @@ class SteamBigPicture:
 
             # If there's an error on the data obtained via GET, ignore and continue to next iterate
             try:
-                if steam_game_info_json[str(search[item])]["success"] == True:
+                if steam_game_info_json[str(search[item])]["success"] is True:
                     steam_game_info = steam_game_info_json[str(search[item])]["data"]
-            except:
+            except Exception:
                 continue
             steam_game_info_list.append(steam_game_info)
 
@@ -236,7 +241,7 @@ class SteamBigPicture:
             response_steam_package = requests.get("http://store.steampowered.com/api/packagedetails/", params=payload)
             steam_package_json = response_steam_package.json()
 
-            if steam_package_json[str(item)]["success"] == True:
+            if steam_package_json[str(item)]["success"] is True:
                 steam_package = steam_package_json[str(item)]["data"]
                 steam_packages_list.append(steam_package)
 
