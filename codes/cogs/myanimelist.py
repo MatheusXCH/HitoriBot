@@ -1,6 +1,6 @@
 import os
 
-import codes.settings as st
+import codes.paths as path
 import discord
 from discord.ext import commands
 from discord.utils import *

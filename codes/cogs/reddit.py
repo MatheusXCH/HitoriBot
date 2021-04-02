@@ -10,7 +10,7 @@ from pprint import pprint
 import asyncpraw
 
 # Get the globals from Settings
-import codes.settings as st
+import codes.paths as path
 import discord
 import dotenv
 import requests

@@ -4,7 +4,7 @@ import os
 import random
 
 # Get the globals from Settings
-import codes.settings as st
+import codes.paths as path
 import discord
 import dotenv
 from discord.ext import commands
@@ -45,40 +45,6 @@ class Messages(commands.Cog):
         )
         familia_embed = discord.Embed(description=response)
         await ctx.send(embed=familia_embed)
-
-    @commands.command(name="playlist")
-    async def playlist(self, ctx: commands.Context):
-        """!playlist => Lista as playlists feitas para o Servidor"""
-
-        embed = discord.Embed(
-            title=":notes: **Playlists do Servidor** :notes:",
-            colour=discord.Colour(0x32A852),
-            description="Aqui estão os **links das playlists** elaboradas para este servidor:",
-        )
-        embed.add_field(
-            name=":play_pause: Animezada:",
-            value="https://www.youtube.com/playlist?list=PLlOJh8D_rbtt3u1U3XScS8iL-EvNOf_ap",
-            inline=False,
-        )
-        embed.add_field(
-            name=":play_pause: Biruta:",
-            value="https://www.youtube.com/playlist?list=PLlOJh8D_rbtsYBFZWDPCqG4gqXSSkSj_m",
-            inline=False,
-        )
-        embed.add_field(
-            name=":play_pause: É o Ericks:",
-            value="https://www.youtube.com/playlist?list=PLUou7E06dGsYeCeFykeBHCG7bXgx_VC4e",
-            inline=False,
-        )
-        embed.add_field(
-            name=":play_pause: Só o HYPE:",
-            value="https://open.spotify.com/playlist/4XsVHUylRyislcTEJWdkiE?si=-Kt1GXOuSgKJfDuOhcgupg",
-            inline=False,
-        )
-
-        message = await ctx.send(embed=embed)
-        await asyncio.sleep(10)
-        await message.delete()
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):

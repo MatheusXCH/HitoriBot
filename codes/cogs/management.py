@@ -3,8 +3,8 @@ import os
 import time
 import asyncio
 
-# Get the globals from Settings
-import codes.settings as st
+# Get the globals from Paths
+import codes.paths as path
 import discord
 from discord import Member, Role, User
 from discord.ext import commands
@@ -45,7 +45,7 @@ class Management(commands.Cog):
     async def rules(self, ctx: commands.Context):
         """!rules => Exibe as regras do servidor"""
 
-        with codecs.open(st.rule_path + "rules.txt", "r", encoding="utf8") as f:
+        with codecs.open(path.rule_path + "rules.txt", "r", encoding="utf8") as f:
             text = f.read()
 
         embed = discord.Embed(
@@ -55,7 +55,7 @@ class Management(commands.Cog):
         )
 
         embed.add_field(name="Regras", value=text, inline=False)
-        file = discord.File(st.image_path + "RH.png", filename="RH.png")
+        file = discord.File(path.image_path + "RH.png", filename="RH.png")
         embed.set_image(url="attachment://RH.png")
         await ctx.send(file=file, embed=embed)
 
@@ -93,7 +93,7 @@ class Management(commands.Cog):
 
         await member.kick()
         await ctx.send(f"{member.mention} foi KICKADO pelo RH!")
-        await ctx.send(file=discord.File(st.image_path + "RH.png"))
+        await ctx.send(file=discord.File(path.image_path + "RH.png"))
 
     # Trata o erro de 'Nick'
     @kick.error
@@ -111,7 +111,7 @@ class Management(commands.Cog):
 
         await member.ban()
         await ctx.send(f"{member.mention} foi BANIDO pelo RH!")
-        await ctx.send(file=discord.File(st.image_path + "RH.png"))
+        await ctx.send(file=discord.File(path.image_path + "RH.png"))
 
     # Trata o erro de 'Ban'
     @ban.error

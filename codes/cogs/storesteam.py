@@ -7,7 +7,7 @@ import sys
 from pprint import pprint
 from urllib.parse import quote
 
-import codes.settings as st
+import codes.paths as path
 import discord
 import dotenv
 import requests

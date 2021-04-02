@@ -2,6 +2,10 @@ import os
 
 import discord
 
+# TODO Adicionar o contato do desenvolvedor
+# Discord Contact
+dev_discord_id = 304991219245776896
+
 # GLOBAL PATHS:
 
 # Path para Raiz do projeto

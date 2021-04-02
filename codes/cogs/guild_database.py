@@ -1,8 +1,8 @@
 import asyncio
 import os
 
-# Get the globals from Settings
-import codes.settings as st
+# Get the globals from Paths
+import codes.paths as path
 import discord
 import dotenv
 import json
@@ -17,7 +17,10 @@ load_dotenv()
 CONNECT_STRING = os.environ.get("MONGODB_URI")
 
 # TODO Trocar todos os blocos TRY/EXCEPT por blocos que utilizam WITH Statement
-class Guild_Settings(commands.Cog):
+# TODO Arrumar os Prints para que mostrem o ID da Guilda também
+# TODO Melhorar os Prints de forma geral -> Eles devem mostrar "Guild_Data" no
+# início da linha, para identificação do módulo que está executando o listener
+class Guild_Database(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
@@ -27,10 +30,10 @@ class Guild_Settings(commands.Cog):
         collection = db.get_collection("free-game-findings-channels")
         return collection
 
-    def guilds_settings_collection(self):
+    def guilds_info_collection(self):
         client = MongoClient(CONNECT_STRING)
         db = client.get_database("discordzada")
-        collection = db.get_collection("guilds_settings")
+        collection = db.get_collection("guilds_info")
         return collection
 
     def get_text_channel_data(self, text_channel: discord.TextChannel):
@@ -115,12 +118,16 @@ class Guild_Settings(commands.Cog):
         guild_data = self.create_guild_data(guild)
 
         try:
-            collection = self.guilds_settings_collection()
+            collection = self.guilds_info_collection()
             collection.insert_one(guild_data)
             collection.database.client.close()
-            print(f"'on_guild_join' SUCCESS: A Guilda com ID:{guild_data['_id']} foi INSERIDO no database")
+            print(
+                f"GUILDS_INFO >> 'on_guild_join' SUCCESS: A Guilda com ID:{guild_data['_id']} foi INSERIDO no database."
+            )
         except Exception as e:
-            print(f"'on_guild_join' ERROR: Houve um erro ao inserir a Guilda ID:{guild.id} no database.")
+            print(
+                f"GUILDS_INFO >> 'on_guild_join' ERROR: Não foi possível inserir a Guilda ID:{guild.id} no database."
+            )
             print(e)
 
     # WORKING
@@ -129,12 +136,14 @@ class Guild_Settings(commands.Cog):
         guild_data = self.create_guild_data(guild)
 
         try:
-            collection = self.guilds_settings_collection()
+            collection = self.guilds_info_collection()
             collection.delete_one({"_id": guild.id})
             collection.database.client.close()
-            print(f"'on_guild_remove' SUCCESS: A Guilda ID:{guild_data['_id']} foi EXCLUÍDO do database")
+            print(
+                f"GUILDS_INFO >> 'on_guild_remove' SUCCESS: A Guilda ID:{guild_data['_id']} foi EXCLUÍDO do database."
+            )
         except Exception as e:
-            print(f"on_guild_remove' ERROR: Houve um erro ao excluir a Guilda ID:{guild.id} do database")
+            print(f"on_guild_remove' ERROR: Não foi possível excluir a Guilda ID:{guild.id} do database.")
             print(e)
 
     # WORKING
@@ -142,14 +151,14 @@ class Guild_Settings(commands.Cog):
     async def on_guild_update(self, before: discord.Guild, after: discord.Guild):
 
         try:
-            collection = self.guilds_settings_collection()
+            collection = self.guilds_info_collection()
             collection.update_one(
                 {"_id": after.id}, {"$set": {"guild.guild_name": after.name, "guild.guild_id": after.id}}
             )
             collection.database.client.close()
-            print(f"'on_guild_update' SUCCESS: A Guilda ID:{after.id} foi ATUALIZADA no database")
+            print(f"GUILDS_INFO >> 'on_guild_update' SUCCESS: A Guilda ID:{after.id} foi ATUALIZADA no database.")
         except Exception as e:
-            print(f"'on_guild_update' ERROR: Houve um erro ao atualizar a Guilda ID:{after.id}")
+            print(f"GUILDS_INFO >> 'on_guild_update' ERROR: Não foi possível atualizar a Guilda ID:{after.id}.")
             print(e)
 
     # WORKING
@@ -159,7 +168,7 @@ class Guild_Settings(commands.Cog):
 
         if str(channel.type) == "text":
             try:
-                collection = self.guilds_settings_collection()
+                collection = self.guilds_info_collection()
                 text_channel_data = self.get_text_channel_data(channel)
                 collection.update_one(
                     {"_id": guild.id},
@@ -167,17 +176,17 @@ class Guild_Settings(commands.Cog):
                 )
                 collection.database.client.close()
                 print(
-                    f"'on_guild_channel_create' SUCCESS: O Canal de Texto ID:{text_channel_data['channel_id']} foi INSERIDO no database"
+                    f"GUILDS_INFO >> 'on_guild_channel_create' SUCCESS: O Canal de Texto ID:{text_channel_data['channel_id']} da Guilda ID: {guild.id} foi INSERIDO no database."
                 )
             except Exception as e:
                 print(
-                    f"'on_guild_channel_create' ERROR: Houve um erro ao inserir o Canal de Texto de ID: {text_channel_data['channel_id']}"
+                    f"GUILDS_INFO >> 'on_guild_channel_create' ERROR: Não foi possível inserir o Canal de Texto de ID:{text_channel_data['channel_id']} da Guilda ID: {guild.id}."
                 )
                 print(e)
 
         elif str(channel.type) == "voice":
             try:
-                collection = self.guilds_settings_collection()
+                collection = self.guilds_info_collection()
                 voice_channel_data = self.get_voice_channel_data(channel)
                 collection.update_one(
                     {"_id": guild.id},
@@ -185,11 +194,11 @@ class Guild_Settings(commands.Cog):
                 )
                 collection.database.client.close()
                 print(
-                    f"'on_guild_channel_create' SUCCESS: O Canal de Voz ID:{voice_channel_data['channel_id']} foi INSERIDO no database"
+                    f"GUILDS_INFO >> 'on_guild_channel_create' SUCCESS: O Canal de Voz ID:{voice_channel_data['channel_id']} da Guilda ID: {guild.id} foi INSERIDO no database"
                 )
             except Exception as e:
                 print(
-                    f"'on_guild_channel_create' ERROR: Houve um erro ao inserir o Canal de Voz de ID: {voice_channel_data['channel_id']}"
+                    f"GUILDS_INFO >> 'on_guild_channel_create' ERROR: Não foi possível inserir o Canal de Voz de ID:{voice_channel_data['channel_id']} da Guilda ID: {guild.id}."
                 )
                 print(e)
 
@@ -200,7 +209,7 @@ class Guild_Settings(commands.Cog):
 
         if str(channel.type) == "text":
             try:
-                collection = self.guilds_settings_collection()
+                collection = self.guilds_info_collection()
                 text_channel_data = self.get_text_channel_data(channel)
                 collection.update_one(
                     {"_id": guild.id},
@@ -208,17 +217,17 @@ class Guild_Settings(commands.Cog):
                 )
                 collection.database.client.close()
                 print(
-                    f"'on_guild_channel_delete' SUCCESS: O Canal de Texto ID:{text_channel_data['channel_id']} foi REMOVIDO no database"
+                    f"GUILDS_INFO >> 'on_guild_channel_delete' SUCCESS: O Canal de Texto ID:{text_channel_data['channel_id']} da Guilda ID: {guild.id} foi REMOVIDO no database."
                 )
             except Exception as e:
                 print(
-                    f"'on_guild_channel_delete' ERROR: Houve um erro ao remover o Canal de Texto ID:{text_channel_data['channel_id']}"
+                    f"GUILDS_INFO >> 'on_guild_channel_delete' ERROR: Não foi possível remover o Canal de Texto ID:{text_channel_data['channel_id']} da Guilda ID: {guild.id}."
                 )
                 print(e)
 
         elif str(channel.type) == "voice":
             try:
-                collection = self.guilds_settings_collection()
+                collection = self.guilds_info_collection()
                 voice_channel_data = self.get_voice_channel_data(channel)
                 collection.update_one(
                     {"_id": guild.id},
@@ -226,11 +235,11 @@ class Guild_Settings(commands.Cog):
                 )
                 collection.database.client.close()
                 print(
-                    f"'on_guild_channel_delete' SUCCESS: O Canal de Voz ID:{voice_channel_data['channel_id']} foi REMOVIDO no database"
+                    f"GUILDS_INFO >> 'on_guild_channel_delete' SUCCESS: O Canal de Voz ID:{voice_channel_data['channel_id']} da Guilda ID: {guild.id} foi REMOVIDO no database."
                 )
             except Exception as e:
                 print(
-                    f"'on_guild_channel_delete' ERROR: Houve um erro ao remover o Canal de Voz ID:{voice_channel_data['channel_id']}"
+                    f"GUILDS_INFO >> 'on_guild_channel_delete' ERROR: Não foi possível remover o Canal de Voz ID:{voice_channel_data['channel_id']} da Guilda ID: {guild.id}."
                 )
                 print(e)
 
@@ -241,7 +250,7 @@ class Guild_Settings(commands.Cog):
 
         if str(after.type) == "text":
             try:
-                collection = self.guilds_settings_collection()
+                collection = self.guilds_info_collection()
                 text_channel_after_data = self.get_text_channel_data(after)
                 collection.update_one(
                     {"_id": guild.id, "guild.channels_info.text_channels.channel_id": after.id},
@@ -249,16 +258,16 @@ class Guild_Settings(commands.Cog):
                 )
                 collection.database.client.close()
                 print(
-                    f"'on_guild_channel_update' SUCCESS: O Canal de Texto ID:{text_channel_after_data['channel_id']} foi ATUALIZADO no database"
+                    f"GUILDS_INFO >> 'on_guild_channel_update' SUCCESS: O Canal de Texto ID:{text_channel_after_data['channel_id']} da Guilda ID: {guild.id} foi ATUALIZADO no database."
                 )
             except Exception as e:
                 print(
-                    f"'on_guild_channel_update' ERROR: Houve um erro ao atualizar o Canal de Texto ID:{text_channel_after_data['channel_id']}"
+                    f"GUILDS_INFO >> 'on_guild_channel_update' ERROR: Não foi possível atualizar o Canal de Texto ID:{text_channel_after_data['channel_id']} da Guilda ID: {guild.id}"
                 )
                 print(e)
         elif str(after.type) == "voice":
             try:
-                collection = self.guilds_settings_collection()
+                collection = self.guilds_info_collection()
                 voice_channel_after_data = self.get_voice_channel_data(after)
                 collection.update_one(
                     {"_id": guild.id, "guild.channels_info.voice_channels.channel_id": after.id},
@@ -266,11 +275,11 @@ class Guild_Settings(commands.Cog):
                 )
                 collection.database.client.close()
                 print(
-                    f"'on_guild_channel_update' SUCCESS: O Canal de Voz ID:{voice_channel_after_data['channel_id']} foi ATUALIZADO no database"
+                    f"GUILDS_INFO >> 'on_guild_channel_update' SUCCESS: O Canal de Voz ID:{voice_channel_after_data['channel_id']} da Guilda ID:{guild.id} foi ATUALIZADO no database."
                 )
             except Exception as e:
                 print(
-                    f"'on_guild_channel_update' ERROR: Houve um erro ao atualizar o Canal de Voz ID:{voice_channel_after_data['channel_id']}"
+                    f"GUILDS_INFO >> 'on_guild_channel_update' ERROR: Não foi possível atualizar o Canal de Voz ID:{voice_channel_after_data['channel_id']} da Guilda ID:{guild.id}."
                 )
                 print(e)
 
@@ -281,12 +290,16 @@ class Guild_Settings(commands.Cog):
         role_data = self.get_role_data(role)
         pprint(role_data)
         try:
-            collection = self.guilds_settings_collection()
+            collection = self.guilds_info_collection()
             collection.update_one({"_id": guild.id}, {"$push": {"guild.roles_info": role_data}})
             collection.database.client.close()
-            print(f"'on_guild_role_create' SUCCESS: A role de ID:{role_data['role_id']} foi INSERIDA no database")
+            print(
+                f"GUILDS_INFO >> 'on_guild_role_create' SUCCESS: A role de ID:{role_data['role_id']} da Guilda ID:{guild.id} foi INSERIDA no database."
+            )
         except Exception as e:
-            print(f"'on_guild_role_create' ERROR: Houve um erro ao inserir a role de ID:{role_data['role_id']}")
+            print(
+                f"GUILDS_INFO >> 'on_guild_role_create' ERROR: Não foi possível inrerir a role de ID:{role_data['role_id']} da Guilda ID:{guild.id}."
+            )
             print(e)
 
     # WORKING
@@ -296,12 +309,16 @@ class Guild_Settings(commands.Cog):
         role_data = self.get_role_data(role)
 
         try:
-            collection = self.guilds_settings_collection()
+            collection = self.guilds_info_collection()
             collection.update_one({"_id": guild.id}, {"$pull": {"guild.roles_info": role_data}})
             collection.database.client.close()
-            print(f"'on_guild_role_delete' SUCCESS: A role de ID:{role_data['role_id']} foi REMOVIDA no database")
+            print(
+                f"GUILDS_INFO >> 'on_guild_role_delete' SUCCESS: A role de ID:{role_data['role_id']} da Guilda ID:{guild.id} foi REMOVIDA no database."
+            )
         except Exception as e:
-            print(f"'on_guild_role_delete' ERROR: Houve um erro ao remover a role de ID:{role_data['role_id']}")
+            print(
+                f"GUILDS_INFO >> 'on_guild_role_delete' ERROR: Não foi possível remover a role de ID:{role_data['role_id']} da Guilda ID:{guild.id}."
+            )
             print(e)
 
     # WORKING
@@ -311,14 +328,18 @@ class Guild_Settings(commands.Cog):
         role_data = self.get_role_data(after)
 
         try:
-            collection = self.guilds_settings_collection()
+            collection = self.guilds_info_collection()
             collection.update_one(
                 {"_id": guild.id, "guild.roles_info.role_id": after.id}, {"$set": {"guild.roles_info.$": role_data}}
             )
             collection.database.client.close()
-            print(f"'on_guild_role_update' SUCCESS: A role de ID:{role_data['role_id']} foi ATUALIZADA no database")
+            print(
+                f"GUILDS_INFO >> 'on_guild_role_update' SUCCESS: A role de ID:{role_data['role_id']} da Guilda ID:{guild.id} foi ATUALIZADA no database."
+            )
         except Exception as e:
-            print(f"'on_guild_role_update' ERROR: Houve um erro ao atualizar a role de ID:{role_data['role_id']}")
+            print(
+                f"GUILDS_INFO >> 'on_guild_role_update' ERROR: Não foi possível atualizar a role de ID:{role_data['role_id']} da Guilda ID:{guild.id}."
+            )
             print(e)
 
     # WORKING
@@ -328,16 +349,16 @@ class Guild_Settings(commands.Cog):
         member_data = self.get_member_data(member)
 
         try:
-            collection = self.guilds_settings_collection()
+            collection = self.guilds_info_collection()
             collection.update_one({"_id": guild.id}, {"$inc": {"guild.members_info.members_count": 1}})
             collection.update_one({"_id": guild.id}, {"$push": {"guild.members_info.members": member_data}})
             collection.database.client.close()
             print(
-                f"'on_member_join' SUCCESS: Um novo membro de ID:{member_data['member_id']} foi INSERIDO no database"
+                f"GUILDS_INFO >> 'on_member_join' SUCCESS: Um novo membro de ID:{member_data['member_id']} da Guilda ID:{guild.id} foi INSERIDO no database."
             )
         except Exception as e:
             print(
-                f"'on_member_join' ERROR: Houve um erro ao inserir um novo membro no documento de ID:{member_data['member_id']} no database"
+                f"GUILDS_INFO >> 'on_member_join' ERROR: Não foi possível inserir um novo membro no documento de ID:{member_data['member_id']} da Guilda ID:{guild.id}."
             )
             print(e)
 
@@ -348,14 +369,16 @@ class Guild_Settings(commands.Cog):
         member_data = self.get_member_data(member)
 
         try:
-            collection = self.guilds_settings_collection()
+            collection = self.guilds_info_collection()
             collection.update_one({"_id": guild.id}, {"$inc": {"guild.members_info.members_count": -1}})
             collection.update_one({"_id": guild.id}, {"$pull": {"guild.members_info.members": member_data}})
             collection.database.client.close()
-            print(f"'on_member_remove' SUCCESS: Um membro de ID:{member_data['member_id']} foi REMOVIDO do database")
+            print(
+                f"GUILDS_INFO >> 'on_member_remove' SUCCESS: Um membro de ID:{member_data['member_id']} da Guilda ID:{guild.id} foi REMOVIDO do database."
+            )
         except Exception as e:
             print(
-                f"'on_member_remove' ERROR: Houve um erro ao remover um membro do documento de ID:{member_data['member_id']} no database"
+                f"GUILDS_INFO >> 'on_member_remove' ERROR: Não foi possível remover um membro do documento de ID:{member_data['member_id']} da Guilda ID:{guild.id}."
             )
             print(e)
 
@@ -365,16 +388,18 @@ class Guild_Settings(commands.Cog):
         member_after_data = self.get_member_data(after)
 
         try:
-            collection = self.guilds_settings_collection()
+            collection = self.guilds_info_collection()
             collection.update_one(
                 {"_id": after.id, "guild.members_info.members.member_id": after.id},
                 {"$set": {"guild.members_info.members.$": member_after_data}},
             )
             collection.database.client.close()
-            print(f"'on_member_update' SUCCESS: O membro de ID:{member_after_data['member_id']} foi ATUALIZADO!")
+            print(
+                f"GUILDS_INFO >> 'on_member_update' SUCCESS: O membro de ID:{member_after_data['member_id']} da Guilda ID:{after.guild.id} foi ATUALIZADO!"
+            )
         except Exception as e:
             print(
-                f"'on_member_update' ERROR: Houve um erro ao atualizar o membro de ID:{member_after_data['member_id']}!"
+                f"GUILDS_INFO >> 'on_member_update' ERROR: Não foi possível atualizar o membro de ID:{member_after_data['member_id']} da Guilda ID:{after.guild.id}."
             )
             print(e)
 
@@ -382,7 +407,7 @@ class Guild_Settings(commands.Cog):
     # @tasks.loop(hours=24)
     @commands.command(name="guilds-update", hidden=True)
     async def all_guilds_update(self, ctx: commands.Context):
-        collection = self.guilds_settings_collection()
+        collection = self.guilds_info_collection()
 
         guild_data_list = [
             self.create_guild_data(self.bot.get_guild(guild["guild"]["guild_id"]))
@@ -416,12 +441,16 @@ class Guild_Settings(commands.Cog):
             json.dump(guild_data, outfile, indent=4, default=str)
 
         try:
-            collection = self.guilds_settings_collection()
+            collection = self.guilds_info_collection()
             collection.insert_one(guild_data)
             collection.database.client.close()
-            print(f"'on_guild_join' SUCCESS: O objeto com ID:{guild_data['_id']} foi inserido no database")
+            print(
+                f"GUILDS_INFO >> 'on_guild_join' SUCCESS: O objeto com ID:{guild_data['_id']} da Guilda ID:{ctx.guild.id} foi INSERIDO no database"
+            )
         except Exception as e:
-            print(f"'on_guild_join' ERROR: Houve um erro ao inserir o objeto ID:{ctx.guild.id} no database")
+            print(
+                f"GUILDS_INFO >> 'on_guild_join' ERROR: Não foi possível inserir o objeto ID:{ctx.guild.id} da Guilda ID:{ctx.guild.id}."
+            )
             print(e)
 
     @commands.command(name="delete-data", hidden=True)
@@ -429,14 +458,16 @@ class Guild_Settings(commands.Cog):
         guild_data = self.create_guild_data(guild=ctx.guild)
 
         try:
-            collection = self.guilds_settings_collection()
+            collection = self.guilds_info_collection()
             collection.delete_one({"_id": ctx.guild.id})
             collection.database.client.close()
             print(
-                f"'on_guild_remove' SUCCESS: O objeto com ID:{guild_data['_id']} foi excluído com sucesso do database"
+                f"GUILDS_INFO >> 'on_guild_remove' SUCCESS: O objeto com ID:{guild_data['_id']} da Guilda ID:{ctx.guild.id} foi REMOVIDO do database."
             )
         except Exception as e:
-            print(f"on_guild_remove' ERROR: Houve um erro ao excluir o objeto ID:{ctx.guild.id} do database")
+            print(
+                f"on_guild_remove' ERROR: Não foi possível excluir o objeto ID:{ctx.guild.id} da Guilda ID:{ctx.guild.id}."
+            )
             print(e)
 
     @commands.command(name="reset-data", hidden=True)
@@ -452,4 +483,4 @@ class Guild_Settings(commands.Cog):
 
 
 def setup(bot: commands.Bot):
-    bot.add_cog(Guild_Settings(bot))
+    bot.add_cog(Guild_Database(bot))

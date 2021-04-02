@@ -4,7 +4,7 @@ import random
 import time
 from pprint import pprint
 
-import codes.settings as st
+import codes.paths as path
 import dotenv
 import requests
 import steam
@@ -42,11 +42,11 @@ class SteamBigPicture:
         """
 
         if source == "steamspy":
-            with open(st.steam_data_path + "steam_spy_data.txt", "r") as json_file:
+            with open(path.steam_data_path + "steam_spy_data.txt", "r") as json_file:
                 data = json.load(json_file)
             return data
         elif source == "steam":
-            with open(st.steam_data_path + "steam_data.txt", "r") as json_file:
+            with open(path.steam_data_path + "steam_data.txt", "r") as json_file:
                 data = json.load(json_file)
             return data
         else:
@@ -70,7 +70,7 @@ class SteamBigPicture:
             except ValueError:
                 break
 
-        with open(st.steam_data_path + "steam_spy_data.txt", "w") as outfile:
+        with open(path.steam_data_path + "steam_spy_data.txt", "w") as outfile:
             json.dump(all_steamspy_apps, outfile)
 
         # # # STEAM:
@@ -78,7 +78,7 @@ class SteamBigPicture:
         response_all_steam_apps = requests.get("https://api.steampowered.com/ISteamApps/GetAppList/v2/")
         all_steam_apps.update(response_all_steam_apps.json())
 
-        with open(st.steam_data_path + "steam_data.txt", "w") as outfile:
+        with open(path.steam_data_path + "steam_data.txt", "w") as outfile:
             json.dump(all_steam_apps["applist"]["apps"], outfile)
 
     def __search_game(self, game_title: str, max_items: int):

@@ -5,7 +5,7 @@ import sys
 import time
 
 # Get the globals from Settings
-import codes.settings as st
+import codes.paths as path
 import discord
 from discord.ext import commands
 
@@ -52,7 +52,7 @@ class Minigames(commands.Cog):
             value="JAMAIS QUESTIONE O RESULTADO DOS DADOS!",
             inline=False,
         )
-        file = discord.File(st.image_path + "Dado.png", filename="Dado.png")
+        file = discord.File(path.image_path + "Dado.png", filename="Dado.png")
         fujitora_embed.set_image(url="attachment://Dado.png")
 
         fujitora_message = await ctx.send(file=file, embed=fujitora_embed)
@@ -81,13 +81,13 @@ class Minigames(commands.Cog):
         coin_flip = random.randint(0, 1)
         if coin_flip:
             embed_cara = discord.Embed()
-            file = discord.File(st.minigame_path + "Cara.png", filename="Cara.png")
+            file = discord.File(path.minigame_path + "Cara.png", filename="Cara.png")
             embed_cara.set_image(url="attachment://Cara.png")
             await ctx.send(file=file, embed=embed_cara)
 
         else:
             embed_coroa = discord.Embed()
-            file = discord.File(st.minigame_path + "Coroa.png", filename="Coroa.png")
+            file = discord.File(path.minigame_path + "Coroa.png", filename="Coroa.png")
             embed_coroa.set_image(url="attachment://Coroa.png")
             await ctx.send(file=file, embed=embed_coroa)
 

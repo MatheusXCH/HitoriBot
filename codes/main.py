@@ -17,7 +17,8 @@ from dotenv import load_dotenv
 from pretty_help import Navigation, PrettyHelp
 
 sys.path.append("D:\\python-codes\\Discordzada")  # Config the PYTHONPATH to import "codes.settings" without warnings
-import codes.settings as st  # Get the globals from Settings
+# Get the globals from Settings
+import codes.paths as path
 
 logging.basicConfig(level=logging.INFO)
 
@@ -49,8 +50,10 @@ startup_extensions = [
     "cogs.leagueoflegends",
     "cogs.storesteam",
     "cogs.audioplayer",
-    "cogs.reddit"
-    # "cogs.guild_manager"
+    "cogs.reddit",
+    "cogs.guild_database",
+    "cogs.settings_database",
+    "cogs.playlist",
 ]
 
 # bot = commands.Bot(command_prefix=PREFIX, help_command=None)

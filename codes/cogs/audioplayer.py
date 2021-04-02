@@ -1,7 +1,7 @@
 import asyncio
 import os
 
-import codes.settings as st
+import codes.paths as path
 import discord
 from discord.ext import commands
 from discord.utils import *
@@ -34,7 +34,7 @@ class AudioPlayer(commands.Cog):
 
         vc = await voice_channel.connect()
         join_message = await ctx.send(embed=discord.Embed(title=f"Conectado ao canal *{voice_channel.name}*"))
-        vc.play(discord.FFmpegPCMAudio(source=st.audio_path + f"{audio_name}"))
+        vc.play(discord.FFmpegPCMAudio(source=path.audio_path + f"{audio_name}"))
         while vc.is_playing():
             await asyncio.sleep(0.1)
         await vc.disconnect()
