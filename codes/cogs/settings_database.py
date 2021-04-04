@@ -33,7 +33,7 @@ class Settings_Database(commands.Cog):
             "guild": {"guild_id": guild.id, "guild_name": guild.name},
             "settings": {
                 "prefix": ["!"],
-                "rules": "",
+                "rules": {"rules_text": "O texto passado ao bot pelo comando '!add-rules' aparecerá aqui!", "rules_thumb": None},
                 "playlist": [],
                 "freegame_channel": {"channel_id": None, "channel_name": None},
             },

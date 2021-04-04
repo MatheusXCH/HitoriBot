@@ -50,7 +50,7 @@ startup_extensions = [
     "cogs.leagueoflegends",
     "cogs.storesteam",
     "cogs.audioplayer",
-    "cogs.reddit",
+    "cogs.freegame",
     "cogs.guild_database",
     "cogs.settings_database",
     "cogs.playlist",

@@ -27,7 +27,6 @@ reddit = asyncpraw.Reddit(
     password=os.getenv("PRAW_PASSWORD"),
     user_agent=os.getenv("PRAW_USER_AGENT"),
 )
-load_dotenv()
 CONNECT_STRING = os.environ.get("MONGODB_URI")
 
 PLATFORMS = [
@@ -52,33 +51,38 @@ ICONS_DICT = {
     "PC": "https://pbs.twimg.com/profile_images/300829764/pc-gamer-avatar.jpg",
 }
 
-
-class Reddit(commands.Cog):
+# TODO Adicionar os prints que deverão ser mostrados no console log em casos onde ocorram exceções
+class FreeGame(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    def freegames_collection(self):
-        client = MongoClient(CONNECT_STRING)
-        db = client.get_database(name="discordzada")
-        collection = db.get_collection(name="free-game-findings-channels")
-        return collection
-
-    @commands.command(name="free-game-channel", hidden=True)
+    # WORKING
+    @commands.command(name="freegame-channel", hidden=True)
     async def set_channel_id(self, ctx: commands.Context):
-        collection = self.freegames_collection()
-
         try:
-            data = {
-                "guild_id": ctx.guild.id,
-                "guild_name": ctx.guild.name,
-                "channel_id": ctx.channel.id,
-                "channel_name": ctx.channel.name,
-            }
-            collection.update_one({"guild_id": data["guild_id"]}, {"$set": data}, upsert=True)
-        except Exception:
+            with MongoClient(CONNECT_STRING) as client:
+                collection = client.get_database("discordzada").get_collection("guilds_settings")
+                collection.update_one(
+                    {"_id": ctx.guild.id},
+                    {
+                        "$set": {
+                            "settings.freegame_channel": {
+                                "channel_id": ctx.channel.id,
+                                "channel_name": ctx.channel.name,
+                            }
+                        }
+                    },
+                )
+        except Exception as e:
             await ctx.send(
-                "Desculpe, **houve um problema** ao salvar essa informação. Por favor, **tente novamente** em alguns instantes!"
+                """Desculpe, **houve um problema** ao salvar essa informação. Por favor, **tente novamente** em alguns instantes!
+                Se o problema persistir, entre em contato com o desenvolvedor em CONTATO"""
             )
+            print(
+                f"""COMMAND >> 'freegame-channel' ERROR: Não foi possível salvar o canal de FreeGameFindings
+                da guilda ID: {ctx.guild.id} no database."""
+            )
+            print(e)
             return
 
         await ctx.message.delete()
@@ -88,10 +92,9 @@ class Reddit(commands.Cog):
         await asyncio.sleep(5)
         await msg.delete()
 
-        collection.database.client.close()
-
+    # TEST
     @tasks.loop()
-    async def free_game_findings(self, channel_id=None):
+    async def freegame_findings(self, channel_id=None):
         """ Confere continuamente as postagens no 'r/FreeGamesFindings', obtendo aquelas que atendem aos filtros
         definidos e enviando-as ao canal selecionado (que corresponde ao ID < channel_id >)
 
@@ -121,15 +124,26 @@ class Reddit(commands.Cog):
                         if category in submission.title.upper():
                             return submission
 
-        collection = self.freegames_collection()
-
         # Handles the Heroku's server restart to not resend a post
         first_entry_flag = True
         subreddit = await reddit.subreddit("FreeGameFindings")
-        channel_id_list = [item["channel_id"] for item in collection.find({}, {"channel_id": 1})]
         post = {"title": "", "url": ""}
 
         while True:
+            try:
+                with MongoClient(CONNECT_STRING) as client:
+                    collection = client.get_database("discordzada").get_collection("guilds_settings")
+                    channel_id_list = [
+                        item["settings"]["freegame_channel"]["channel_id"]
+                        for item in collection.find({}, {"settings.freegame_channel.channel_id": 1})
+                    ]
+            except Exception as e:
+                print(
+                    """TASK >> 'freegame_findings' ERROR: Não foi possível acessar os canais de FreeGameFindings
+                no database."""
+                )
+                print(e)
+
             # Get newest posts
             newest_list = [apply_filters(submission) async for submission in subreddit.new(limit=10)]
             # Clear 'None' from the list
@@ -169,6 +183,9 @@ class Reddit(commands.Cog):
             # Sleep for 1 hour
             await asyncio.sleep(3600)
 
+    # # # NOTE: NOTE: For now, the functions below are for DEBUG only.
+    # # # If decided to maintain those on the final stage, then "has_permissions" decorator must be added
+
     @commands.command(name="free-game-start", hidden=True)
     async def free_game_start(self, ctx: commands.Context):
         """Starts the Free-Game-Findings task
@@ -180,7 +197,7 @@ class Reddit(commands.Cog):
         """
 
         await ctx.message.delete()
-        self.free_game_findings.start()
+        self.freegame_findings.start()
         msg = await ctx.send("**FreeGameFindings is RUNNING!**")
         await asyncio.sleep(3)
         await msg.delete()
@@ -196,7 +213,7 @@ class Reddit(commands.Cog):
         """
 
         await ctx.message.delete()
-        self.free_game_findings.cancel()
+        self.freegame_findings.cancel()
         msg = await ctx.send("**FreeGameFindings has been STOPPED!**")
         await asyncio.sleep(3)
         await msg.delete()
@@ -212,17 +229,17 @@ class Reddit(commands.Cog):
         """
 
         await ctx.message.delete()
-        self.free_game_findings.cancel()
+        self.freegame_findings.cancel()
         await asyncio.sleep(3)
-        self.free_game_findings.start()
+        self.freegame_findings.start()
         msg = await ctx.send("**FreeGameFindings has been RESTARTED!**")
         await asyncio.sleep(3)
         await msg.delete()
 
     @commands.Cog.listener()
     async def on_ready(self):
-        self.free_game_findings.start()
+        self.freegame_findings.start()
 
 
 def setup(bot):
-    bot.add_cog(Reddit(bot))
+    bot.add_cog(FreeGame(bot))

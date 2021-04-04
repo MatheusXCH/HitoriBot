@@ -24,12 +24,6 @@ class Guild_Database(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    def freegames_collection(self):
-        client = MongoClient(CONNECT_STRING)
-        db = client.get_database("discordzada")
-        collection = db.get_collection("free-game-findings-channels")
-        return collection
-
     def guilds_info_collection(self):
         client = MongoClient(CONNECT_STRING)
         db = client.get_database("discordzada")

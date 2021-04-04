@@ -41,23 +41,23 @@ class Management(commands.Cog):
                 await message.channel.purge(limit=1)
                 await message.channel.send(f"Mensagem deletada - Uso de expressão indevida! (||{sentence})||")
 
-    @commands.command(name="rules")
-    async def rules(self, ctx: commands.Context):
-        """!rules => Exibe as regras do servidor"""
+    # @commands.command(name="rules")
+    # async def rules(self, ctx: commands.Context):
+    #     """!rules => Exibe as regras do servidor"""
 
-        with codecs.open(path.rule_path + "rules.txt", "r", encoding="utf8") as f:
-            text = f.read()
+    #     with codecs.open(path.rule_path + "rules.txt", "r", encoding="utf8") as f:
+    #         text = f.read()
 
-        embed = discord.Embed(
-            title="__**Regras e Diretrizes do Servidor**__",
-            colour=discord.Colour(0xE82E2E),
-            description="Leia as Regras e Diretrizes atentamente",
-        )
+    #     embed = discord.Embed(
+    #         title="__**Regras e Diretrizes do Servidor**__",
+    #         colour=discord.Colour(0xE82E2E),
+    #         description="Leia as Regras e Diretrizes atentamente",
+    #     )
 
-        embed.add_field(name="Regras", value=text, inline=False)
-        file = discord.File(path.image_path + "RH.png", filename="RH.png")
-        embed.set_image(url="attachment://RH.png")
-        await ctx.send(file=file, embed=embed)
+    #     embed.add_field(name="Regras", value=text, inline=False)
+    #     file = discord.File(path.image_path + "RH.png", filename="RH.png")
+    #     embed.set_image(url="attachment://RH.png")
+    #     await ctx.send(file=file, embed=embed)
 
     @commands.command(name="invite")
     async def invite(self, ctx: commands.Context):
