@@ -100,7 +100,7 @@ class Playlist(commands.Cog):
 
                 try:
                     playlist_to_delete = await self.bot.wait_for("message", check=check, timeout=timeout_limit)
-                except asyncio.Timeout:
+                except asyncio.TimeoutError:
                     return await ctx.send(
                         f"Desculpe {ctx.author.mention}, você demorou demais para informar o nome da Playlist 😅"
                     )
@@ -232,8 +232,7 @@ class Playlist(commands.Cog):
                     return
 
             elif choice.content == "3" or choice.content.upper() == "AMBOS":
-                # BUG -> Quando o timeout ocorre após o nome já ter sido passado pelo usuário, porém antes dele passar o URL,
-                # o nome é salvo no banco.
+                # BUG -> Quando o timeout ocorre após o nome já ter sido passado pelo usuário, porém antes dele passar o URL, o nome é salvo no banco.
                 # FIXME -> O ideal é que, após um timeout ocorrer, nenhuma das informações sejam salvas no banco
                 new_name = await update_playlist_name(old_name)
                 if new_name is None:

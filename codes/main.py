@@ -16,9 +16,10 @@ from discord.ext.commands import Bot, MissingPermissions, guild_only, has_permis
 from dotenv import load_dotenv
 from pretty_help import Navigation, PrettyHelp
 
+import codes.paths as path
+
 sys.path.append("D:\\python-codes\\Discordzada")  # Config the PYTHONPATH to import "codes.settings" without warnings
 # Get the globals from Settings
-import codes.paths as path
 
 logging.basicConfig(level=logging.INFO)
 
@@ -54,6 +55,8 @@ startup_extensions = [
     "cogs.guild_database",
     "cogs.settings_database",
     "cogs.playlist",
+    "cogs.rules",
+    "cogs.bad_words",
 ]
 
 # bot = commands.Bot(command_prefix=PREFIX, help_command=None)
@@ -69,6 +72,8 @@ custom_pretty_help = PrettyHelp(
 bot = commands.Bot(command_prefix=PREFIX, help_command=custom_pretty_help, intents=intents)
 
 # Evento que dispara quando o bot conecta
+
+
 @bot.event
 async def on_ready():
     """On_Ready

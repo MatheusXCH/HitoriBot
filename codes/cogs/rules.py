@@ -17,7 +17,7 @@ from pymongo import MongoClient
 
 load_dotenv()
 CONNECT_STRING = os.environ.get("MONGODB_URI")
-timeout_limit = 15
+timeout_limit = 60
 
 
 class Rules(commands.Cog):
@@ -27,8 +27,7 @@ class Rules(commands.Cog):
     def _timeout_message(self, ctx: commands.Context):
         return f"Desculpe {ctx.author.mention}, parece que você demorou demais para informar o que foi solicitado... 😅"
 
-    # TODO: COMMAND >> 'add-rules'
-    # TEST
+    # WORKING
     @commands.command(name="add-rules")
     async def add_rules(self, ctx: commands.Context):
         def check(message):
@@ -37,7 +36,8 @@ class Rules(commands.Cog):
         await ctx.send(f"{ctx.author.mention}, informe o texto de regras para o servidor!")
 
         try:
-            rules_text = await self.bot.wait_for("message", check=check, timeout=timeout_limit)
+            rules_text_message = await self.bot.wait_for("message", check=check, timeout=timeout_limit)
+            rules_text = rules_text_message.content
         except asyncio.TimeoutError:
             return await ctx.send(self._timeout_message(ctx))
 
@@ -54,8 +54,7 @@ class Rules(commands.Cog):
             )
             print(e)
 
-    # TODO COMMAND >> 'del-rules'
-    # TEST
+    # WORKING
     @commands.command(name="del-rules")
     async def del_rules(self, ctx: commands.Context):
         def check(message):
@@ -70,7 +69,8 @@ class Rules(commands.Cog):
         await ctx.send(f"{ctx.author.mention}, tem certeza que deseja excluir as regras do servidor?(S/N)")
 
         try:
-            confirm_msg = await self.bot.wait_for("message", check=check, timeout=timeout_limit)
+            confirm_msg_message = await self.bot.wait_for("message", check=check, timeout=timeout_limit)
+            confirm_msg = confirm_msg_message.content
         except asyncio.Timeout:
             return await ctx.send(self._timeout_message(ctx))
 
@@ -99,14 +99,7 @@ class Rules(commands.Cog):
             )
             print(e)
 
-    # # # NOTE: Need to add a default thumb at 'settings_database.py/create_settings_data' function
-    # TODO COMMAND >> 'add-rules-thumb'
-    # TODO COMMAND >> 'del-rules-thumb'
-
-    # TODO COMMAND >> 'edit-rules' (???)
-
-    # TODO COMMAND >> 'rules' -> Show Rules
-    # TEST
+    # WORKING
     @commands.command(name="rules")
     async def rules(self, ctx: commands.Context):
         try:
@@ -115,7 +108,6 @@ class Rules(commands.Cog):
                 document = collection.find_one({"_id": ctx.guild.id}, {"settings.rules.rules_text": 1})
                 rules_text = document["settings"]["rules"]["rules_text"]
 
-                # TODO Get the Thumb here
         except Exception as e:
             f"""Sinto muito {ctx.author.mention}, houve um problema ao recupear as **regras** no banco de dados.
             Tente novamente mais tarde.\nSe o problema persistir, informe o desenvolvedor em CONTATO."""
@@ -130,10 +122,12 @@ class Rules(commands.Cog):
             description="Leia as Regras e Diretrizes atentamente",
         )
         embed.add_field(name="**Regras**", value=rules_text, inline=False)
-        # TODO Add Thumb/Image of the rules embed
-        await ctx.send(embed=embed, file=None)
+        file = discord.File(path.image_path + "RH.png", filename="RH.png")
+        embed.set_image(url="attachment://RH.png")
+        await ctx.send(embed=embed, file=file)
 
     # TODO Listener >> 'on_member_join(member)'
+    # QUEST How to invoke a command in listener if there's no 'ctx' ???
     # -> Send Rules on member DM or Ask him to use '!rules'
 
 
