@@ -127,7 +127,7 @@ class Rules(commands.Cog):
         await ctx.send(embed=embed, file=file)
 
     # TODO Listener >> 'on_member_join(member)'
-    # QUEST How to invoke a command in listener if there's no 'ctx' ???
+    # QUEST How to invoke a command in listener if there's no 'ctx' ????
     # -> Send Rules on member DM or Ask him to use '!rules'
 
 
