@@ -18,8 +18,10 @@ CONNECT_STRING = os.environ.get("MONGODB_URI")
 
 # TODO Trocar todos os blocos TRY/EXCEPT por blocos que utilizam WITH Statement
 # TODO Arrumar os Prints para que mostrem o ID da Guilda também
-# TODO Melhorar os Prints de forma geral -> Eles devem mostrar "Guild_Data" no
-# início da linha, para identificação do módulo que está executando o listener
+# TODO Melhorar os Prints de forma geral -> Eles devem mostrar "Guild_Data" no início da linha, para identificação do módulo que está executando o listener
+# TODO Adicionar 'has_permissions' nas funções que for necessário
+
+
 class Guild_Database(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -377,6 +379,8 @@ class Guild_Database(commands.Cog):
             print(e)
 
     # WORKING
+    # TODO Update the listener to only access the database if the changes was maded on Member's "name", "id", "nick" or "roles"
+    # This can be done by comparing the before and after params
     @commands.Cog.listener()
     async def on_member_update(self, before: discord.Member, after: discord.Member):
         member_after_data = self.get_member_data(after)

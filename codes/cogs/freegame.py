@@ -51,6 +51,7 @@ ICONS_DICT = {
     "PC": "https://pbs.twimg.com/profile_images/300829764/pc-gamer-avatar.jpg",
 }
 
+
 # TODO Adicionar os prints que deverão ser mostrados no console log em casos onde ocorram exceções
 class FreeGame(commands.Cog):
     def __init__(self, bot: commands.Bot):

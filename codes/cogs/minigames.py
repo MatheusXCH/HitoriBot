@@ -23,6 +23,7 @@ class Minigames(commands.Cog):
         """!dado <dado> => Fujitora joga os dados (Ex: !dado 1d6)
         - Invoca o Fujitora para tirar a sorte nos dados!
         """
+
         DICE_EMOJI = "<:dice:818478609806131240>"
 
         try:
@@ -55,7 +56,7 @@ class Minigames(commands.Cog):
         file = discord.File(path.image_path + "Dado.png", filename="Dado.png")
         fujitora_embed.set_image(url="attachment://Dado.png")
 
-        fujitora_message = await ctx.send(file=file, embed=fujitora_embed)
+        await ctx.send(file=file, embed=fujitora_embed)
 
         # Second Embed - Countdown
         dices_embed = discord.Embed()

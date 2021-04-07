@@ -27,7 +27,7 @@ class Rules(commands.Cog):
     def _timeout_message(self, ctx: commands.Context):
         return f"Desculpe {ctx.author.mention}, parece que você demorou demais para informar o que foi solicitado... 😅"
 
-    # TODO COMMAND >> 'add-rules'
+    # TODO: COMMAND >> 'add-rules'
     # TEST
     @commands.command(name="add-rules")
     async def add_rules(self, ctx: commands.Context):

@@ -20,6 +20,8 @@ timeout_limit = 15
 
 # NOTE: Os comandos de Playlist não serão disponíveis para todos os membros dos servidores
 # TODO Adicionar as permissões necessárias para utilizar os comandos
+
+
 class Playlist(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot

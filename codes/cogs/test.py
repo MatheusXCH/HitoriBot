@@ -4,7 +4,7 @@ import random
 from pprint import pprint
 
 import asyncpraw
-import codes.settings as st
+import codes.paths as path
 import dotenv
 import mal
 import pandas

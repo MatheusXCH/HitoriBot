@@ -17,6 +17,8 @@ translator = google_translator()
 #     #### Utiliza:
 #     ##### JikanPY API (by abhinavk99 on: https://github.com/abhinavk99/jikanpy)
 #     ##### Google_Trans_New API (by lushan88a on: https://github.com/lushan88a/google_trans_new)
+
+
 class MyAnimeList(commands.Cog):
     """Obtém dados sobre animes, mangás e personagens diretamente do MyAnimeList (MAL)"""
 
@@ -105,7 +107,6 @@ class MyAnimeList(commands.Cog):
 
             i = 0
             reaction = None
-            synopsis = None
             try:
                 while True:
                     if str(reaction) == "⏪":
@@ -131,7 +132,7 @@ class MyAnimeList(commands.Cog):
                         await message.edit(embed=page)
 
                     elif str(reaction) == "📄":
-                        synopsis = await ctx.invoke(
+                        await ctx.invoke(
                             self.bot.get_command("anime-sin"),
                             anime_sin_title=page.title,
                         )

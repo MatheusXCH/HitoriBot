@@ -12,6 +12,8 @@ hltb = HowLongToBeat()
 #    - Permite consultar o tempo estimado de término de games, de acordo com os dados disponibilizados pela comunidade do HLTB
 #    #### Utiliza:
 #    ##### howlongtobeatpy API (by ScrappyCocco on: https://github.com/ScrappyCocco/HowLongToBeat-PythonAPI)
+
+
 class HowLongToBeat(commands.Cog):
     """Obtém dados de tempo de jogo dos games cadastrados no 'HowLongToBeat'"""
 
