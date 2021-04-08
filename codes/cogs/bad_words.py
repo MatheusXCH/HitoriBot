@@ -172,7 +172,7 @@ class BadWords(commands.Cog):
     # WORKING
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
-        message.content = message.content.upper()
+        message_uppercase = message.content.upper()
         try:
             with MongoClient(CONNECT_STRING) as client:
                 collection = client.get_database("discordzada").get_collection("guilds_settings")
@@ -181,7 +181,7 @@ class BadWords(commands.Cog):
                 bad_words = query_result["settings"]["bad_words"]
 
                 for word in bad_words:
-                    if message.content.count(word) > 0:
+                    if message_uppercase.count(word) > 0:
                         await message.channel.purge(limit=1)
                         msg = await message.channel.send(f"**Mensagem deletada** [{message.author.mention}].")
                         await asyncio.sleep(5)

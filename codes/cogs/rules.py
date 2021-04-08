@@ -47,8 +47,10 @@ class Rules(commands.Cog):
                 collection.update_one({"_id": ctx.guild.id}, {"$set": {"settings.rules": {"rules_text": rules_text}}})
                 await ctx.send(f"As regras de **{ctx.guild.name}** foram salvas 💾")
         except Exception as e:
-            f"Sinto muito {ctx.author.mention}, houve um problema ao salvar as **regras** no banco de dados."
-            f"Tente novamente mais tarde.\nSe o problema persistir, informe o desenvolvedor em {path.dev_contact}."
+            await ctx.send(
+                f"Sinto muito {ctx.author.mention}, houve um problema ao salvar as **regras** no banco de dados."
+                f"Tente novamente mais tarde.\nSe o problema persistir, informe o desenvolvedor em {path.dev_contact}."
+            )
             print(
                 f"COMMAND >> 'add-rules' ERROR: Não foi possível salvar as Regras da guilda ID:{ctx.guild.id} no database."
             )
@@ -109,8 +111,10 @@ class Rules(commands.Cog):
                 rules_text = document["settings"]["rules"]["rules_text"]
 
         except Exception as e:
-            f"Sinto muito {ctx.author.mention}, houve um problema ao recupear as **regras** no banco de dados."
-            f"Tente novamente mais tarde.\nSe o problema persistir, informe o desenvolvedor em {path.dev_contact}." ""
+            await ctx.send(
+                f"Sinto muito {ctx.author.mention}, houve um problema ao recupear as **regras** no banco de dados."
+                f"Tente novamente mais tarde.\nSe o problema persistir, informe o desenvolvedor em {path.dev_contact}."
+            )
             print(
                 f"COMMAND >> 'rules' ERROR: Não foi possível recuperar as Regras da guilda ID:{ctx.guild.id} no database."
             )
@@ -124,11 +128,7 @@ class Rules(commands.Cog):
         embed.add_field(name="**Regras**", value=rules_text, inline=False)
         file = discord.File(path.image_path + "RH.png", filename="RH.png")
         embed.set_image(url="attachment://RH.png")
-        await ctx.send(embed=embed, file=file)
-
-    # TODO Listener >> 'on_member_join(member)'
-    # QUEST How to invoke a command in listener if there's no 'ctx' ????
-    # -> Send Rules on member DM or Ask him to use '!rules'
+        await ctx.author.send(embed=embed, file=file)
 
 
 def setup(bot):

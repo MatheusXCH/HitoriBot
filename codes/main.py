@@ -69,7 +69,7 @@ custom_pretty_help = PrettyHelp(
     show_index=True,
 )
 
-bot = commands.Bot(command_prefix=PREFIX, help_command=custom_pretty_help, intents=intents)
+bot = commands.Bot(command_prefix=PREFIX, help_command=custom_pretty_help, intents=intents, case_insensitive=True)
 
 # Evento que dispara quando o bot conecta
 
