@@ -2,9 +2,8 @@ import os
 
 import discord
 
-# TODO Adicionar o contato do desenvolvedor
-# Discord Contact
-dev_discord_id = 304991219245776896
+# Twitter Contact
+dev_contact = "[Twitter](https://twitter.com/i/user/4400659517)"
 
 # GLOBAL PATHS:
 
