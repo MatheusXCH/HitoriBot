@@ -47,8 +47,8 @@ class Rules(commands.Cog):
                 collection.update_one({"_id": ctx.guild.id}, {"$set": {"settings.rules": {"rules_text": rules_text}}})
                 await ctx.send(f"As regras de **{ctx.guild.name}** foram salvas 💾")
         except Exception as e:
-            f"""Sinto muito {ctx.author.mention}, houve um problema ao salvar as **regras** no banco de dados.
-            Tente novamente mais tarde.\nSe o problema persistir, informe o desenvolvedor em CONTATO."""
+            f"Sinto muito {ctx.author.mention}, houve um problema ao salvar as **regras** no banco de dados."
+            f"Tente novamente mais tarde.\nSe o problema persistir, informe o desenvolvedor em {path.dev_contact}."
             print(
                 f"COMMAND >> 'add-rules' ERROR: Não foi possível salvar as Regras da guilda ID:{ctx.guild.id} no database."
             )
@@ -92,8 +92,8 @@ class Rules(commands.Cog):
                 )
             await ctx.send(f"As regras de **{ctx.guild.name}** foram excluídas ❌")
         except Exception as e:
-            f"""Sinto muito {ctx.author.mention}, houve um problema ao excluir as **regras** no banco de dados.
-            Tente novamente mais tarde.\nSe o problema persistir, informe o desenvolvedor em CONTATO."""
+            f"Sinto muito {ctx.author.mention}, houve um problema ao excluir as **regras** no banco de dados."
+            f"Tente novamente mais tarde.\nSe o problema persistir, informe o desenvolvedor em {path.dev_contact}."
             print(
                 f"COMMAND >> 'del-rules' ERROR: Não foi possível salvar as Regras da guilda ID:{ctx.guild.id} no database."
             )
@@ -109,8 +109,8 @@ class Rules(commands.Cog):
                 rules_text = document["settings"]["rules"]["rules_text"]
 
         except Exception as e:
-            f"""Sinto muito {ctx.author.mention}, houve um problema ao recupear as **regras** no banco de dados.
-            Tente novamente mais tarde.\nSe o problema persistir, informe o desenvolvedor em CONTATO."""
+            f"Sinto muito {ctx.author.mention}, houve um problema ao recupear as **regras** no banco de dados."
+            f"Tente novamente mais tarde.\nSe o problema persistir, informe o desenvolvedor em {path.dev_contact}." ""
             print(
                 f"COMMAND >> 'rules' ERROR: Não foi possível recuperar as Regras da guilda ID:{ctx.guild.id} no database."
             )

@@ -74,8 +74,8 @@ class Playlist(commands.Cog):
                 await ctx.send(f"A Playlist **{playlist_name.content}** foi salva 💾")
         except Exception as e:
             await ctx.send(
-                f"""Sinto muito {ctx.author.mention}, houve um problema ao salvar a **playlist** no banco de dados.
-                Tente novamente mais tarde.\nSe o problema persistir, informe o desenvolvedor em CONTATO."""
+                f"Sinto muito {ctx.author.mention}, houve um problema ao salvar a **playlist** no banco de dados."
+                f"Tente novamente mais tarde.\nSe o problema persistir, informe o desenvolvedor em {path.dev_contact}."
             )
             print(
                 f"COMMAND >> 'add-playlist' ERROR: Não foi possível salvar a Playlist da guilda ID:{ctx.guild.id} no database."
@@ -121,8 +121,8 @@ class Playlist(commands.Cog):
 
         except Exception as e:
             await ctx.send(
-                f"""Sinto muito {ctx.author.mention}, houve um problema ao excluir a **playlist** no banco de dados.
-                Tente novamente mais tarde.\nSe o problema persistir, informe o desenvolvedor CONTATO."""
+                f"Sinto muito {ctx.author.mention}, houve um problema ao excluir a **playlist** no banco de dados."
+                f"Tente novamente mais tarde.\nSe o problema persistir, informe o desenvolvedor {path.dev_contact}."
             )
             print(
                 f"COMMAND >> 'del-playlist' ERROR: Não foi possível excluir a Playlist da guilda ID:{ctx.guild.id} no database."
@@ -272,13 +272,6 @@ class Playlist(commands.Cog):
             msg = await ctx.send(embed=embed)
             await asyncio.sleep(30)
             await msg.delete()
-
-    @commands.command(name="contato")
-    async def contato(self, ctx: commands.Context):
-        await ctx.send(
-            f"""Sinto muito {ctx.author.mention}, houve um problema ao excluir a **playlist** no banco de dados.
-            Tente novamente mais tarde.\nSe o problema persistir, informe o desenvolvedor em: CONTATO."""
-        )
 
 
 def setup(bot: commands.Bot):

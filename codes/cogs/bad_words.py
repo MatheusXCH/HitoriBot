@@ -64,7 +64,7 @@ class BadWords(commands.Cog):
         except Exception as e:
             await ctx.send(
                 f"Sinto muito {ctx.author.mention}, houve um problema ao inserir as **Bad Words** no banco de dados."
-                "Tente novamente mais tarde.\nSe o problema persistir, informe o desenvolvedor em CONTATO."
+                f"Tente novamente mais tarde.\nSe o problema persistir, informe o desenvolvedor em {path.dev_contact}."
             )
             print(
                 f"COMMAND >> 'add-badwords' ERROR: Não foi possível inserir as palavras na lista de Bad Words da guilda ID:{ctx.guild.id} no database."
@@ -84,7 +84,7 @@ class BadWords(commands.Cog):
                 collection = client.get_database("discordzada").get_collection("guilds_settings")
         except Exception as e:
             f"Sinto muito {ctx.author.mention}, houve um problema ao consultar as **Bad Words** no banco de dados."
-            "Tente novamente mais tarde.\nSe o problema persistir, informe o desenvolvedor em CONTATO."
+            f"Tente novamente mais tarde.\nSe o problema persistir, informe o desenvolvedor em {path.dev_contact}."
             print(
                 f"COMMAND >> 'badwords' ERROR: Não foi possível consultar as palavras na lista de Bad Words da guilda ID:{ctx.guild.id} no database."
             )
@@ -142,7 +142,7 @@ class BadWords(commands.Cog):
         except Exception as e:
             await ctx.send(
                 f"Sinto muito {ctx.author.mention}, houve um problema ao consultar as **Bad Words** no banco de dados"
-                "Tente novamente mais tarde.\nSe o problema persistir, informe o desenvolvedor em CONTATO."
+                f"Tente novamente mais tarde.\nSe o problema persistir, informe o desenvolvedor em {path.dev_contact}."
             )
             print(
                 f"COMMAND >> 'del-badwords' ERROR: Não foi possível consultar as palavras na lista de Bad Words da guilda ID:{ctx.guild.id} no database."
@@ -162,7 +162,7 @@ class BadWords(commands.Cog):
         except Exception as e:
             await ctx.send(
                 f"Sinto muito {ctx.author.mention}, houve um problema ao consultar as **Bad Words** no banco de dados"
-                "Tente novamente mais tarde.\nSe o problema persistir, informe o desenvolvedor em CONTATO."
+                f"Tente novamente mais tarde.\nSe o problema persistir, informe o desenvolvedor em {path.dev_contact}."
             )
             print(
                 f"COMMAND >> 'reset-badwords' ERROR: Não foi possível resetar as palavras na lista de Bad Words da guilda ID:{ctx.guild.id} no database."

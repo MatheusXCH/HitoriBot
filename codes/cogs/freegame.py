@@ -76,8 +76,8 @@ class FreeGame(commands.Cog):
                 )
         except Exception as e:
             await ctx.send(
-                """Desculpe, **houve um problema** ao salvar essa informação. Por favor, **tente novamente** em alguns instantes!
-                Se o problema persistir, entre em contato com o desenvolvedor em CONTATO"""
+                "Desculpe, **houve um problema** ao salvar essa informação. Por favor, **tente novamente** em alguns instantes!"
+                f"Se o problema persistir, entre em contato com o desenvolvedor em {path.dev_contact}"
             )
             print(
                 f"""COMMAND >> 'freegame-channel' ERROR: Não foi possível salvar o canal de FreeGameFindings
@@ -140,8 +140,7 @@ class FreeGame(commands.Cog):
                     ]
             except Exception as e:
                 print(
-                    """TASK >> 'freegame_findings' ERROR: Não foi possível acessar os canais de FreeGameFindings
-                no database."""
+                    "TASK >> 'freegame_findings' ERROR: Não foi possível acessar os canais de FreeGameFindings no database."
                 )
                 print(e)
 
