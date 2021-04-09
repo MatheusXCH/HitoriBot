@@ -15,6 +15,7 @@ import discord
 import dotenv
 import requests
 from discord.ext import commands, tasks
+from discord.ext.commands import MissingPermissions, has_permissions
 from discord.utils import *
 from dotenv import load_dotenv
 from pymongo import MongoClient
@@ -57,8 +58,13 @@ class FreeGame(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
+    def error_message(self, ctx: commands.Context, error):
+        if isinstance(error, MissingPermissions):
+            return f"Desculpe {ctx.author.mention}, você não tem permissão para fazer isso!"
+
     # WORKING
     @commands.command(name="freegame-channel", hidden=True)
+    @has_permissions(administrator=True)
     async def set_channel_id(self, ctx: commands.Context):
         try:
             with MongoClient(CONNECT_STRING) as client:
@@ -92,6 +98,10 @@ class FreeGame(commands.Cog):
         )
         await asyncio.sleep(5)
         await msg.delete()
+
+    @set_channel_id.error
+    async def set_channel_id_error(self, ctx: commands.Context, error):
+        await ctx.send(self.error_message(ctx, error))
 
     # TEST
     @tasks.loop()
@@ -187,6 +197,7 @@ class FreeGame(commands.Cog):
     # # # If decided to maintain those on the final stage, then "has_permissions" decorator must be added
 
     @commands.command(name="free-game-start", hidden=True)
+    @commands.is_owner()
     async def free_game_start(self, ctx: commands.Context):
         """Starts the Free-Game-Findings task
 
@@ -203,6 +214,7 @@ class FreeGame(commands.Cog):
         await msg.delete()
 
     @commands.command(name="free-game-stop", hidden=True)
+    @commands.is_owner()
     async def free_game_stop(self, ctx: commands.Context):
         """Stops the Free-Game-Findings task
 
@@ -219,6 +231,7 @@ class FreeGame(commands.Cog):
         await msg.delete()
 
     @commands.command(name="free-game-restart", hidden=True)
+    @commands.is_owner()
     async def free_game_restart(self, ctx: commands.Context):
         """Restarts the Free-Game-Findings task
 

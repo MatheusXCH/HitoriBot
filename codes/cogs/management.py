@@ -6,6 +6,7 @@ import asyncio
 # Get the globals from Paths
 import codes.paths as path
 import discord
+from pprint import pprint
 from discord import Member, Role, User
 from discord.ext import commands
 from discord.ext.commands import Bot, MissingPermissions, guild_only, has_permissions
@@ -85,34 +86,43 @@ class Management(commands.Cog):
     async def ban_error(self, ctx: commands.Context, error):
         await ctx.send(self.error_message(ctx, error))
 
-    # FIXME UNBAN - Não funciona! Função está com erros!
-    @commands.command(name="unban", hidden=True)
+    # WORKING
+    @commands.command(name="unban")
     @has_permissions(ban_members=True)
     async def unban(self, ctx: commands.Context):
         def check(message):
             return message.author == ctx.author
 
-        ban_list = await ctx.guild.bans()
-        await ctx.send(ban_list[0])
+        bans = await ctx.guild.bans()
+        banned_users_list = [ban_tuple[1] for ban_tuple in bans]
+        banned_users = [{"id": user.id, "name_tag": f"{user.name}#{user.discriminator}"} for user in banned_users_list]
+        show_banneds = " | ".join([user["name_tag"] for user in banned_users])
 
-        # banned_users = " | ".join([ban_tuple[0] for ban_tuple in ban_list])
+        if not show_banneds:
+            return await ctx.send(
+                embed=discord.Embed(title="Usuários banidos:", description="**Não há ninguém banido no servidor**")
+            )
 
-        print("1 - Aqui")
-        await ctx.send(embed=discord.Embed(title="Usuários banidos:", description=f"{banned_users}"))
+        await ctx.send(embed=discord.Embed(title="Usuários banidos:", description=f"{show_banneds}"))
         await ctx.send("Informe quem deseja desbanir:")
-        print("2 - Aqui")
 
         try:
-            user = await self.bot.wait_for("message", check=check, timeout=15)
+            user_name_msg = await self.bot.wait_for("message", check=check, timeout=30)
+            user_name = user_name_msg.content
         except asyncio.TimeoutError:
             await ctx.send(
                 f"Desculpe {ctx.author.mention}, parece que você demorou demais para informar o que foi solicitado... 😅"
             )
-        if user in banned_users:
-            await ctx.guild.unban(user)
-            await ctx.send(f"O usuário **{user}** foi desbanido 🛠")
-        else:
-            await ctx.send(f"O usuário {user} não está banido no servidor!")
+
+        for item in banned_users:
+            if user_name.upper() == item["name_tag"].upper():
+                user = self.bot.get_user(int(item["id"]))
+                await ctx.guild.unban(user)
+                return await ctx.send(
+                    f"O usuário **{user.name}** foi desbanido 🛠\nAgora basta notificá-lo da novidade via DM 😁"
+                )
+
+        await ctx.send(f"Parece que o usuário **{user_name}** não está banido no servidor 🤔")
 
     @unban.error
     async def unban_error(self, ctx: commands.Context, error):

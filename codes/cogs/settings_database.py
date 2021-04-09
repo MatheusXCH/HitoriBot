@@ -21,6 +21,10 @@ class Settings_Database(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
+    def error_message(self, ctx: commands.Context, error):
+        if isinstance(error, MissingPermissions):
+            return f"Desculpe {ctx.author.mention}, você não tem permissão para fazer isso!"
+
     def settings_collection(self):
         client = MongoClient(CONNECT_STRING)
         db = client.get_database("discordzada")
@@ -42,7 +46,6 @@ class Settings_Database(commands.Cog):
 
         return settings_data
 
-    # TEST (probably WORKING)
     @commands.Cog.listener()
     async def on_guild_join(self, guild: discord.Guild):
         settings_data = self.create_settings_data(guild=guild)
@@ -60,7 +63,6 @@ class Settings_Database(commands.Cog):
             )
             print(e)
 
-    # TEST (probably WORKING)
     @commands.Cog.listener()
     async def on_guild_remove(self, guild: discord.Guild):
         settings_data = self.create_settings_data(guild=guild)

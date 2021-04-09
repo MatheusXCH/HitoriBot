@@ -26,6 +26,10 @@ class Guild_Database(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
+    def error_message(self, ctx: commands.Context, error):
+        if isinstance(error, MissingPermissions):
+            return f"Desculpe {ctx.author.mention}, você não tem permissão para fazer isso!"
+
     def guilds_info_collection(self):
         client = MongoClient(CONNECT_STRING)
         db = client.get_database("discordzada")

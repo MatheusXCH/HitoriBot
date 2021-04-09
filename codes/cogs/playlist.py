@@ -26,6 +26,10 @@ class Playlist(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
+    def error_message(self, ctx: commands.Context, error):
+        if isinstance(error, MissingPermissions):
+            return f"Desculpe {ctx.author.mention}, você não tem permissão para fazer isso!"
+
     def _timeout_message(self, ctx: commands.Context):
         return f"Desculpe {ctx.author.mention}, parece que você demorou demais para informar o que foi solicitado... 😅"
 
@@ -39,6 +43,7 @@ class Playlist(commands.Cog):
 
     # WORKING
     @commands.command(name="add-playlist")
+    @has_permissions(manage_channels=True, manage_guild=True)
     async def add_playlist(self, ctx: commands.Context):
         def check(message):
             return message.author == ctx.message.author
@@ -95,9 +100,14 @@ class Playlist(commands.Cog):
             )
             print(e)
 
+    @add_playlist.error
+    async def add_playlist_error(self, ctx: commands.Context, error):
+        await ctx.send(self.error_message(ctx, error))
+
     # WORKING
     @commands.command(name="del-playlist")
-    async def delete_playlist(self, ctx: commands.Context):
+    @has_permissions(manage_channels=True, manage_guild=True)
+    async def del_playlist(self, ctx: commands.Context):
         def check(message):
             return message.author == ctx.message.author
 
@@ -143,9 +153,14 @@ class Playlist(commands.Cog):
             )
             print(e)
 
+    @del_playlist.error
+    async def del_playlist_error(self, ctx: commands.Context, error):
+        await ctx.send(self.error_message(ctx, error))
+
     # WORKING
     @commands.command(name="edit-playlist")
-    async def update_playlist(self, ctx: commands.Context):
+    @has_permissions(manage_channels=True, manage_guild=True)
+    async def edit_playlist(self, ctx: commands.Context):
         def check(message):
             return message.author == ctx.message.author
 
@@ -259,6 +274,10 @@ class Playlist(commands.Cog):
                 f"COMMAND >> 'edit-playlist' ERROR: Não foi possível editar a Playlist da guilda ID:{ctx.guild.id} no database."
             )
             print(e)
+
+    @edit_playlist.error
+    async def edit_playlist_error(self, ctx: commands.Context, error):
+        await ctx.send(self.error_message(ctx, error))
 
     # WORKING
     @commands.command(name="playlist")

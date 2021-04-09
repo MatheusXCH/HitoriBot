@@ -11,6 +11,7 @@ import discord
 import dotenv
 import requests
 from discord.ext import commands, tasks
+from discord.ext.commands import MissingPermissions, has_permissions
 from discord.utils import *
 from dotenv import load_dotenv
 from pymongo import MongoClient
@@ -26,6 +27,10 @@ class BadWords(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
+    def error_message(self, ctx: commands.Context, error):
+        if isinstance(error, MissingPermissions):
+            return f"Desculpe {ctx.author.mention}, você não tem permissão para fazer isso!"
+
     def _timeout_message(self, ctx: commands.Context):
         return f"Desculpe {ctx.author.mention}, parece que você demorou demais para informar o que foi solicitado... 😅"
 
@@ -37,6 +42,7 @@ class BadWords(commands.Cog):
 
     # WORKING
     @commands.command(name="add-badwords")
+    @has_permissions(manage_channels=True, manage_guild=True, manage_roles=True, manage_messages=True)
     async def add_badwords(self, ctx: commands.Context):
         def check(message):
             return message.author == ctx.message.author
@@ -76,9 +82,14 @@ class BadWords(commands.Cog):
         await bad_words_message.delete()
         await end_msg.delete()
 
+    @add_badwords.error
+    async def add_badwords_error(self, ctx: commands.Context, error):
+        await ctx.send(self.error_message(ctx, error))
+
     # WORKING
     @commands.command(name="show-badwords")
-    async def show_bad_words(self, ctx: commands.Context):
+    @has_permissions(manage_channels=True, manage_guild=True, manage_roles=True, manage_messages=True)
+    async def show_badwords(self, ctx: commands.Context):
         try:
             with MongoClient(CONNECT_STRING) as client:
                 collection = client.get_database("discordzada").get_collection("guilds_settings")
@@ -91,10 +102,15 @@ class BadWords(commands.Cog):
             print(e)
 
         bad_words = self._get_all_bad_words(collection, ctx)
-        await ctx.send(embed=discord.Embed(title=bad_words))
+        await ctx.author.send(embed=discord.Embed(title=bad_words))
+
+    @show_badwords.error
+    async def show_badwords_error(self, ctx: commands.Context, error):
+        await ctx.send(self.error_message(ctx, error))
 
     # WORKING
     @commands.command(name="del-badwords")
+    @has_permissions(manage_channels=True, manage_guild=True, manage_roles=True, manage_messages=True)
     async def del_badwords(self, ctx: commands.Context):
         def check(message):
             return message.author == ctx.message.author
@@ -149,8 +165,13 @@ class BadWords(commands.Cog):
             )
             print(e)
 
+    @del_badwords.error
+    async def del_badwords_error(self, ctx: commands.Context, error):
+        await ctx.send(self.error_message(ctx, error))
+
     # WORKING
     @commands.command(name="reset-badwords")
+    @has_permissions(manage_channels=True, manage_guild=True, manage_roles=True, manage_messages=True)
     async def reset_badwords(self, ctx: commands.Context):
         try:
             with MongoClient(CONNECT_STRING) as client:
@@ -168,6 +189,10 @@ class BadWords(commands.Cog):
                 f"COMMAND >> 'reset-badwords' ERROR: Não foi possível resetar as palavras na lista de Bad Words da guilda ID:{ctx.guild.id} no database."
             )
             print(e)
+
+    @reset_badwords.error
+    async def reset_badwords_error(self, ctx: commands.Context, error):
+        await ctx.send(self.error_message(ctx, error))
 
     # WORKING
     @commands.Cog.listener()

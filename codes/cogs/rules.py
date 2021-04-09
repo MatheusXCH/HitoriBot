@@ -11,6 +11,7 @@ import discord
 import dotenv
 import requests
 from discord.ext import commands, tasks
+from discord.ext.commands import MissingPermissions, has_permissions
 from discord.utils import *
 from dotenv import load_dotenv
 from pymongo import MongoClient
@@ -24,11 +25,16 @@ class Rules(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
+    def error_message(self, ctx: commands.Context, error):
+        if isinstance(error, MissingPermissions):
+            return f"Desculpe {ctx.author.mention}, você não tem permissão para fazer isso!"
+
     def _timeout_message(self, ctx: commands.Context):
         return f"Desculpe {ctx.author.mention}, parece que você demorou demais para informar o que foi solicitado... 😅"
 
     # WORKING
     @commands.command(name="add-rules")
+    @has_permissions(administrator=True)
     async def add_rules(self, ctx: commands.Context):
         def check(message):
             return message.author == ctx.message.author
@@ -56,8 +62,13 @@ class Rules(commands.Cog):
             )
             print(e)
 
+    @add_rules.error
+    async def add_rules_error(self, ctx: commands.Context, error):
+        await ctx.send(self.error_message(ctx, error))
+
     # WORKING
     @commands.command(name="del-rules")
+    @has_permissions(administrator=True)
     async def del_rules(self, ctx: commands.Context):
         def check(message):
             return message.author == ctx.message.author
@@ -100,6 +111,10 @@ class Rules(commands.Cog):
                 f"COMMAND >> 'del-rules' ERROR: Não foi possível salvar as Regras da guilda ID:{ctx.guild.id} no database."
             )
             print(e)
+
+    @del_rules.error
+    async def del_rules_error(self, ctx: commands.Context, error):
+        await ctx.send(self.error_message(ctx, error))
 
     # WORKING
     @commands.command(name="rules")
