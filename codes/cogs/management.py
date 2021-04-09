@@ -27,19 +27,9 @@ class Management(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    # TODO Criar estrutura de dados para as palavras indesejadas e armazená-las no banco de dados
-    @commands.Cog.listener()
-    async def on_message(self, message: discord.Message):
-        """Bad Words [Listener]
-        - Monitora o chat de texto, identificando palavras indesejadas e limpando-as logo em sequência
-        """
-
-        bad_sentences = ["SAKDJLKASIOWEUOQIWESDHDHASWQOEUQWOIUFASJSALKQWEQEPWU"]
-
-        for sentence in bad_sentences:
-            if message.content.count(sentence) > 0:
-                await message.channel.purge(limit=1)
-                await message.channel.send(f"Mensagem deletada - Uso de expressão indevida! (||{sentence})||")
+    def error_message(self, ctx: commands.Context, error):
+        if isinstance(error, MissingPermissions):
+            return f"Desculpe {ctx.author.mention}, você não tem permissão para fazer isso!"
 
     @commands.command(name="invite")
     async def invite(self, ctx: commands.Context):
@@ -51,20 +41,19 @@ class Management(commands.Cog):
 
     @commands.command(name="nick")
     @has_permissions(manage_nicknames=True)
-    async def nick(self, ctx: commands.Context, member: discord.Member, *, newnick):
+    async def nick(self, ctx: commands.Context, member: discord.Member, *, newnick=None):
         """!nick <@Member> <new_nick> => Troca o nick do 'Membro' para 'new_nick'
         - É necessário ter permissão para trocar apelidos
         """
+        if newnick is None:
+            await member.edit(nick="")
 
         await member.edit(nick=newnick)
-        await ctx.send(f"Apelido de {member.name} mudado para {member.mention} com sucesso!")
+        await ctx.send(f"Apelido de **{member.name}** mudado para {member.mention} com sucesso!")
 
-    # Trata o erro de 'Nick'
     @nick.error
     async def nick_error(self, ctx: commands.Context, error):
-        if isinstance(error, MissingPermissions):
-            text = f"Desculpe {ctx.message.author}, você não tem permissão para fazer isso!"
-            await ctx.send(text)
+        await ctx.send(self.error_message(ctx, error))
 
     @commands.command(name="kick")
     @has_permissions(manage_roles=True, kick_members=True)
@@ -74,18 +63,15 @@ class Management(commands.Cog):
         """
 
         await member.kick()
-        await ctx.send(f"{member.mention} foi KICKADO pelo RH!")
+        await ctx.send(f"**{member.mention}** foi KICKADO pelo RH!")
         await ctx.send(file=discord.File(path.image_path + "RH.png"))
 
-    # Trata o erro de 'Nick'
     @kick.error
     async def kick_error(self, ctx: commands.Context, error):
-        if isinstance(error, MissingPermissions):
-            text = f"Desculpe {ctx.message.author}, você não tem permissão para fazer isso!"
-            await ctx.send(text)
+        await ctx.send(self.error_message(ctx, error))
 
     @commands.command(name="ban")
-    @has_permissions(administrator=True)
+    @has_permissions(ban_members=True)
     async def ban(self, ctx: commands.Context, member: Member):
         """!ban <@Member> => Bane um membro do servidor
         - É necessário ter permissão para banir membros
@@ -95,36 +81,48 @@ class Management(commands.Cog):
         await ctx.send(f"{member.mention} foi BANIDO pelo RH!")
         await ctx.send(file=discord.File(path.image_path + "RH.png"))
 
-    # Trata o erro de 'Ban'
     @ban.error
     async def ban_error(self, ctx: commands.Context, error):
-        if isinstance(error, MissingPermissions):
-            text = f"Desculpe {ctx.message.author}, você não tem permissão para fazer isso!"
-            await ctx.send(text)
+        await ctx.send(self.error_message(ctx, error))
 
     # FIXME UNBAN - Não funciona! Função está com erros!
-    @commands.command(hidden=True)
-    @has_permissions(administrator=True)
-    @guild_only()
-    async def unban(self, ctx: commands.Context, id: int):
-        user = await self.bot.fetch_user(id)
-        if ctx.guild.fetch_ban(user):
+    @commands.command(name="unban", hidden=True)
+    @has_permissions(ban_members=True)
+    async def unban(self, ctx: commands.Context):
+        def check(message):
+            return message.author == ctx.author
+
+        ban_list = await ctx.guild.bans()
+        await ctx.send(ban_list[0])
+
+        # banned_users = " | ".join([ban_tuple[0] for ban_tuple in ban_list])
+
+        print("1 - Aqui")
+        await ctx.send(embed=discord.Embed(title="Usuários banidos:", description=f"{banned_users}"))
+        await ctx.send("Informe quem deseja desbanir:")
+        print("2 - Aqui")
+
+        try:
+            user = await self.bot.wait_for("message", check=check, timeout=15)
+        except asyncio.TimeoutError:
+            await ctx.send(
+                f"Desculpe {ctx.author.mention}, parece que você demorou demais para informar o que foi solicitado... 😅"
+            )
+        if user in banned_users:
             await ctx.guild.unban(user)
+            await ctx.send(f"O usuário **{user}** foi desbanido 🛠")
         else:
             await ctx.send(f"O usuário {user} não está banido no servidor!")
 
-    # Trata o erro de 'Unban'
     @unban.error
     async def unban_error(self, ctx: commands.Context, error):
-        if isinstance(error, MissingPermissions):
-            text = f"Desculpe {ctx.message.author}, você não tem permissão para fazer isso!"
-            await ctx.send(text)
+        await ctx.send(self.error_message(ctx, error))
 
     @commands.command(name="role")
-    @has_permissions(administrator=True)
+    @has_permissions(manage_roles=True)
     async def get_role(self, ctx: commands.Context, member: Member):
         """!role <@Member> => Lista as roles de um membro da guilda
-        - É necessário ter permissão de administrador
+        - É necessário ter permissão para gerenciar Roles
         """
 
         list_roles = []
@@ -135,9 +133,12 @@ class Management(commands.Cog):
 
         await ctx.send(f"As roles de {member.mention} são: {list_roles}")
 
-    # TODO Tornar possível setar mais de uma role por vez
+    @get_role.error
+    async def get_role_error(self, ctx: commands.Context, error):
+        await ctx.send(self.error_message(ctx, error))
+
     @commands.command(name="set-role")
-    @has_permissions(administrator=True)
+    @has_permissions(manage_roles=True)
     async def set_role(self, ctx: commands.Context, member: Member, *, role: Role):
         """!set-role <@Member> <Role> => Troca a role de um membro
         - É necessário ter permissão de administrador
@@ -146,9 +147,12 @@ class Management(commands.Cog):
         await member.add_roles(role)
         await ctx.send(f"A role de {member.mention} foi definida como: {role.name}")
 
-    # TODO Tornar possível dropar mais de uma role por vez
+    @set_role.error
+    async def set_role_error(self, ctx: commands.Context, error):
+        await ctx.send(self.error_message(ctx, error))
+
     @commands.command(name="drop-role")
-    @has_permissions(administrator=True)
+    @has_permissions(manage_roles=True)
     async def drop_role(self, ctx: commands.Context, member: Member, *, role: Role):
         """!drop-role => Retira uma role de um membro
         - É necessário ter permissão de administrador
@@ -157,11 +161,39 @@ class Management(commands.Cog):
         await member.remove_roles(role)
         await ctx.send(f'A role "{role.name}" de {member.mention} foi retirada!')
 
-    # TODO Arrumar - Função apenas envia o ID da permissão via DM
-    @commands.command(hidden=True)
-    async def permissions(self, ctx: commands.Context, member: Member):
-        perm = member.permissions_in(ctx.channel)
-        await ctx.author.send(f"Solicitação atendida!\n{member.display_name} tem permissões para {perm}")
+    @drop_role.error
+    async def drop_role_error(self, ctx: commands.Context, error):
+        await ctx.send(self.error_message(ctx, error))
+
+    @commands.command(name="perms", hidden=True)
+    async def permissions(self, ctx: commands.Context, member: Member = None):
+        """!perms [@Member]* => Retorna as permissões de um membro
+        - As permissões de outros membros estão disponíveis apenas para aqueles que podem gerir Roles
+        """
+
+        if member is not None:
+            permissions = ctx.author.permissions_in(ctx.channel)
+            if not permissions.manage_roles:
+                return await ctx.send(
+                    f"Desculpe {ctx.author.mention}, você não pode ver a permissão de outros usuários"
+                )
+
+        if member is None:
+            member = ctx.author
+
+        roles = member.roles
+        permissions_set = set()
+        for role in roles:
+            role_perms = [perm[0] for perm in role.permissions if perm[1]]
+            for perm in role_perms:
+                permissions_set.add(perm)
+
+        permissions_list = sorted(list(permissions_set))
+        permissions = "\n▫".join(permissions_list).title()
+        await ctx.author.send(
+            f"**SOLICITAÇÃO ATENDIDA!**\n__**{member.display_name}**__ tem as seguintes permissões na guilda **{ctx.guild.name}:**\n"
+            f"▫{permissions}"
+        )
 
     @commands.command(name="clear")
     @has_permissions(manage_messages=True, send_messages=True)
@@ -196,6 +228,10 @@ class Management(commands.Cog):
         time.sleep(3)
         await msg.delete()
 
+    @clear.error
+    async def clear_error(self, ctx: commands.Context, error):
+        await ctx.send(self.error_message(ctx, error))
+
     @commands.command(name="clean")
     @has_permissions(manage_messages=True, send_messages=True)
     async def clean(self, ctx: commands.Context, limit: int = 100):
@@ -216,6 +252,10 @@ class Management(commands.Cog):
         await asyncio.sleep(5)
         await msg.delete()
 
+    @clean.error
+    async def clean_error(self, ctx: commands.Context, error):
+        await ctx.send(self.error_message(ctx, error))
+
     @commands.command(name="purge")
     @has_permissions(administrator=True)
     async def channel_purge(self, ctx: commands.Context, limit: int = 20):
@@ -232,6 +272,10 @@ class Management(commands.Cog):
         )
         await asyncio.sleep(5)
         await msg.delete()
+
+    @channel_purge.error
+    async def channel_purge_error(self, ctx: commands.Context, error):
+        await ctx.send(self.error_message(ctx, error))
 
 
 def setup(bot):
