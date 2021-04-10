@@ -90,6 +90,10 @@ class Management(commands.Cog):
     @commands.command(name="unban")
     @has_permissions(ban_members=True)
     async def unban(self, ctx: commands.Context):
+        """!unban => Permite desbanir um usuário da lista de banidos do servidor
+        - É necessário permissão para banir membros
+        """
+
         def check(message):
             return message.author == ctx.author
 

@@ -44,6 +44,10 @@ class BadWords(commands.Cog):
     @commands.command(name="add-badwords")
     @has_permissions(manage_channels=True, manage_guild=True, manage_roles=True, manage_messages=True)
     async def add_badwords(self, ctx: commands.Context):
+        """!add-badwords => Adiciona uma palavra/sentença à lista de proíbidas
+        - É necessário ter permissões para gerenciar: canais, guildas, roles e mensagens
+        """
+
         def check(message):
             return message.author == ctx.message.author
 
@@ -90,6 +94,10 @@ class BadWords(commands.Cog):
     @commands.command(name="show-badwords")
     @has_permissions(manage_channels=True, manage_guild=True, manage_roles=True, manage_messages=True)
     async def show_badwords(self, ctx: commands.Context):
+        """!show-badwords => Envia a lista com todas as palavras/sentenças proíbidas na DM
+        - É necessário ter permissões para gerenciar: canais, guildas, roles e mensagens
+        """
+
         try:
             with MongoClient(CONNECT_STRING) as client:
                 collection = client.get_database("discordzada").get_collection("guilds_settings")
@@ -112,6 +120,10 @@ class BadWords(commands.Cog):
     @commands.command(name="del-badwords")
     @has_permissions(manage_channels=True, manage_guild=True, manage_roles=True, manage_messages=True)
     async def del_badwords(self, ctx: commands.Context):
+        """!del-badwords => Deleta uma palavra/sentença da lista de proíbidas
+        - É necessário ter permissões para gerenciar: canais, guildas, roles e mensagens
+        """
+
         def check(message):
             return message.author == ctx.message.author
 
@@ -173,6 +185,10 @@ class BadWords(commands.Cog):
     @commands.command(name="reset-badwords")
     @has_permissions(manage_channels=True, manage_guild=True, manage_roles=True, manage_messages=True)
     async def reset_badwords(self, ctx: commands.Context):
+        """!reset-badwords => Retorna a lista de palavras/sentenças proíbidas ao seu valor padrão
+        - É necessário ter permissões para gerenciar: canais, guildas, roles e mensagens
+        """
+
         try:
             with MongoClient(CONNECT_STRING) as client:
                 collection = client.get_database("discordzada").get_collection("guilds_settings")

@@ -45,6 +45,10 @@ class Playlist(commands.Cog):
     @commands.command(name="add-playlist")
     @has_permissions(manage_channels=True, manage_guild=True)
     async def add_playlist(self, ctx: commands.Context):
+        """!add-playlist => Adiciona um novo item à lista de playlists do servidor
+        - É preciso permissão para gerenciar: canais, guilda
+        """
+
         def check(message):
             return message.author == ctx.message.author
 
@@ -108,6 +112,10 @@ class Playlist(commands.Cog):
     @commands.command(name="del-playlist")
     @has_permissions(manage_channels=True, manage_guild=True)
     async def del_playlist(self, ctx: commands.Context):
+        """!del-playlist => Remove um item da lista de playlists do servidor
+        - É preciso permissão para gerenciar: canais, guilda
+        """
+
         def check(message):
             return message.author == ctx.message.author
 
@@ -161,6 +169,11 @@ class Playlist(commands.Cog):
     @commands.command(name="edit-playlist")
     @has_permissions(manage_channels=True, manage_guild=True)
     async def edit_playlist(self, ctx: commands.Context):
+        """!edit-playlist => Edita um item da lista de playlists do servidor.
+        - É possível editar o nome, URL ou ambos
+        - É preciso permissão para gerenciar: canais, guilda
+        """
+
         def check(message):
             return message.author == ctx.message.author
 
@@ -282,7 +295,7 @@ class Playlist(commands.Cog):
     # WORKING
     @commands.command(name="playlist")
     async def playlist(self, ctx: commands.Context):
-        """!playlist => Lista as playlists feitas para o Servidor"""
+        """!playlist => Lista as playlists feitas para o servidor"""
 
         embed = discord.Embed(
             title=":notes: **Playlists do Servidor** :notes:",

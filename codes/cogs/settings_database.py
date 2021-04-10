@@ -22,16 +22,24 @@ class Settings_Database(commands.Cog):
         self.bot = bot
 
     def error_message(self, ctx: commands.Context, error):
+        """Defines an default error message"""
+
         if isinstance(error, MissingPermissions):
             return f"Desculpe {ctx.author.mention}, você não tem permissão para fazer isso!"
 
-    def settings_collection(self):
-        client = MongoClient(CONNECT_STRING)
-        db = client.get_database("discordzada")
-        collection = db.get_collection("guilds_settings")
-        return collection
-
     def create_settings_data(self, guild: discord.Guild):
+        """Creates and default structure to 'settings_data'
+
+        Parameters
+        ----------
+        - guild : discord.Guild \\
+            [The guild to get information from]
+
+        Returns
+        -------
+        - settings_data : dict \\
+            [The structured data for 'settings_data']
+        """
         settings_data = {
             "_id": guild.id,
             "guild": {"guild_id": guild.id, "guild_name": guild.name},
@@ -48,6 +56,8 @@ class Settings_Database(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild: discord.Guild):
+        """Listener that creates a new 'guild_settings' document in MongoDB database when the bot joins a new server"""
+
         settings_data = self.create_settings_data(guild=guild)
 
         try:
@@ -65,6 +75,8 @@ class Settings_Database(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_remove(self, guild: discord.Guild):
+        """Listener that removes a 'guild_settings' document in MongoDB database when the bot leaves some guild"""
+
         settings_data = self.create_settings_data(guild=guild)
 
         try:
@@ -82,6 +94,7 @@ class Settings_Database(commands.Cog):
 
     @tasks.loop(hours=24)
     async def verify_settings(self):
+        """Listener that verifies if any new guild joining event was missed in the past 24 hours"""
         guilds = [guild for guild in self.bot.guilds]
 
         try:
@@ -120,6 +133,8 @@ class Settings_Database(commands.Cog):
     @commands.command(name="insert-settings", hidden=True)
     @commands.is_owner()
     async def insert_settings(self, ctx: commands.Context):
+        """Owner Only => Forces insert settings data on MongoDB database"""
+
         settings_data = self.create_settings_data(guild=ctx.guild)
 
         try:
@@ -138,6 +153,8 @@ class Settings_Database(commands.Cog):
     @commands.command(name="delete-settings", hidden=True)
     @commands.is_owner()
     async def delete_data(self, ctx: commands.Context):
+        """Owner Only => Forces remove settings data on MongoDB database"""
+
         settings_data = self.create_settings_data(guild=ctx.guild)
 
         try:
@@ -156,6 +173,8 @@ class Settings_Database(commands.Cog):
     @commands.command(name="reset-settings", hidden=True)
     @commands.is_owner()
     async def reset_settings(self, ctx: commands.Context):
+        """Owner Only => Forces reset settings data on MongoDB database (done by removing and adding info again)"""
+
         await ctx.invoke(self.bot.get_command("delete-settings"))
         await ctx.invoke(self.bot.get_command("insert-settings"))
 

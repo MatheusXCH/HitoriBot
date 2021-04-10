@@ -57,14 +57,14 @@ class Messages(commands.Cog):
         embed.add_field(
             name="Dentre as coisas que posso fazer, estão: ",
             value=(
-                "- Gerenciar o servidor (Roles, Kick, Palavras proibidas...) 🔨\n"
-                "- Tomar decisões através de dado, cara ou coroa ou 'escolha um' 🎲\n"
-                "- Consultar informações sobre animes, mangás e personagens! 📖\n"
-                "- Consultar informações sobre jogos na Steam em tempo real! 🎮\n"
-                "- Obter o tempo estimado para terminar um game! (via HowLongToBeat) ⏳\n"
-                "- Informar os usuários sobre Jogos/DLCs grátis para PC! 🤑\n"
-                "- Informações sobre partidas ao vivo de League of Legends, bem como detalhes dos invocadores! 🧙‍♂️\n"
-                "- ... e por aí vai! 🚀\n\n"
+                "🔨 Gerenciar o servidor (Roles, Kick, Palavras proibidas...)\n"
+                "🎲 Tomar decisões através de dado, cara ou coroa ou 'escolha um'\n"
+                "📖 Consultar informações sobre animes, mangás e personagens!\n"
+                "🎮 Consultar informações sobre jogos na Steam em tempo real!\n"
+                "⏳ Obter o tempo estimado para terminar um game! (via HowLongToBeat)\n"
+                "🤑 Informar os usuários sobre Jogos/DLCs grátis para PC!\n"
+                "🧙‍♂️ Informações sobre partidas ao vivo de League of Legends, bem como detalhes dos invocadores!\n"
+                "🚀 ... e por aí vai!\n\n"
                 "Para maiores detalhes de minhas funcionalidades e como configurá-las, acesse a [documentação](https://github.com/MatheusXCH/Discordzada/wiki).\n"
                 "Utilize o `!help` para informações acerca do uso dos comandos.\n\n"
                 f"Caso encontrem bugs, por favor, entrem em contato com meu criador pelo {path.dev_contact}."

@@ -36,6 +36,10 @@ class Rules(commands.Cog):
     @commands.command(name="add-rules")
     @has_permissions(administrator=True)
     async def add_rules(self, ctx: commands.Context):
+        """!add-rules => Adiciona um texto para as regras do servidor
+        - É preciso ser **administrador**
+        """
+
         def check(message):
             return message.author == ctx.message.author
 
@@ -70,6 +74,10 @@ class Rules(commands.Cog):
     @commands.command(name="del-rules")
     @has_permissions(administrator=True)
     async def del_rules(self, ctx: commands.Context):
+        """!del-rules => Deleta as regras atuais do servidor
+        - É preciso ser **administrador**
+        """
+
         def check(message):
             return message.author == ctx.message.author
 
@@ -119,6 +127,8 @@ class Rules(commands.Cog):
     # WORKING
     @commands.command(name="rules")
     async def rules(self, ctx: commands.Context):
+        """!rules => Envia as regras do servidor na DM do usuário"""
+
         try:
             with MongoClient(CONNECT_STRING) as client:
                 collection = client.get_database("discordzada").get_collection("guilds_settings")
