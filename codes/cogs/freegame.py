@@ -105,15 +105,9 @@ class FreeGame(commands.Cog):
 
     # TEST
     @tasks.loop()
-    async def freegame_findings(self, channel_id=None):
-        """ Confere continuamente as postagens no 'r/FreeGamesFindings', obtendo aquelas que atendem aos filtros
-        definidos e enviando-as ao canal selecionado (que corresponde ao ID < channel_id >)
-
-        Parameters
-        ----------
-        - channel_id : int, optional \\
-            [ID do canal para o qual as mensagens devem ser enviadas], by default < self.channel_id >
-        """
+    async def freegame_findings(self):
+        """Confere continuamente as postagens no 'r/FreeGamesFindings', obtendo aquelas que atendem aos filtros
+        definidos e enviando-as aos canais cadastrados no banco de dados."""
 
         def apply_filters(submission):
             """Apply PLATFORMS and CATEGORIES filters on r/FreeGameFingings submissions
@@ -193,8 +187,11 @@ class FreeGame(commands.Cog):
             # Sleep for 1 hour
             await asyncio.sleep(3600)
 
-    # # # NOTE: NOTE: For now, the functions below are for DEBUG only.
-    # # # If decided to maintain those on the final stage, then "has_permissions" decorator must be added
+    # # # Commands below are only usable by the bot owner to handle exceptional cases
+    #
+    #
+    #
+    #
 
     @commands.command(name="free-game-start", hidden=True)
     @commands.is_owner()

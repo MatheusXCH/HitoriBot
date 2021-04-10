@@ -9,10 +9,6 @@ PyBOT.bat
 
 ### VisualStudioCode ###
 .vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
 
 # Heroku Deploy Tutorial
 Heroku_Deploy.txt
