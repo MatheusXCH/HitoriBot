@@ -42,21 +42,21 @@ PREFIX = "!"
 
 startup_extensions = [
     "cogs.administrator",
-    "cogs.messages",
-    "cogs.stickers",
-    "cogs.management",
-    "cogs.minigames",
-    "cogs.myanimelist",
-    "cogs.howlongtobeat",
-    "cogs.leagueoflegends",
-    "cogs.storesteam",
     "cogs.audioplayer",
+    "cogs.bad_words",
     "cogs.freegame",
     "cogs.guild_database",
-    "cogs.settings_database",
+    "cogs.howlongtobeat",
+    "cogs.leagueoflegends",
+    "cogs.management",
+    "cogs.messages",
+    "cogs.minigames",
+    "cogs.myanimelist",
     "cogs.playlist",
     "cogs.rules",
-    "cogs.bad_words",
+    "cogs.settings_database",
+    "cogs.stickers",
+    "cogs.storesteam",
 ]
 
 # bot = commands.Bot(command_prefix=PREFIX, help_command=None)
@@ -99,7 +99,7 @@ async def on_ready():
         nickname = nickname.nick
         print(f"{g.name} (id: {g.id}) como {nickname}")
 
-    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="o Yuki no banho"))
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=" 👀"))
 
 
 # Carrega as extensões (Cogs)

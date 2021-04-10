@@ -53,7 +53,6 @@ ICONS_DICT = {
 }
 
 
-# TODO Adicionar os prints que deverão ser mostrados no console log em casos onde ocorram exceções
 class FreeGame(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -110,7 +109,7 @@ class FreeGame(commands.Cog):
         definidos e enviando-as aos canais cadastrados no banco de dados."""
 
         def apply_filters(submission):
-            """Apply PLATFORMS and CATEGORIES filters on r/FreeGameFingings submissions
+            """Apply PLATFORMS and CATEGORIES filters on r/FreeGameFindings submissions
 
             Parameters
             ----------
