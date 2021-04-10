@@ -2,6 +2,9 @@ import os
 
 import discord
 
+# Twitter Contact
+dev_contact = "[Twitter](https://twitter.com/i/user/4400659517)"
+
 # GLOBAL PATHS:
 
 # Path para Raiz do projeto

@@ -16,8 +16,10 @@ from discord.ext.commands import Bot, MissingPermissions, guild_only, has_permis
 from dotenv import load_dotenv
 from pretty_help import Navigation, PrettyHelp
 
+import codes.paths as path
+
 sys.path.append("D:\\python-codes\\Discordzada")  # Config the PYTHONPATH to import "codes.settings" without warnings
-import codes.settings as st  # Get the globals from Settings
+# Get the globals from Settings
 
 logging.basicConfig(level=logging.INFO)
 
@@ -40,17 +42,21 @@ PREFIX = "!"
 
 startup_extensions = [
     "cogs.administrator",
-    "cogs.messages",
-    "cogs.stickers",
-    "cogs.management",
-    "cogs.minigames",
-    "cogs.myanimelist",
+    "cogs.audioplayer",
+    "cogs.bad_words",
+    "cogs.freegame",
+    "cogs.guild_database",
     "cogs.howlongtobeat",
     "cogs.leagueoflegends",
+    "cogs.management",
+    "cogs.messages",
+    "cogs.minigames",
+    "cogs.myanimelist",
+    "cogs.playlist",
+    "cogs.rules",
+    "cogs.settings_database",
+    "cogs.stickers",
     "cogs.storesteam",
-    "cogs.audioplayer",
-    "cogs.reddit"
-    # "cogs.guild_manager"
 ]
 
 # bot = commands.Bot(command_prefix=PREFIX, help_command=None)
@@ -63,9 +69,11 @@ custom_pretty_help = PrettyHelp(
     show_index=True,
 )
 
-bot = commands.Bot(command_prefix=PREFIX, help_command=custom_pretty_help, intents=intents)
+bot = commands.Bot(command_prefix=PREFIX, help_command=custom_pretty_help, intents=intents, case_insensitive=True)
 
 # Evento que dispara quando o bot conecta
+
+
 @bot.event
 async def on_ready():
     """On_Ready
@@ -91,7 +99,7 @@ async def on_ready():
         nickname = nickname.nick
         print(f"{g.name} (id: {g.id}) como {nickname}")
 
-    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="o Yuki no banho"))
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=" 👀"))
 
 
 # Carrega as extensões (Cogs)

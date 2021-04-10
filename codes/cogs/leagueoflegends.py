@@ -10,11 +10,11 @@ from discord.ext import commands
 from discord.utils import *
 from dotenv import load_dotenv
 from riotwatcher import ApiError, LolWatcher
-from roleidentification import pull_data, get_roles
+from roleidentification import get_roles, pull_data
+from codes.leaguecontent import dataDragon
 
 # Config the PYTHONPATH to import "codes.leaguecontent" without warnings
 sys.path.append("D:\\python-codes\\Discordzada")
-from codes.leaguecontent import dataDragon
 
 load_dotenv()
 RIOT_KEY = os.getenv("RIOT_KEY")

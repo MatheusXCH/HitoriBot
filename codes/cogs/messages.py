@@ -4,7 +4,7 @@ import os
 import random
 
 # Get the globals from Settings
-import codes.settings as st
+import codes.paths as path
 import discord
 import dotenv
 from discord.ext import commands
@@ -46,46 +46,36 @@ class Messages(commands.Cog):
         familia_embed = discord.Embed(description=response)
         await ctx.send(embed=familia_embed)
 
-    @commands.command(name="playlist")
-    async def playlist(self, ctx: commands.Context):
-        """!playlist => Lista as playlists feitas para o Servidor"""
-
-        embed = discord.Embed(
-            title=":notes: **Playlists do Servidor** :notes:",
-            colour=discord.Colour(0x32A852),
-            description="Aqui estão os **links das playlists** elaboradas para este servidor:",
-        )
-        embed.add_field(
-            name=":play_pause: Animezada:",
-            value="https://www.youtube.com/playlist?list=PLlOJh8D_rbtt3u1U3XScS8iL-EvNOf_ap",
-            inline=False,
-        )
-        embed.add_field(
-            name=":play_pause: Biruta:",
-            value="https://www.youtube.com/playlist?list=PLlOJh8D_rbtsYBFZWDPCqG4gqXSSkSj_m",
-            inline=False,
-        )
-        embed.add_field(
-            name=":play_pause: É o Ericks:",
-            value="https://www.youtube.com/playlist?list=PLUou7E06dGsYeCeFykeBHCG7bXgx_VC4e",
-            inline=False,
-        )
-        embed.add_field(
-            name=":play_pause: Só o HYPE:",
-            value="https://open.spotify.com/playlist/4XsVHUylRyislcTEJWdkiE?si=-Kt1GXOuSgKJfDuOhcgupg",
-            inline=False,
-        )
-
-        message = await ctx.send(embed=embed)
-        await asyncio.sleep(10)
-        await message.delete()
-
+    # TODO on_guild_join(guild) => Listener que apresenta o bot quando ele entra em uma nova guilda
     @commands.Cog.listener()
-    async def on_message(self, message: discord.Message):
-        """Listener - Diz ao usuário que não é pra dirigir a palavra ao BOT"""
+    async def on_guild_join(self, guild: discord.Guild):
+        embed = discord.Embed(
+            title=f"SAUDAÇÕES À TODOS! 🖖👽\nEu me chamo {self.bot.user.name} e sou o novo Bot do servidor 🤖",
+            description=f"Sou um Bot de propósito geral, então... Faço um pouco de tudo, {guild.roles[0]}!",
+        )
 
-        if self.bot.user.mentioned_in(message) and message.author != self.bot.user and not message.mention_everyone:
-            await message.channel.send(f"Aí {message.author.mention}, não me dirige a palavra não. Faz favor!")
+        embed.add_field(
+            name="Dentre as coisas que posso fazer, estão: ",
+            value=(
+                "🔨 Gerenciar o servidor (Roles, Kick, Palavras proibidas...)\n"
+                "🎲 Tomar decisões através de dado, cara ou coroa ou 'escolha um'\n"
+                "📖 Consultar informações sobre animes, mangás e personagens!\n"
+                "🎮 Consultar informações sobre jogos na Steam em tempo real!\n"
+                "⏳ Obter o tempo estimado para terminar um game! (via HowLongToBeat)\n"
+                "🤑 Informar os usuários sobre Jogos/DLCs grátis para PC!\n"
+                "🧙‍♂️ Informações sobre partidas ao vivo de League of Legends, bem como detalhes dos invocadores!\n"
+                "🚀 ... e por aí vai!\n\n"
+                "Para maiores detalhes de minhas funcionalidades e como configurá-las, acesse a [documentação](https://github.com/MatheusXCH/Discordzada/wiki).\n"
+                "Utilize o `!help` para informações acerca do uso dos comandos.\n\n"
+                f"Caso encontrem bugs, por favor, entrem em contato com meu criador pelo {path.dev_contact}."
+            ),
+            inline=False,
+        )
+
+        for channel in guild.text_channels:
+            if channel.permissions_for(guild.me).send_messages:
+                await channel.send(embed=embed)
+                break
 
 
 def setup(bot):

@@ -7,7 +7,7 @@ import sys
 from pprint import pprint
 from urllib.parse import quote
 
-import codes.settings as st
+import codes.paths as path
 import discord
 import dotenv
 import requests
@@ -15,10 +15,10 @@ import steam
 from discord.ext import commands
 from discord.utils import *
 from dotenv import load_dotenv
+from codes.steamcontent import steambigpicture
 
 # Config the PYTHONPATH to import "codes.leaguecontent" without warnings
 sys.path.append("D:\\python-codes\\Discordzada")
-from codes.steamcontent import steambigpicture
 
 load_dotenv()
 steam_key = os.getenv("STEAM_KEY")
@@ -46,7 +46,7 @@ class StoreSteam(commands.Cog):
             await asyncio.sleep(5)
             await msg.delete()
         except Exception:
-            error_msg = await ctx.send(
+            await ctx.send(
                 embed=discord.Embed(
                     title="Erro",
                     description="Desculpe, parece que houve um problema ao carregar a base de dados da Steam!\nTente novamente após alguns minutos!",
@@ -151,16 +151,17 @@ class StoreSteam(commands.Cog):
                 categories = "N/A"
 
             # Getting PRICE_OVERVIEW
-            if not steam_game["is_free"]:
-                try:
-                    initial_value = str(steam_game["price_overview"]["initial"])
-                    base_price = f"R$ {initial_value[:-2]},{initial_value[-2:]}"
-                    final_price = steam_game["price_overview"]["final_formatted"]
-                    discount = f'{steam_game["price_overview"]["discount_percent"]}%'
-                except Exception:
-                    base_price = "N/A"
-                    final_price = "N/A"
-                    discount = "N/A"
+            # NOTE: Probably useless
+            # if not steam_game["is_free"]:
+            #     try:
+            #         initial_value = str(steam_game["price_overview"]["initial"])
+            #         base_price = f"R$ {initial_value[:-2]},{initial_value[-2:]}"
+            #         final_price = steam_game["price_overview"]["final_formatted"]
+            #         discount = f'{steam_game["price_overview"]["discount_percent"]}%'
+            #     except Exception:
+            #         base_price = "N/A"
+            #         final_price = "N/A"
+            #         discount = "N/A"
 
             # Getting REVIEWS
             try:

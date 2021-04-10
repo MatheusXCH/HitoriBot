@@ -3,7 +3,16 @@ import os
 
 import discord
 from discord.ext import commands
-from discord.ext.commands import MissingPermissions, has_permissions
+from discord.ext.commands import (
+    MissingPermissions,
+    has_permissions,
+    CommandNotFound,
+    MissingRequiredArgument,
+    BadArgument,
+    TooManyArguments,
+    MemberNotFound,
+    NotOwner,
+)
 
 
 class Administrator(commands.Cog):
@@ -11,7 +20,7 @@ class Administrator(commands.Cog):
         self.bot = bot
 
     async def clear_admin_messages(self, ctx: commands.Context, message: discord.Message):
-        """Limpa as mensagens do Módulo Administrator"""
+        """Clean Administrator Module messages"""
 
         await asyncio.sleep(3)
         await message.delete()
@@ -19,7 +28,7 @@ class Administrator(commands.Cog):
     @commands.command(hidden=True, name="m-load")
     @commands.is_owner()
     async def load(self, ctx: commands.Context, *, module: str):
-        """Carrega um módulo"""
+        """Load a module"""
 
         await ctx.message.delete()
         try:
@@ -34,7 +43,7 @@ class Administrator(commands.Cog):
     @commands.command(hidden=True, name="m-unload")
     @commands.is_owner()
     async def unload(self, ctx: commands.Context, *, module: str):
-        """Descarrega um módulo"""
+        """Unload a module"""
 
         await ctx.message.delete()
         try:
@@ -49,7 +58,7 @@ class Administrator(commands.Cog):
     @commands.command(hidden=True, name="m-reload")
     @commands.is_owner()
     async def reload(self, ctx: commands.Context, *, module: str):
-        """Recarrega um módulo"""
+        """Reload a module"""
 
         await ctx.message.delete()
         try:
@@ -93,20 +102,19 @@ class Administrator(commands.Cog):
 
         await ctx.send(embed=embed)
 
-        # # FIXME A função atrapalha a identificar erros
-        # # TODO Buscar formas de melhoras o Listener responsável por notificar o usuário que o comando não existe
-        # @commands.Cog.listener()
-        # async def on_command_error(self, ctx, error):
-        #     """Envia mensagem padrão caso seja utilizado um comando inválido"""
+    @commands.Cog.listener()
+    async def on_command_error(self, ctx: commands.Context, error):
+        """Defines some custom error handlers"""
 
-        #     unknown_command_msg = await ctx.send(
-        # embed = discord.Embed(
-        # title = f'Comando {ctx.message.content} desconhecido',
-        # description = 'Para saber quais são os comandos válidos, utilize "!help"'
-        # )
-        # )
-        #     await asyncio.sleep(5)
-        #     await unknown_command_msg.delete()
+        if isinstance(error, commands.CommandNotFound):
+            msg = await ctx.send(
+                f"Não reconheço o comando `{ctx.message.content}`, {ctx.author.mention}\n"
+                f"Para saber quais são os comandos válidos, utilize `!help`"
+            )
+            await asyncio.sleep(5)
+            return await msg.delete()
+        else:
+            raise error
 
 
 def setup(bot):
