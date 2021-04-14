@@ -94,6 +94,26 @@ class Settings_Database(commands.Cog):
             )
             print(e)
 
+    @commands.Cog.listener()
+    async def on_guild_update(self, before: discord.Guild, after: discord.Guild):
+        """Listener that updates the guild name everytime it changes"""
+
+        if before.name != after.name:
+            try:
+                with MongoClient(CONNECT_STRING) as client:
+                    collection = client.get_database("discordzada").get_collection("guilds_settings")
+                    collection.update_one({"_id": before.id}, {"$set": {"guild.guild_name": after.name}})
+                    print(
+                        f"GUILDS_SETTINGS >> 'on_guild_update' SUCCESS: O nome da guilda de ID: {before.id} foram ATUALIZADO do database."
+                    )
+            except Exception as e:
+                print(
+                    f"GUILDS_SETTINGS >> 'on_guild_update' ERROR: Não foi possível remover as configurações para a guilda ID: {before.id} do database."
+                )
+                print(e)
+        else:
+            pass
+
     @tasks.loop(hours=24)
     async def verify_settings(self):
         """Listener that verifies if any new guild joining event was missed in the past 24 hours"""
