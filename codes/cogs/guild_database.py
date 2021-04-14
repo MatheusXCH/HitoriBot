@@ -183,7 +183,6 @@ class Guild_Database(commands.Cog):
             with MongoClient(CONNECT_STRING) as client:
                 collection = client.get_database("discordzada").get_collection("guilds_info")
                 collection.insert_one(guild_data)
-                collection.database.client.close()
                 print(
                     f"GUILDS_INFO >> 'on_guild_join' SUCCESS: A Guilda com ID:{guild_data['_id']} foi INSERIDO no database."
                 )
@@ -204,7 +203,6 @@ class Guild_Database(commands.Cog):
             with MongoClient(CONNECT_STRING) as client:
                 collection = client.get_database("discordzada").get_collection("guilds_info")
                 collection.delete_one({"_id": guild.id})
-                collection.database.client.close()
                 print(
                     f"GUILDS_INFO >> 'on_guild_remove' SUCCESS: A Guilda ID:{guild_data['_id']} foi EXCLUÍDO do database."
                 )
@@ -225,7 +223,6 @@ class Guild_Database(commands.Cog):
                 collection.update_one(
                     {"_id": after.id}, {"$set": {"guild.guild_name": after.name, "guild.guild_id": after.id}}
                 )
-                collection.database.client.close()
                 print(f"GUILDS_INFO >> 'on_guild_update' SUCCESS: A Guilda ID:{after.id} foi ATUALIZADA no database.")
         except Exception as e:
             print(f"GUILDS_INFO >> 'on_guild_update' ERROR: Não foi possível atualizar a Guilda ID:{after.id}.")
@@ -250,7 +247,6 @@ class Guild_Database(commands.Cog):
                         {"_id": guild.id},
                         {"$push": {"guild.channels_info.text_channels": text_channel_data}},
                     )
-                    collection.database.client.close()
                     print(
                         f"GUILDS_INFO >> 'on_guild_channel_create' SUCCESS: O Canal de Texto ID:{text_channel_data['channel_id']} da Guilda ID: {guild.id} foi INSERIDO no database."
                     )
@@ -269,7 +265,6 @@ class Guild_Database(commands.Cog):
                         {"_id": guild.id},
                         {"$push": {"guild.channels_info.voice_channels": voice_channel_data}},
                     )
-                    collection.database.client.close()
                     print(
                         f"GUILDS_INFO >> 'on_guild_channel_create' SUCCESS: O Canal de Voz ID:{voice_channel_data['channel_id']} da Guilda ID: {guild.id} foi INSERIDO no database"
                     )
@@ -298,7 +293,6 @@ class Guild_Database(commands.Cog):
                         {"_id": guild.id},
                         {"$pull": {"guild.channels_info.text_channels": text_channel_data}},
                     )
-                    collection.database.client.close()
                     print(
                         f"GUILDS_INFO >> 'on_guild_channel_delete' SUCCESS: O Canal de Texto ID:{text_channel_data['channel_id']} da Guilda ID: {guild.id} foi REMOVIDO no database."
                     )
@@ -317,7 +311,6 @@ class Guild_Database(commands.Cog):
                         {"_id": guild.id},
                         {"$pull": {"guild.channels_info.voice_channels": voice_channel_data}},
                     )
-                    collection.database.client.close()
                     print(
                         f"GUILDS_INFO >> 'on_guild_channel_delete' SUCCESS: O Canal de Voz ID:{voice_channel_data['channel_id']} da Guilda ID: {guild.id} foi REMOVIDO no database."
                     )
@@ -346,7 +339,6 @@ class Guild_Database(commands.Cog):
                         {"_id": guild.id, "guild.channels_info.text_channels.channel_id": after.id},
                         {"$set": {"guild.channels_info.text_channels.$": text_channel_after_data}},
                     )
-                    collection.database.client.close()
                     print(
                         f"GUILDS_INFO >> 'on_guild_channel_update' SUCCESS: O Canal de Texto ID:{text_channel_after_data['channel_id']} da Guilda ID: {guild.id} foi ATUALIZADO no database."
                     )
@@ -364,7 +356,6 @@ class Guild_Database(commands.Cog):
                         {"_id": guild.id, "guild.channels_info.voice_channels.channel_id": after.id},
                         {"$set": {"guild.channels_info.voice_channels.$": voice_channel_after_data}},
                     )
-                    collection.database.client.close()
                     print(
                         f"GUILDS_INFO >> 'on_guild_channel_update' SUCCESS: O Canal de Voz ID:{voice_channel_after_data['channel_id']} da Guilda ID:{guild.id} foi ATUALIZADO no database."
                     )
@@ -386,7 +377,6 @@ class Guild_Database(commands.Cog):
             with MongoClient(CONNECT_STRING) as client:
                 collection = client.get_database("discordzada").get_collection("guilds_info")
                 collection.update_one({"_id": guild.id}, {"$push": {"guild.roles_info": role_data}})
-                collection.database.client.close()
                 print(
                     f"GUILDS_INFO >> 'on_guild_role_create' SUCCESS: A role de ID:{role_data['role_id']} da Guilda ID:{guild.id} foi INSERIDA no database."
                 )
@@ -408,7 +398,6 @@ class Guild_Database(commands.Cog):
             with MongoClient(CONNECT_STRING) as client:
                 collection = client.get_database("discordzada").get_collection("guilds_info")
                 collection.update_one({"_id": guild.id}, {"$pull": {"guild.roles_info": role_data}})
-                collection.database.client.close()
                 print(
                     f"GUILDS_INFO >> 'on_guild_role_delete' SUCCESS: A role de ID:{role_data['role_id']} da Guilda ID:{guild.id} foi REMOVIDA no database."
                 )
@@ -433,7 +422,6 @@ class Guild_Database(commands.Cog):
                     {"_id": guild.id, "guild.roles_info.role_id": after.id},
                     {"$set": {"guild.roles_info.$": role_data}},
                 )
-                collection.database.client.close()
                 print(
                     f"GUILDS_INFO >> 'on_guild_role_update' SUCCESS: A role de ID:{role_data['role_id']} da Guilda ID:{guild.id} foi ATUALIZADA no database."
                 )
@@ -456,7 +444,6 @@ class Guild_Database(commands.Cog):
                 collection = client.get_database("discordzada").get_collection("guilds_info")
                 collection.update_one({"_id": guild.id}, {"$inc": {"guild.members_info.members_count": 1}})
                 collection.update_one({"_id": guild.id}, {"$push": {"guild.members_info.members": member_data}})
-                collection.database.client.close()
                 print(
                     f"GUILDS_INFO >> 'on_member_join' SUCCESS: Um novo membro de ID:{member_data['member_id']} da Guilda ID:{guild.id} foi INSERIDO no database."
                 )
@@ -479,7 +466,6 @@ class Guild_Database(commands.Cog):
                 collection = client.get_database("discordzada").get_collection("guilds_info")
                 collection.update_one({"_id": guild.id}, {"$inc": {"guild.members_info.members_count": -1}})
                 collection.update_one({"_id": guild.id}, {"$pull": {"guild.members_info.members": member_data}})
-                collection.database.client.close()
                 print(
                     f"GUILDS_INFO >> 'on_member_remove' SUCCESS: Um membro de ID:{member_data['member_id']} da Guilda ID:{guild.id} foi REMOVIDO do database."
                 )
@@ -509,7 +495,6 @@ class Guild_Database(commands.Cog):
                         {"_id": after.guild.id, "guild.members_info.members.member_id": after.id},
                         {"$set": {"guild.members_info.members.$": member_after_data}},
                     )
-                    collection.database.client.close()
                     print(
                         f"GUILDS_INFO >> 'on_member_update' SUCCESS: O membro de ID:{member_after_data['member_id']} da Guilda ID:{after.guild.id} foi ATUALIZADO!"
                     )
@@ -531,13 +516,12 @@ class Guild_Database(commands.Cog):
                     self.create_guild_data(self.bot.get_guild(guild["guild"]["guild_id"]))
                     for guild in collection.find({}, {"guild.guild_id": 1})
                 ]
-
                 for guild_data in guild_data_list:
                     print(
                         f"GUILDS_INFO >> 'all_guilds_update': Atualizando informações da Guilda ID: {guild_data['_id']}"
                     )
                     collection.update_one({"_id": guild_data["_id"]}, {"$set": {"guild": guild_data["guild"]}})
-                collection.database.client.close()
+
                 print("GUILDS_INFO >> 'all_guilds_update':Todas as informações foram atualizadas com sucesso!")
         except Exception as e:
             print(
@@ -597,7 +581,6 @@ class Guild_Database(commands.Cog):
             with MongoClient(CONNECT_STRING) as client:
                 collection = client.get_database("discordzada").get_collection("guilds_info")
                 collection.insert_one(guild_data)
-                collection.database.client.close()
                 print(
                     f"GUILDS_INFO >> 'on_guild_join' SUCCESS: O objeto com ID:{guild_data['_id']} da Guilda ID:{ctx.guild.id} foi INSERIDO no database"
                 )
@@ -618,7 +601,6 @@ class Guild_Database(commands.Cog):
             with MongoClient(CONNECT_STRING) as client:
                 collection = client.get_database("discordzada").get_collection("guilds_info")
                 collection.delete_one({"_id": ctx.guild.id})
-                collection.database.client.close()
                 print(
                     f"GUILDS_INFO >> 'on_guild_remove' SUCCESS: O objeto com ID:{guild_data['_id']} da Guilda ID:{ctx.guild.id} foi REMOVIDO do database."
                 )
