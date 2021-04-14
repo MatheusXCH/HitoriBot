@@ -22,6 +22,8 @@ timeout_limit = 60
 
 
 class Rules(commands.Cog):
+    """Fornece comandos para administrar as regras do servidor"""
+
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 

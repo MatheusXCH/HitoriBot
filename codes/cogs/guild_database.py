@@ -20,6 +20,8 @@ CONNECT_STRING = os.environ.get("MONGODB_URI")
 
 
 class Guild_Database(commands.Cog):
+    """This module handles the guilds information in MongoDB"""
+
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
@@ -546,7 +548,7 @@ class Guild_Database(commands.Cog):
     @tasks.loop(hours=24)
     async def verify_guilds(self):
         """Listener that verifies if any new guild joining event was missed in the past 24 hours"""
-        
+
         guilds = [guild for guild in self.bot.guilds]
 
         try:
@@ -585,7 +587,7 @@ class Guild_Database(commands.Cog):
     @commands.is_owner()
     async def insert_data(self, ctx: commands.Context):
         """Owner Only => Forces insert guild data on MongoDB database"""
-        
+
         guild_data = self.create_guild_data(guild=ctx.guild)
 
         with open("guild_config.json", "w") as outfile:
@@ -609,7 +611,7 @@ class Guild_Database(commands.Cog):
     @commands.is_owner()
     async def delete_data(self, ctx: commands.Context):
         """Owner Only => Forces remove guild data on MongoDB database"""
-        
+
         guild_data = self.create_guild_data(guild=ctx.guild)
 
         try:
@@ -630,7 +632,7 @@ class Guild_Database(commands.Cog):
     @commands.is_owner()
     async def reset_data(self, ctx: commands.Context):
         """Owner Only => Forces reset guild data on MongoDB database"""
-        
+
         await ctx.invoke(self.bot.get_command("delete-data"))
         await ctx.invoke(self.bot.get_command("insert-data"))
 

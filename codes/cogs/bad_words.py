@@ -24,6 +24,8 @@ timeout_limit = 30
 
 
 class BadWords(commands.Cog):
+    """Implementa comandos para gerenciar o filtro de palavras do servidor"""
+
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 

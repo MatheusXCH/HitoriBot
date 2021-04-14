@@ -21,9 +21,7 @@ from discord.utils import get
 
 
 class Management(commands.Cog):
-    """Módulo contendo diversas funções de gerenciamento
-    OBS: É preciso ter permissão para utilizar alguns dos comandos deste módulo
-    """
+    """Módulo contendo diversas funções de gerenciamento"""
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
