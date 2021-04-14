@@ -97,6 +97,7 @@ class Minigames(commands.Cog):
         """!choose <input> => O Bot escolhe entre as opções dadas. Separe as opções por vírgula!"""
 
         options = input.split(",")
+        options = [item.strip().title() for item in options]
         choice = random.choice(options)
         await ctx.send(content=f"Hmmm... Eu escolho **{choice}**!")
 
