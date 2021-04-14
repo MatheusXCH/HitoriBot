@@ -13,7 +13,7 @@ from discord.ext import commands
 # Módulo: Dices
 #     - Contém um minigame no qual o Almirante Fujitora (One Piece!!!) é invocado para tirar a sorte nos dados!
 class Minigames(commands.Cog):
-    """Possui minigames simples, como rodar dados e cara-corôa"""
+    """Possui minigames simples, como rodar dados, cara-corôa e 'escolha um'"""
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -97,6 +97,7 @@ class Minigames(commands.Cog):
         """!choose <input> => O Bot escolhe entre as opções dadas. Separe as opções por vírgula!"""
 
         options = input.split(",")
+        options = [item.strip().title() for item in options]
         choice = random.choice(options)
         await ctx.send(content=f"Hmmm... Eu escolho **{choice}**!")
 

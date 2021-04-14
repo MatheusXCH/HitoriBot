@@ -54,6 +54,8 @@ ICONS_DICT = {
 
 
 class FreeGame(commands.Cog):
+    """Comandos para gerenciar o recurso de publicar jogos grátis"""
+
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 

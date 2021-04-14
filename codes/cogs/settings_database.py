@@ -18,6 +18,8 @@ CONNECT_STRING = os.environ.get("MONGODB_URI")
 
 
 class Settings_Database(commands.Cog):
+    """This module handles the guilds settings in MongoDB"""
+
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 

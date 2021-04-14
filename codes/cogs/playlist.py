@@ -18,11 +18,10 @@ load_dotenv()
 CONNECT_STRING = os.environ.get("MONGODB_URI")
 timeout_limit = 15
 
-# NOTE: Os comandos de Playlist não serão disponíveis para todos os membros dos servidores
-# TODO Adicionar as permissões necessárias para utilizar os comandos
-
 
 class Playlist(commands.Cog):
+    """Responsável pelos comandos para gerenciar as Playlists do servidor"""
+
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
