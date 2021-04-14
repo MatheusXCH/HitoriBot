@@ -8,6 +8,8 @@ from pprint import pprint
 
 
 import asyncpraw
+import asyncprawcore
+
 
 # Get the globals from Settings
 import codes.paths as path
@@ -130,63 +132,81 @@ class FreeGame(commands.Cog):
                         if category in submission.title.upper():
                             return submission
 
-        # Handles the Heroku's server restart to not resend a post
-        first_entry_flag = True
         subreddit = await reddit.subreddit("FreeGameFindings")
-        post = {"title": "", "url": ""}
 
-        while True:
+        try:
+            with MongoClient(CONNECT_STRING) as client:
+                collection = client.get_database("discordzada").get_collection("guilds_settings")
+                channel_id_list = [
+                    item["settings"]["freegame_channel"]["channel_id"]
+                    for item in collection.find({}, {"settings.freegame_channel.channel_id": 1})
+                ]
+        except Exception as e:
+            print(
+                "TASK >> 'freegame_findings' ERROR: Não foi possível acessar os canais de FreeGameFindings no database."
+            )
+            print(e)
+
+        try:
+            with MongoClient(CONNECT_STRING) as client:
+                post_collection = client.get_database("discordzada").get_collection("freegame_post")
+                post = post_collection.find_one({"_id": 1}, {"_id": False})
+        except Exception as e:
+            print(
+                "TASK >> 'freegame_findings' ERROR: Não foi possível acessar o game mais recentes salvo no database."
+            )
+            print(e)
+
+        # Get newest posts
+        newest_list = [apply_filters(submission) async for submission in subreddit.new(limit=10)]
+        # Clear 'None' from the list
+        newest_list = [item for item in newest_list if item]
+        newest = newest_list[0]
+
+        if newest.title != post["title"]:
+            post_stack = []
+
+            for submission in newest_list:
+                if submission.title != post["title"]:
+                    post_stack.append(submission)
+                else:
+                    break
+
+            while post_stack != []:
+                item = post_stack.pop()
+                post["title"] = item.title
+                post["url"] = item.url
+                icon = "".join([ICONS_DICT[platform] for platform in PLATFORMS if platform in post["title"].upper()])
+                embed_post = discord.Embed(title=post["title"], description=post["url"])
+                embed_post.set_thumbnail(url=icon)
+
+                for channel_id in channel_id_list:
+                    text_channel = self.bot.get_channel(id=channel_id)
+
+                    if text_channel is not None:
+                        await text_channel.send(embed=embed_post)
+
             try:
                 with MongoClient(CONNECT_STRING) as client:
-                    collection = client.get_database("discordzada").get_collection("guilds_settings")
-                    channel_id_list = [
-                        item["settings"]["freegame_channel"]["channel_id"]
-                        for item in collection.find({}, {"settings.freegame_channel.channel_id": 1})
-                    ]
+                    post_collection = client.get_database("discordzada").get_collection("freegame_post")
+                    post_collection.update_one({"_id": 1}, {"$set": {"title": post["title"], "url": post["url"]}})
             except Exception as e:
                 print(
-                    "TASK >> 'freegame_findings' ERROR: Não foi possível acessar os canais de FreeGameFindings no database."
+                    "TASK >> 'freegame_findings' ERROR: Não foi possível salvar o game mais recente publicado no database."
                 )
                 print(e)
 
-            # Get newest posts
-            newest_list = [apply_filters(submission) async for submission in subreddit.new(limit=10)]
-            # Clear 'None' from the list
-            newest_list = [item for item in newest_list if item]
-            newest = newest_list[0]
+        # Sleep Task for 1 hour
+        await asyncio.sleep(3600)
 
-            if newest.title != post["title"]:
-                post_stack = []
-
-                if first_entry_flag:
-                    post["title"] = newest.title
-                    post["url"] = newest.url
-                    first_entry_flag = False
-                else:
-                    for submission in newest_list:
-                        if submission.title != post["title"]:
-                            post_stack.append(submission)
-                        else:
-                            break
-
-                    while post_stack != []:
-                        item = post_stack.pop()
-                        post["title"] = item.title
-                        post["url"] = item.url
-                        icon = "".join(
-                            [ICONS_DICT[platform] for platform in PLATFORMS if platform in post["title"].upper()]
-                        )
-
-                        embed_post = discord.Embed(title=post["title"], description=post["url"])
-                        embed_post.set_thumbnail(url=icon)
-
-                        for channel_id in channel_id_list:
-                            text_channel = self.bot.get_channel(id=channel_id)
-                            await text_channel.send(embed=embed_post)
-
-            collection.database.client.close()
-            # Sleep for 1 hour
-            await asyncio.sleep(3600)
+    @commands.Cog.listener()
+    async def on_ready(self):
+        # Adding error handlers for freegame_findings task
+        self.freegame_findings.add_exception_type(
+            asyncio.TimeoutError,
+            asyncprawcore.exceptions.RequestException,
+        )
+        self.freegame_findings.start()
 
     # # # Commands below are only usable by the bot owner to handle exceptional cases
     #
@@ -246,10 +266,6 @@ class FreeGame(commands.Cog):
         msg = await ctx.send("**FreeGameFindings has been RESTARTED!**")
         await asyncio.sleep(3)
         await msg.delete()
-
-    @commands.Cog.listener()
-    async def on_ready(self):
-        self.freegame_findings.start()
 
 
 def setup(bot):
