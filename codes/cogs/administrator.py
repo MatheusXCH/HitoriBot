@@ -16,7 +16,7 @@ from discord.ext.commands import (
 
 
 class Administrator(commands.Cog):
-    """ Contém funções para uso apenas do Dono do Bot"""
+    """Contém funções para uso apenas do Dono do Bot"""
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
