@@ -6,10 +6,10 @@ import discord
 from discord.ext import commands
 
 
-# Módulo: Stickers
-#     - Responsável por todos os comandos relacionados aos stickers disponibilizados pelo PyBOT
-#     - Sempre que um dos comandos por chamado, o PyBOT responderá com o sticker (imagem) correspondente
-#     - Todos os Stickers está disponível no diretório '/misc/stickers'
+# # # Módulo: Stickers
+# # Responsável por todos os comandos relacionados aos stickers disponibilizados pelo PyBOT
+# # Sempre que um dos comandos for chamado, o bot responderá com o sticker (imagem) correspondente
+# # Os Stickers estão disponíveis no diretório '/misc/stickers'
 class Stickers(commands.Cog):
     """Módulo contendo todos os stickers disponíveis para uso"""
 

@@ -20,6 +20,17 @@ from codes.steamcontent import steambigpicture
 # Config the PYTHONPATH to import "codes.leaguecontent" without warnings
 sys.path.append("D:\\python-codes\\Discordzada")
 
+# # # Módulo: StoreSteam
+# # - Fornece uma ferramenta robusta de busca para jogos de PC, integrando informações da "Steam" e "SteamSpy"
+# # - Os dados obtidos são armazenados localmente para reduzir o número de requests necessários. Há um comando para atualizar
+# # os dados
+# # - Os comandos listados abaixo buscam fornecer informações, em forma de Embed interativos, sobre os jogos encontrados
+
+# # # Utiliza:
+# # - Discord.py API (by Rapptz on: https://github.com/Rapptz/discord.py)
+# # - Steam Web API (by Valve on: https://partner.steamgames.com/doc/webapi)
+# # - SteamSpy API (by SteamSpy on: https://steamspy.com/api.php)
+
 load_dotenv()
 steam_key = os.getenv("STEAM_KEY")
 big_picture = steambigpicture.SteamBigPicture()

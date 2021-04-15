@@ -10,13 +10,15 @@ from jikanpy import Jikan, exceptions
 jikan = Jikan()
 translator = google_translator()
 
-# Módulo: MyAnimeList
-#     - Integra os resultados de busca do MyAnimeList com o Bot, via jikanpy API
-#     - Utiliza da API 'google_trans_new' para fazer automaticamente traduções necessárias de 'EN/PT-BR'
-#     - Os comandos listados abaixo buscam fornecer informações, em forma de Embed interativos, sobre animes, mangás, suas sinopses e personagens das obras
-#     #### Utiliza:
-#     ##### JikanPY API (by abhinavk99 on: https://github.com/abhinavk99/jikanpy)
-#     ##### Google_Trans_New API (by lushan88a on: https://github.com/lushan88a/google_trans_new)
+# # # Módulo: MyAnimeList
+# # - Integra os resultados de busca do MyAnimeList com o Bot, via jikanpy API
+# # - Utiliza da API 'google_trans_new' para fazer automaticamente traduções necessárias de 'EN/PT-BR'
+# # - Os comandos listados abaixo buscam fornecer informações, em forma de Embed interativos, sobre animes, mangás, suas sinopses e personagens das obras
+
+# # # Utiliza:
+# # - Discord.py API (by Rapptz on: https://github.com/Rapptz/discord.py)
+# # - JikanPY API (by abhinavk99 on: https://github.com/abhinavk99/jikanpy)
+# # - Google_Trans_New API (by lushan88a on: https://github.com/lushan88a/google_trans_new)
 
 
 class MyAnimeList(commands.Cog):
@@ -367,9 +369,9 @@ class MyAnimeList(commands.Cog):
             await ctx.send(content=None, embed=embed_sin)
 
     # # Limitações:
-    # - Devido a forma como o MAL busca por personagens, ao passar o nome incompleto a API nem sempre retorna o resultado mais popular
-    # - Diante disso, buscando amenizar a situação, essa função busca os 10 primeiros resultados e retorna o mais popular deles
-    # - Ainda assim, nem sempre é garantido que o resultado mais popular de todo o MAL estará entre os 10 primeiros
+    # Devido a forma como o MAL busca por personagens, ao passar o nome incompleto a API nem sempre retorna o resultado mais popular
+    # Diante disso, buscando amenizar a situação, essa função busca os 10 primeiros resultados e retorna o mais popular deles
+    # Ainda assim, nem sempre é garantido que o resultado mais popular de todo o MAL estará entre os 10 primeiros
     @commands.command(name="mal-char")
     async def mal_char(self, ctx: commands.Context, *, char_name: str = "Nothing Passed to Command"):
         """!mal-char <character_name> => Pesquisa um personagem no MAL

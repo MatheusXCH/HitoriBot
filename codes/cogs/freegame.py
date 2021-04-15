@@ -22,6 +22,16 @@ from discord.utils import *
 from dotenv import load_dotenv
 from pymongo import MongoClient
 
+# # # Módulo: FreeGame
+# # - Implementa a funcionalidade de enviar jogos grátis em um canal definido em cada um dos servidores
+# # - Este módulo contém não somente o listener que gerencia os jogos a serem enviados, como também as funções
+# # para que os moderadores dos servidores possam definir o canal para as postagens
+
+# # # Utiliza:
+# # - Discord.py API (by Rapptz on: https://github.com/Rapptz/discord.py)
+# # - MongoDB Python Driver [pymongo] (by mongodb on: https://github.com/mongodb/mongo-python-driver)
+# # - AsyncPRAW [The Asynchronous Python Reddit API Wrapper](by praw-dev on: https://github.com/praw-dev/asyncpraw)
+
 load_dotenv()
 reddit = asyncpraw.Reddit(
     client_id=os.getenv("PRAW_CLIENT_ID"),
@@ -32,6 +42,8 @@ reddit = asyncpraw.Reddit(
 )
 CONNECT_STRING = os.environ.get("MONGODB_URI")
 
+
+# # # Filters
 PLATFORMS = [
     "STEAM",
     "EPIC GAMES",
@@ -65,10 +77,12 @@ class FreeGame(commands.Cog):
         if isinstance(error, MissingPermissions):
             return f"Desculpe {ctx.author.mention}, você não tem permissão para fazer isso!"
 
-    # WORKING
     @commands.command(name="freegame-channel", hidden=True)
     @has_permissions(administrator=True)
     async def set_channel_id(self, ctx: commands.Context):
+        """!freegame-channel => Utilize este comando no canal em que deseja receber as mensagens de jogos grátis
+        - É necessário ter permissão de administrador para definir o canal"""
+
         try:
             with MongoClient(CONNECT_STRING) as client:
                 collection = client.get_database("discordzada").get_collection("guilds_settings")
@@ -106,7 +120,6 @@ class FreeGame(commands.Cog):
     async def set_channel_id_error(self, ctx: commands.Context, error):
         await ctx.send(self.error_message(ctx, error))
 
-    # TEST
     @tasks.loop()
     async def freegame_findings(self):
         """Confere continuamente as postagens no 'r/FreeGamesFindings', obtendo aquelas que atendem aos filtros

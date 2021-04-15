@@ -16,6 +16,17 @@ from discord.utils import *
 from dotenv import load_dotenv
 from pymongo import MongoClient
 
+# # # Módulo: Rules
+# # - Fornece aos moderadores dos servidores um conjunto de comandos para gerenciar e disponibilizar as regras 
+# # do servidor
+# # - Os comandos permitem adicionar/remover/mostrar as regras, dadas as restrições de permissões impostas por 
+# # cada tipo de comando
+# # - Cada servidor possuí sua própria instância das playlists, administrado via database
+
+# # # Utiliza:
+# # - Discord.py API (by Rapptz on: https://github.com/Rapptz/discord.py)
+# # - MongoDB Python Driver [pymongo] (by mongodb on: https://github.com/mongodb/mongo-python-driver)
+
 load_dotenv()
 CONNECT_STRING = os.environ.get("MONGODB_URI")
 timeout_limit = 60
@@ -34,7 +45,6 @@ class Rules(commands.Cog):
     def _timeout_message(self, ctx: commands.Context):
         return f"Desculpe {ctx.author.mention}, parece que você demorou demais para informar o que foi solicitado... 😅"
 
-    # WORKING
     @commands.command(name="add-rules")
     @has_permissions(administrator=True)
     async def add_rules(self, ctx: commands.Context):
@@ -72,7 +82,6 @@ class Rules(commands.Cog):
     async def add_rules_error(self, ctx: commands.Context, error):
         await ctx.send(self.error_message(ctx, error))
 
-    # WORKING
     @commands.command(name="del-rules")
     @has_permissions(administrator=True)
     async def del_rules(self, ctx: commands.Context):
@@ -126,7 +135,6 @@ class Rules(commands.Cog):
     async def del_rules_error(self, ctx: commands.Context, error):
         await ctx.send(self.error_message(ctx, error))
 
-    # WORKING
     @commands.command(name="rules")
     async def rules(self, ctx: commands.Context):
         """!rules => Envia as regras do servidor na DM do usuário"""

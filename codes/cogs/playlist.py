@@ -14,6 +14,17 @@ from discord.ext.commands import MissingPermissions, has_permissions
 from pymongo import MongoClient
 from dotenv import load_dotenv
 
+# # # Módulo: Playlist
+# # - Fornece aos moderadores dos servidores um conjunto de comandos para armazenar links de playlists criadas
+# # para os servidores
+# # - Os comandos permitem adicionar/remover/editar/mostrar a lista de playlists, dadas as restrições de permissões
+# # impostas por cada tipo de comando
+# # - Cada servidor possuí sua própria instância das playlists, administrado via database
+
+# # # Utiliza:
+# # - Discord.py API (by Rapptz on: https://github.com/Rapptz/discord.py)
+# # - MongoDB Python Driver [pymongo] (by mongodb on: https://github.com/mongodb/mongo-python-driver)
+
 load_dotenv()
 CONNECT_STRING = os.environ.get("MONGODB_URI")
 timeout_limit = 15
@@ -40,7 +51,6 @@ class Playlist(commands.Cog):
 
         return playlists_names
 
-    # WORKING
     @commands.command(name="add-playlist")
     @has_permissions(manage_channels=True, manage_guild=True)
     async def add_playlist(self, ctx: commands.Context):
@@ -107,7 +117,6 @@ class Playlist(commands.Cog):
     async def add_playlist_error(self, ctx: commands.Context, error):
         await ctx.send(self.error_message(ctx, error))
 
-    # WORKING
     @commands.command(name="del-playlist")
     @has_permissions(manage_channels=True, manage_guild=True)
     async def del_playlist(self, ctx: commands.Context):
@@ -164,7 +173,6 @@ class Playlist(commands.Cog):
     async def del_playlist_error(self, ctx: commands.Context, error):
         await ctx.send(self.error_message(ctx, error))
 
-    # WORKING
     @commands.command(name="edit-playlist")
     @has_permissions(manage_channels=True, manage_guild=True)
     async def edit_playlist(self, ctx: commands.Context):
@@ -291,7 +299,6 @@ class Playlist(commands.Cog):
     async def edit_playlist_error(self, ctx: commands.Context, error):
         await ctx.send(self.error_message(ctx, error))
 
-    # WORKING
     @commands.command(name="playlist")
     async def playlist(self, ctx: commands.Context):
         """!playlist => Lista as playlists feitas para o servidor"""

@@ -16,6 +16,16 @@ from codes.leaguecontent import dataDragon
 # Config the PYTHONPATH to import "codes.leaguecontent" without warnings
 sys.path.append("D:\\python-codes\\Discordzada")
 
+# # # Módulo: LeagueOfLegends
+# # - Integra o bot com a API do jogo League Of Legends da dev Riot Games
+
+# # # Utiliza:
+# # - Discord.py API (by Rapptz on: https://github.com/Rapptz/discord.py)
+# # - Riot-Watcher (by pseudonym117 on: https://github.com/pseudonym117/Riot-Watcher)
+# # - Role-Identification (by meraki-analytics on: https://github.com/meraki-analytics/role-identification)
+# # - Riot Games API (by Riot Games on: https://developer.riotgames.com/)
+
+
 load_dotenv()
 RIOT_KEY = os.getenv("RIOT_KEY")
 watcher = LolWatcher(RIOT_KEY)
@@ -30,7 +40,6 @@ class LeagueOfLegends(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    # TODO Pensar em mais informações úteis para serem mostradas aqui
     # TODO Trocar a lógica do "Nothing Passed to Command" por algo mais elegante
     @commands.command(name="summ")
     async def get_summoner(
@@ -46,7 +55,7 @@ class LeagueOfLegends(commands.Cog):
 
         if name == "Nothing passed to command":
             missing_name_embed = discord.Embed(
-                description="É precisso passar um nome de invocador!\nEx. !summoner Pato Papão"
+                description="É preciso passar um nome de invocador!\nEx. !summoner Pato Papão"
             )
             await ctx.send(embed=missing_name_embed)
         else:
@@ -126,37 +135,11 @@ class LeagueOfLegends(commands.Cog):
                     pass
                 await msg.edit(embed=summoner_info_embed)
 
-    # TODO Match History Command - Ainda não há nada feito aqui!
-    # TODO Passar o nome do comando para o @commands.command
-    # @commands.command(name = 'hist')
-    # async def match_history(self, ctx, *, name: str = 'Empadão de Tatu'):
-    #     """!hist <summoner_name>
-    #     Retorna o histórico recente do invocador
-    #     """
-    #     champion_roles = pull_data()
-    #     summoner = watcher.summoner.by_name(region, name)
-    #     matches = watcher.match.matchlist_by_account(region, summoner['accountId'])
-
-    #     matches_embed = discord.Embed(
-    #         title = f'Histórico de {summoner["name"]}',
-    #         url = f'https://br.op.gg/summoner/userName=' + '+'.join(name.split(' '))
-    #     )
-
-    #     matches_embed.set_thumbnail(url = dd.get_profile_icon(iconID = summoner["profileIconId"]))
-    #     last_match = matches['matches'][0]
-    #     match_detail = watcher.match.by_id(region, last_match['gameId'])
-
-    # TODO Fazer o histórico da ÚLTIMA partida!!!
-    # É preciso olhar o arquivo "match_Detail.txt" para ver a estrutura do dicionário de match_detail
-    # Usar a função 'get_role(champion_roles, list_champion_in_match)' para pegar os dados dos campeões da última partida
-    # O parâmetro 'list_champion_in_match' é uma lista de 5 elementos contendo o championId de cada um dos campeões na partida
-
-    # TODO Tentar chamar a função dinamicamente através de um Listener
     @commands.command(name="live")
     async def live_match(self, ctx: commands.Context, *, name: str = "Empadão de Tatu"):
         """!live <summoner_name> => Retorna o lobby da partida ao vivo do invocador
-        O invocador DEVE estar em uma partida ao vivo
-        É possível obter informações sobre os participantes da partida em tempo real, utilizando dos botões disponíveis no Embed
+        - O invocador DEVE estar em uma partida ao vivo
+        - É possível obter informações sobre os participantes da partida em tempo real, utilizando dos botões disponíveis no Embed
         """
 
         try:
@@ -533,9 +516,11 @@ class LeagueOfLegends(commands.Cog):
                 break
         await message.clear_reactions()
 
-    # TODO League Champions Info
+    # TODO League Champions Info Command
 
-    # TODO League Item Info
+    # TODO League Item Info Command
+
+    # TODO Match History Command
 
 
 def setup(bot):

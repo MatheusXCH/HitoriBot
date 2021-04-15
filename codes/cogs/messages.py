@@ -12,8 +12,11 @@ from discord.ext.commands import MissingPermissions, has_permissions
 from pymongo import MongoClient
 from dotenv import load_dotenv
 
-# Módulo: Messages
-#     - Contém alguns comandos simples, os quais consitem apenas de algumas mensagens que são exibidas pelo PyBOT
+# # # Módulo: Messages
+# # - Contém alguns comandos simples, os quais consistem apenas de algumas mensagens que são exibidas pelo Bot
+
+# # # Utiliza:
+# # - Discord.py API (by Rapptz on: https://github.com/Rapptz/discord.py)
 
 load_dotenv()
 CONNECT_STRING = os.environ.get("MONGODB_URI")

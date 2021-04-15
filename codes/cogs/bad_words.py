@@ -16,11 +16,19 @@ from discord.utils import *
 from dotenv import load_dotenv
 from pymongo import MongoClient
 
+# # # Módulo: BadWords
+# # - Fornece aos administradores de canais dos servidores um filtro de palavras proibídas
+# # - O módulo implementa funções para adicionar/remover palavras ao filtro, bem como um listener que
+# # as remove automaticamente quando aparecem em um canal de texto do servidor
+# # - Cada servidor possuí sua própria instância das palavras proibídas, administrado via database
+
+# # # Utiliza:
+# # - Discord.py API (by Rapptz on: https://github.com/Rapptz/discord.py)
+# # - MongoDB Python Driver [pymongo] (by mongodb on: https://github.com/mongodb/mongo-python-driver)
+
 load_dotenv()
 CONNECT_STRING = os.environ.get("MONGODB_URI")
 timeout_limit = 30
-
-# TODO Add 'has_permissions' in commands
 
 
 class BadWords(commands.Cog):
@@ -42,7 +50,6 @@ class BadWords(commands.Cog):
 
         return bad_words
 
-    # WORKING
     @commands.command(name="add-badwords")
     @has_permissions(manage_channels=True, manage_guild=True, manage_roles=True, manage_messages=True)
     async def add_badwords(self, ctx: commands.Context):
@@ -92,7 +99,6 @@ class BadWords(commands.Cog):
     async def add_badwords_error(self, ctx: commands.Context, error):
         await ctx.send(self.error_message(ctx, error))
 
-    # WORKING
     @commands.command(name="show-badwords")
     @has_permissions(manage_channels=True, manage_guild=True, manage_roles=True, manage_messages=True)
     async def show_badwords(self, ctx: commands.Context):
@@ -118,7 +124,6 @@ class BadWords(commands.Cog):
     async def show_badwords_error(self, ctx: commands.Context, error):
         await ctx.send(self.error_message(ctx, error))
 
-    # WORKING
     @commands.command(name="del-badwords")
     @has_permissions(manage_channels=True, manage_guild=True, manage_roles=True, manage_messages=True)
     async def del_badwords(self, ctx: commands.Context):
@@ -183,7 +188,6 @@ class BadWords(commands.Cog):
     async def del_badwords_error(self, ctx: commands.Context, error):
         await ctx.send(self.error_message(ctx, error))
 
-    # WORKING
     @commands.command(name="reset-badwords")
     @has_permissions(manage_channels=True, manage_guild=True, manage_roles=True, manage_messages=True)
     async def reset_badwords(self, ctx: commands.Context):
@@ -212,7 +216,6 @@ class BadWords(commands.Cog):
     async def reset_badwords_error(self, ctx: commands.Context, error):
         await ctx.send(self.error_message(ctx, error))
 
-    # WORKING
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
         message_uppercase = message.content.upper()

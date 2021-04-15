@@ -15,6 +15,17 @@ from discord.ext.commands import MissingPermissions, has_permissions
 from pymongo import MongoClient
 from dotenv import load_dotenv
 
+# # # Módulo: Guild_Database
+# # - Responsável por conectar o bot ao database e armazenar/administrar informações sobre as guildas
+# # as quais o bot está conectado
+# # - Armazena informações sobre: guildas, canais de texto e voz, membros, permissões e roles
+# # - As informações são atualizadas automaticamente no servidor quando alteradas em quaisquer instâncias,
+# # utilizando dos listeners fornecidos pela biblioteca do discord.py
+
+# # # Utiliza:
+# # - Discord.py API (by Rapptz on: https://github.com/Rapptz/discord.py)
+# # - MongoDB Python Driver [pymongo] (by mongodb on: https://github.com/mongodb/mongo-python-driver)
+
 load_dotenv()
 CONNECT_STRING = os.environ.get("MONGODB_URI")
 
@@ -172,7 +183,6 @@ class Guild_Database(commands.Cog):
 
         return guild_data
 
-    # WORKING
     @commands.Cog.listener()
     async def on_guild_join(self, guild: discord.Guild):
         """Listener that creates a new 'guild_info' document in MongoDB database when the bot joins a new server"""
@@ -192,7 +202,6 @@ class Guild_Database(commands.Cog):
             )
             print(e)
 
-    # WORKING
     @commands.Cog.listener()
     async def on_guild_remove(self, guild: discord.Guild):
         """Listener that removes a 'guild_info' document in MongoDB database when the bot joins a new server"""
@@ -212,7 +221,6 @@ class Guild_Database(commands.Cog):
             )
             print(e)
 
-    # WORKING
     @commands.Cog.listener()
     async def on_guild_update(self, before: discord.Guild, after: discord.Guild):
         """Listener that updates a 'guild_info' document in MongoDB database when the bot leaves the server"""
@@ -228,7 +236,6 @@ class Guild_Database(commands.Cog):
             print(f"GUILDS_INFO >> 'on_guild_update' ERROR: Não foi possível atualizar a Guilda ID:{after.id}.")
             print(e)
 
-    # WORKING
     @commands.Cog.listener()
     async def on_guild_channel_create(self, channel: discord.abc.GuildChannel):
         """Listener that creates a 'guild_info' document in MongoDB database when a new channel is created on the server
@@ -274,7 +281,6 @@ class Guild_Database(commands.Cog):
                 )
                 print(e)
 
-    # WORKING
     @commands.Cog.listener()
     async def on_guild_channel_delete(self, channel: discord.abc.GuildChannel):
         """Listener that removes a 'guild_info' document in MongoDB database when a channel is removed from the server
@@ -320,7 +326,6 @@ class Guild_Database(commands.Cog):
                 )
                 print(e)
 
-    # WORKING
     @commands.Cog.listener()
     async def on_guild_channel_update(self, before: discord.abc.GuildChannel, after: discord.abc.GuildChannel):
         """Listener that updates a 'guild_info' document in MongoDB database when a channel is updated on the server
@@ -365,7 +370,6 @@ class Guild_Database(commands.Cog):
                 )
                 print(e)
 
-    # WORKING
     @commands.Cog.listener()
     async def on_guild_role_create(self, role: discord.Role):
         """Listener that creates a 'guild_info' document in MongoDB database when a new role is created on the server"""
@@ -386,7 +390,6 @@ class Guild_Database(commands.Cog):
             )
             print(e)
 
-    # WORKING
     @commands.Cog.listener()
     async def on_guild_role_delete(self, role: discord.Role):
         """Listener that removes a 'guild_info' document in MongoDB database when a role is removed from the server"""
@@ -407,7 +410,6 @@ class Guild_Database(commands.Cog):
             )
             print(e)
 
-    # WORKING
     @commands.Cog.listener()
     async def on_guild_role_update(self, before: discord.Role, after: discord.Role):
         """Listener that updates a 'guild_info' document in MongoDB database when role is updated on the server"""
@@ -431,7 +433,6 @@ class Guild_Database(commands.Cog):
             )
             print(e)
 
-    # WORKING
     @commands.Cog.listener()
     async def on_member_join(self, member: discord.Member):
         """Listener that creates a 'guild_info' document in MongoDB database when a new member joins the server"""
@@ -453,7 +454,6 @@ class Guild_Database(commands.Cog):
             )
             print(e)
 
-    # WORKING
     @commands.Cog.listener()
     async def on_member_remove(self, member: discord.Member):
         """Listener that removes a 'guild_info' document in MongoDB database when a member leaves the server"""
@@ -475,7 +475,6 @@ class Guild_Database(commands.Cog):
             )
             print(e)
 
-    # WORKING
     @commands.Cog.listener()
     async def on_member_update(self, before: discord.Member, after: discord.Member):
         """Listener that updates a 'guild_info' document in MongoDB database when a member updates its information on the server"""
@@ -509,6 +508,7 @@ class Guild_Database(commands.Cog):
     @tasks.loop(hours=24)
     async def all_guilds_update(self):
         """Listener that, once a day, update all the infos about the guilds registered in the MongoDB database"""
+
         try:
             with MongoClient(CONNECT_STRING) as client:
                 collection = client.get_database("discordzada").get_collection("guilds_info")
