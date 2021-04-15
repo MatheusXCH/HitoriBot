@@ -99,6 +99,7 @@ async def on_ready():
         nickname = nickname.nick
         print(f"{g.name} (id: {g.id}) como {nickname}")
 
+    print("\n")
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=" 👀"))
 
 
