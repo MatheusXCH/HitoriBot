@@ -5,13 +5,15 @@ from discord.ext import commands
 from discord.utils import *
 from howlongtobeatpy import HowLongToBeat
 
-hltb = HowLongToBeat()
+# # # Módulo: HowLongToBeat
+# # - Integra o PyBOT com o https://howlongtobeat.com/ via howlongtobeatpy
+# # - Permite consultar o tempo estimado de término de games, de acordo com os dados disponibilizados pela comunidade do HLTB
 
-# Módulo: HowLongToBeat
-#    - Integra o PyBOT com o https://howlongtobeat.com/ via howlongtobeatpy
-#    - Permite consultar o tempo estimado de término de games, de acordo com os dados disponibilizados pela comunidade do HLTB
-#    #### Utiliza:
-#    ##### howlongtobeatpy API (by ScrappyCocco on: https://github.com/ScrappyCocco/HowLongToBeat-PythonAPI)
+# # # Utiliza:
+# # - Discord.py API (by Rapptz on: https://github.com/Rapptz/discord.py)
+# # - howlongtobeatpy API (by ScrappyCocco on: https://github.com/ScrappyCocco/HowLongToBeat-PythonAPI)
+
+hltb = HowLongToBeat()
 
 
 class HowLongToBeat(commands.Cog):
@@ -45,8 +47,8 @@ class HowLongToBeat(commands.Cog):
             )
 
             embed_hltb.add_field(
-                name=results[i].gameplay_completionist_label,
-                value=f"{results[i].gameplay_completionist} {results[i].gameplay_completionist_unit}",
+                name=results[i].gameplay_completist_label,
+                value=f"{results[i].gameplay_completist} {results[i].gameplay_completist_unit}",
                 inline=False,
             )
             embed_hltb.set_image(url=f"https://howlongtobeat.com{str(results[i].game_image_url)}")
@@ -63,7 +65,7 @@ class HowLongToBeat(commands.Cog):
         await message.add_reaction("❌")
 
         def check(reaction, user):
-            """ Confere se o click na reação foi feito pelo autor do comando """
+            """Confere se o click na reação foi feito pelo autor do comando"""
             return user == ctx.author
 
         i = 0

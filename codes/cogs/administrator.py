@@ -14,6 +14,14 @@ from discord.ext.commands import (
     NotOwner,
 )
 
+# # # Módulo: Administrator
+# # - Implementa um conjunto de comandos e listeners disponíveis apenas para o dev do Bot
+# # - Os comandos permitem iniciar, parar e reiniciar os módulos individualmente, tornando possível lidar com problemas
+# # pontuais sem que o bot precise ficar offline
+
+# # # Utiliza:
+# # - Discord.py API (by Rapptz on: https://github.com/Rapptz/discord.py)
+
 
 class Administrator(commands.Cog):
     """Contém funções para uso apenas do Dono do Bot"""
@@ -91,7 +99,6 @@ class Administrator(commands.Cog):
         guilds_member_count = [guild.member_count for guild in guilds]
         guilds_region = [guild.region for guild in guilds]
 
-        # Creating the message
         line = ""
         guilds_info = ""
         for item in range(len(guilds)):

@@ -12,12 +12,14 @@ from discord.ext import commands
 from discord.ext.commands import Bot, MissingPermissions, guild_only, has_permissions
 from discord.utils import get
 
-# Módulo: Management
-#     - O presente módulo possui comandos de gerenciamento do servidor de forma abrangente
-#     - Contém funções de administrador (como Kick, Ban)
-#     - Contém um Listener responsável por filtrar palavras indevidas no servidor
-#     - Contém funções para administrar roles (set e drop)
-#     - Contém o comando !clear, responsável por limpar as mensagens do próprio PyBOT ou de algum membro da guilda
+# # # Módulo: Management
+# # - O presente módulo possui comandos de gerenciamento do servidor de forma abrangente
+# # - Contém funções de gerenciamento de servidores (como Kick, Ban)
+# # - Contém os comandos !clear, !clean e !purge, responsáveis por limpar as mensagens do próprio Bot ou de outros
+# # membros da guilda
+
+# # # Utiliza:
+# # - Discord.py API (by Rapptz on: https://github.com/Rapptz/discord.py)
 
 
 class Management(commands.Cog):
@@ -32,7 +34,7 @@ class Management(commands.Cog):
 
     @commands.command(name="invite")
     async def invite(self, ctx: commands.Context):
-        """!invite => Recebe um convite para o servidor na DM"""
+        """!invite => Envia um convite para o servidor na sua DM"""
 
         invitelink = await ctx.channel.create_invite(max_uses=1, unique=True, max_age=300)
         await ctx.author.send("Aqui está o seu convite para o servidor: ")
@@ -98,14 +100,14 @@ class Management(commands.Cog):
         bans = await ctx.guild.bans()
         banned_users_list = [ban_tuple[1] for ban_tuple in bans]
         banned_users = [{"id": user.id, "name_tag": f"{user.name}#{user.discriminator}"} for user in banned_users_list]
-        show_banneds = " | ".join([user["name_tag"] for user in banned_users])
+        show_banned = " | ".join([user["name_tag"] for user in banned_users])
 
-        if not show_banneds:
+        if not show_banned:
             return await ctx.send(
                 embed=discord.Embed(title="Usuários banidos:", description="**Não há ninguém banido no servidor**")
             )
 
-        await ctx.send(embed=discord.Embed(title="Usuários banidos:", description=f"{show_banneds}"))
+        await ctx.send(embed=discord.Embed(title="Usuários banidos:", description=f"{show_banned}"))
         await ctx.send("Informe quem deseja desbanir:")
 
         try:
@@ -211,9 +213,9 @@ class Management(commands.Cog):
     @has_permissions(manage_messages=True, send_messages=True)
     async def clear(self, ctx: commands.Context, number=5, member: Member = None):
         """!clear [num] [@Member] => Limpa as últimas [num] mensagens do usuário [@Member] no chat
-        - [num] e [@Member] são opcionais, de modo que:\\
-            !clear => Limpa 5 mensagens do bot\\
-            !clear [num] => Limpa [num] mensagens do bot\\
+        - [num] e [@Member] são opcionais, de modo que:
+            !clear => Limpa 5 mensagens do bot
+            !clear [num] => Limpa [num] mensagens do bot
             !clear [num] [@Member] => Limpa [num] mensagens de [@Member]
         """
         await ctx.message.delete()
@@ -248,7 +250,7 @@ class Management(commands.Cog):
     @has_permissions(manage_messages=True, send_messages=True)
     async def clean(self, ctx: commands.Context, limit: int = 100):
         """!clean [limit] => Avalia as últimas [limit] mensagens e deleta todas que foram enviadas pelo bot
-        - O atribuito [limit] é opcional e, por padrão, está definido como limit=100.
+        - O atributo [limit] é opcional e, por padrão, está definido como limit=100.
         """
 
         def check(message):
@@ -272,7 +274,7 @@ class Management(commands.Cog):
     @has_permissions(administrator=True)
     async def channel_purge(self, ctx: commands.Context, limit: int = 20):
         """!purge [limit] => Deleta as últimas [limit] mensagens do canal, independente de quem as tenha enviado. Admin Only
-        - O atributo [limit] é opcioanl e, por padrão, está definido como limit=20. Apenas Administradores podem utilizar este comando.
+        - O atributo [limit] é opcional e, por padrão, está definido como limit=20. Apenas Administradores podem utilizar este comando.
         """
 
         await ctx.message.delete()

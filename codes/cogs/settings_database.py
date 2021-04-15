@@ -13,6 +13,17 @@ from discord.ext.commands import MissingPermissions, has_permissions
 from pymongo import MongoClient
 from dotenv import load_dotenv
 
+# # # Módulo: Settings_Database
+# # - Responsável por conectar o bot ao database e criar uma interface para que os recursos de configuração dos
+# # servidores possam ser corretamente armazenados
+# # - Dentre esses recursos estão os dados manipulados através dos módulos "Rules", "Playlist" e "FreeGame"
+# # - As informações são atualizadas automaticamente no servidor quando alteradas em quaisquer instâncias,
+# # utilizando dos listeners fornecidos pela biblioteca do discord.py
+
+# # # Utiliza:
+# # - Discord.py API (by Rapptz on: https://github.com/Rapptz/discord.py)
+# # - MongoDB Python Driver [pymongo] (by mongodb on: https://github.com/mongodb/mongo-python-driver)
+
 load_dotenv()
 CONNECT_STRING = os.environ.get("MONGODB_URI")
 

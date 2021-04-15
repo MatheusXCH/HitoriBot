@@ -9,9 +9,13 @@ import codes.paths as path
 import discord
 from discord.ext import commands
 
+# # # Módulo: Minigames
+# # - Contém um conjunto de minigames, como rolar de dados, cara-corôa e 'escolha um'!
 
-# Módulo: Dices
-#     - Contém um minigame no qual o Almirante Fujitora (One Piece!!!) é invocado para tirar a sorte nos dados!
+# # # Utiliza:
+# # - Discord.py API (by Rapptz on: https://github.com/Rapptz/discord.py)
+
+
 class Minigames(commands.Cog):
     """Possui minigames simples, como rodar dados, cara-corôa e 'escolha um'"""
 

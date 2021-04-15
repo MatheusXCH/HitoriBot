@@ -6,6 +6,15 @@ import discord
 from discord.ext import commands
 from discord.utils import *
 
+# # # Módulo: Audioplayer
+# # - Utiliza as bibliotecas 'FFmpeg' e 'Libopus' (via PyNaCl) para tornar possível que o bot toque áudios
+# # em canais de voz dos servidores
+
+# # # Utiliza:
+# # - Discord.py API (by Rapptz on: https://github.com/Rapptz/discord.py)
+# # - FFmpeg (on: https://www.ffmpeg.org/)
+# # - PyNaCl (by pyca on: https://github.com/pyca/pynacl/)
+
 
 class AudioPlayer(commands.Cog):
     """Conecta o Bot em canais de voz para tocar áudios (similar ao Soundpad)"""
@@ -14,7 +23,7 @@ class AudioPlayer(commands.Cog):
         self.bot = bot
 
     async def not_in_channel_msg(self, ctx: commands.Context):
-        """Define mensagem padrão exibida sempre que o usuário utiliza um comando de voz sem estar conectado a um canal aproriado"""
+        """Define mensagem padrão exibida sempre que o usuário utiliza um comando de voz sem estar conectado a um canal apropriado"""
 
         except_message = await ctx.send(
             f"{ctx.author.mention}, você deve estar em um **canal de voz** para usar este comando!"
@@ -66,7 +75,6 @@ class AudioPlayer(commands.Cog):
     #
     #
 
-    # TODO Baixar mais áudios
     @commands.command(name="rogers")
     async def rogers(self, ctx: commands.Context):
         """!rogers => Toca o rogers do Grongos"""
