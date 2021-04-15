@@ -52,17 +52,19 @@ class StoreSteam(commands.Cog):
 
         try:
             msg = await ctx.send(embed=discord.Embed(title="Aguarde", description="Atualizando os dados da Steam..."))
-            big_picture.request_all_games()
+            await big_picture.request_all_games()
             await msg.edit(embed=discord.Embed(title="Sucesso!", description="Base de dados do Steam atualizada!"))
             await asyncio.sleep(5)
             await msg.delete()
-        except Exception:
+            await ctx.message.delete()
+        except Exception as e:
             await ctx.send(
                 embed=discord.Embed(
                     title="Erro",
                     description="Desculpe, parece que houve um problema ao carregar a base de dados da Steam!\nTente novamente após alguns minutos!",
                 )
             )
+            print(e)
             await asyncio.sleep(5)
             await msg.delete()
 
@@ -160,19 +162,6 @@ class StoreSteam(commands.Cog):
                     raise Exception
             except Exception:
                 categories = "N/A"
-
-            # Getting PRICE_OVERVIEW
-            # NOTE: Probably useless
-            # if not steam_game["is_free"]:
-            #     try:
-            #         initial_value = str(steam_game["price_overview"]["initial"])
-            #         base_price = f"R$ {initial_value[:-2]},{initial_value[-2:]}"
-            #         final_price = steam_game["price_overview"]["final_formatted"]
-            #         discount = f'{steam_game["price_overview"]["discount_percent"]}%'
-            #     except Exception:
-            #         base_price = "N/A"
-            #         final_price = "N/A"
-            #         discount = "N/A"
 
             # Getting REVIEWS
             try:
@@ -291,27 +280,31 @@ class StoreSteam(commands.Cog):
         steamspy_games_info = []
         packages = []
         # # Get steam_game
-        try:
-            steam_games = big_picture.get_steam_game(game_title=game_title)
-            if steam_games == []:
-                raise Exception
+        # try:
+        steam_games = await big_picture.get_steam_game(game_title=game_title)
+        if steam_games == []:
+            raise Exception
 
-            steamspy_games_info = [big_picture.steamspy_complementary_info(app["steam_appid"]) for app in steam_games]
+        steamspy_games_info = [
+            await big_picture.steamspy_complementary_info(app["steam_appid"]) for app in steam_games
+        ]
 
-            # Packages can't be obtained by List Comprehension because 'Packages' is not a key that all items have
-            for app in steam_games:
-                try:
-                    packages.append(big_picture.get_steam_package(app["packages"]))
-                except Exception:
-                    packages.append([[]])
-        except Exception:
-            await ctx.send(
-                embed=discord.Embed(
-                    title="Desculpe",
-                    description='Não consegui encontrar esse jogo!\nCaso seja a primeira consulta do dia, considere executar o comando "!steam-update" para atualizar os dados',
-                )
-            )
-            return
+        # Packages can't be obtained by List Comprehension because 'Packages' is not a key that all items have
+        for app in steam_games:
+            try:
+                packages.append(await big_picture.get_steam_package(app["packages"]))
+            except Exception:
+                packages.append([[]])
+
+        # except Exception as e:
+        #     await ctx.send(
+        #         embed=discord.Embed(
+        #             title="Desculpe",
+        #             description='Não consegui encontrar esse jogo!\nCaso seja a primeira consulta do dia, considere executar o comando "!steam-update" para atualizar os dados',
+        #         )
+        #     )
+        #     print(e)
+        #     return
 
         # Start on Page 0, Package 0
         page = steam_pages_layout(i=0, j=0)

@@ -2,6 +2,9 @@ import json
 import os
 import random
 import time
+import asyncio
+import aiohttp
+import aiofiles
 from pprint import pprint
 
 import codes.paths as path
@@ -26,8 +29,8 @@ class SteamBigPicture:
     def __init__(self):
         pass
 
-    def get_all_games(self, source: str):
-        """Read local data from 'steam_spy_data.txt' or 'steam_data.txt'
+    async def get_all_games(self, source: str):
+        """Read local data from 'steam_spy_data.json' or 'steam_data.json'
 
         Parameters
         ----------
@@ -37,51 +40,56 @@ class SteamBigPicture:
         Returns
         -------
         - data : JSON \\
-            [Return the JSON data read from 'steam_spy_data.txt' or 'steam_data.txt'] \\
+            [Return the JSON data read from 'steam_spy_data.json' or 'steam_data.json'] \\
             [Returns an empty JSON if missing < source > parameter]
         """
 
         if source == "steamspy":
-            with open(path.steam_data_path + "steam_spy_data.txt", "r") as json_file:
-                data = json.load(json_file)
+            async with aiofiles.open(path.steam_data_path + "steam_spy_data.json", "r") as json_file:
+                data = json.loads(await json_file.read())
             return data
         elif source == "steam":
-            with open(path.steam_data_path + "steam_data.txt", "r") as json_file:
-                data = json.load(json_file)
+            async with aiofiles.open(path.steam_data_path + "steam_data.json", "r") as json_file:
+                data = json.loads(await json_file.read())
             return data
         else:
             return {}
 
-    def request_all_games(self):
-        """Requests new data from SteamSpy/Steam and writes then in the correspondent '.txt' file"""
+    async def request_all_games(self):
+        """Requests new data from SteamSpy/Steam and writes then in the correspondent '.json' file"""
 
         # # # STEAMSPY:
         i = 0
         all_steamspy_apps = {}
 
-        # Iterates through SteamSpy pages until hit the last one plus 1, wich triggers the 'except ValueError' and break the loop
-        while True:
-            try:
-                payload = {"request": "all", "page": i}
-                response_steamspy_app = requests.get("https://steamspy.com/api.php", params=payload)
-                all_steamspy_apps.update(response_steamspy_app.json())
+        async with aiohttp.ClientSession() as session:
+            while True:
+                try:
+                    payload = {"request": "all", "page": i}
+                    print(i)
+                    async with session.get("https://steamspy.com/api.php", params=payload) as response_steamspy_app:
+                        all_steamspy_apps.update(await response_steamspy_app.json())
+                except TypeError or ValueError:  # TypeError for NoneType and ValueError includes 'simplejson.decoder.JSONDecodeError'
+                    break
+                i += 1
 
-            # ValueError includes 'simplejson.decoder.JSONDecodeError'
-            except ValueError:
-                break
-
-        with open(path.steam_data_path + "steam_spy_data.txt", "w") as outfile:
-            json.dump(all_steamspy_apps, outfile)
+        async with aiofiles.open(path.steam_data_path + "steam_spy_data.json", "w") as outfile:
+            # await json.dump(all_steamspy_apps, outfile)
+            await outfile.write(json.dumps(all_steamspy_apps))
 
         # # # STEAM:
         all_steam_apps = {}
-        response_all_steam_apps = requests.get("https://api.steampowered.com/ISteamApps/GetAppList/v2/")
-        all_steam_apps.update(response_all_steam_apps.json())
 
-        with open(path.steam_data_path + "steam_data.txt", "w") as outfile:
-            json.dump(all_steam_apps["applist"]["apps"], outfile)
+        async with aiohttp.ClientSession() as session:
+            async with session.get(
+                "https://api.steampowered.com/ISteamApps/GetAppList/v2/"
+            ) as response_all_steam_apps:
+                all_steam_apps.update(await response_all_steam_apps.json())
 
-    def __search_game(self, game_title: str, max_items: int):
+        async with aiofiles.open(path.steam_data_path + "steam_data.json", "w") as outfile:
+            await outfile.write(json.dumps(all_steam_apps))
+
+    async def __search_game(self, game_title: str, max_items: int):
         """Implements the 'Precise' and 'Imprecise' search
 
         - Precise Search = Returns first the exactly key that matches < game_title >
@@ -110,8 +118,8 @@ class SteamBigPicture:
         """
 
         # Get all games from sources
-        spy_all_games_json = self.get_all_games("steamspy")
-        steam_all_games_json = self.get_all_games("steam")
+        spy_all_games_json = await self.get_all_games("steamspy")
+        steam_all_games_json = await self.get_all_games("steam")
 
         # Uppercase to make a broader search
         game_title = game_title.upper()
@@ -150,7 +158,7 @@ class SteamBigPicture:
         # Case <game_title> matches a game name on the Steam database
         else:
             if spy_psearch == []:
-                # This is needed due the cases wich spy_psearch founds nothing
+                # This is needed due the cases which spy_psearch founds nothing
                 spy_psearch = ["_Nothing_Founded_"]
             steam_psearch = [
                 item["appid"]
@@ -182,9 +190,9 @@ class SteamBigPicture:
         else:
             return search
 
-    def get_steam_game(self, game_title: str, max_items=5):
+    async def get_steam_game(self, game_title: str, max_items=5):
         """Get detailed information about games \\
-        If a correpondent key value is passed as <game_title>, returns info about this game. Otherwise, requests information
+        If a correspondent key value is passed as <game_title>, returns info about this game. Otherwise, requests information
         of a list of games that the key matches the substring <game_title>
 
         Parameters
@@ -202,7 +210,7 @@ class SteamBigPicture:
         """
 
         # Call function to search for the game
-        search = self.__search_game(game_title, max_items)
+        search = await self.__search_game(game_title, max_items)
 
         # If no matching item, then the search result is an empty list
         if search == []:
@@ -233,7 +241,7 @@ class SteamBigPicture:
         # Returns the list of founded items, ordered by 'Owners' in case those were obtained on SteamSpy database
         return steam_game_info_list
 
-    def get_steam_package(self, app_id_list: list):
+    async def get_steam_package(self, app_id_list: list):
 
         steam_packages_list = []
         for item in app_id_list:
@@ -247,7 +255,7 @@ class SteamBigPicture:
 
         return steam_packages_list
 
-    def steamspy_complementary_info(self, app_id: int):
+    async def steamspy_complementary_info(self, app_id: int):
         """Get complementary game info from SteamSpy database, such as 'Owners' and 'Tags'
 
         Parameters
