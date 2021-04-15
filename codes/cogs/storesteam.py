@@ -280,31 +280,31 @@ class StoreSteam(commands.Cog):
         steamspy_games_info = []
         packages = []
         # # Get steam_game
-        # try:
-        steam_games = await big_picture.get_steam_game(game_title=game_title)
-        if steam_games == []:
-            raise Exception
+        try:
+            steam_games = await big_picture.get_steam_game(game_title=game_title)
+            if steam_games == []:
+                raise Exception
 
-        steamspy_games_info = [
-            await big_picture.steamspy_complementary_info(app["steam_appid"]) for app in steam_games
-        ]
+            steamspy_games_info = [
+                await big_picture.steamspy_complementary_info(app["steam_appid"]) for app in steam_games
+            ]
 
-        # Packages can't be obtained by List Comprehension because 'Packages' is not a key that all items have
-        for app in steam_games:
-            try:
-                packages.append(await big_picture.get_steam_package(app["packages"]))
-            except Exception:
-                packages.append([[]])
+            # Packages can't be obtained by List Comprehension because 'Packages' is not a key that all items have
+            for app in steam_games:
+                try:
+                    packages.append(await big_picture.get_steam_package(app["packages"]))
+                except Exception:
+                    packages.append([[]])
 
-        # except Exception as e:
-        #     await ctx.send(
-        #         embed=discord.Embed(
-        #             title="Desculpe",
-        #             description='Não consegui encontrar esse jogo!\nCaso seja a primeira consulta do dia, considere executar o comando "!steam-update" para atualizar os dados',
-        #         )
-        #     )
-        #     print(e)
-        #     return
+        except Exception as e:
+            await ctx.send(
+                embed=discord.Embed(
+                    title="Desculpe",
+                    description='Não consegui encontrar esse jogo!\nCaso seja a primeira consulta do dia, considere executar o comando "!steam-update" para atualizar os dados',
+                )
+            )
+            print(e)
+            return
 
         # Start on Page 0, Package 0
         page = steam_pages_layout(i=0, j=0)
