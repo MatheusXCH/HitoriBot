@@ -72,6 +72,7 @@ class MyAnimeList(commands.Cog):
                     if label_count == 3:
                         genres_list.append("line_feed")
                         label_count = 0
+
                 genres = ", ".join(genres_list)
                 if genres == "":
                     genres = "Unknown"
@@ -115,35 +116,29 @@ class MyAnimeList(commands.Cog):
                         i = 0
                         page = anime_pages_layout(i)
                         await message.edit(embed=page)
-
                     elif str(reaction) == "◀":
                         if i > 0:
                             i -= 1
                             page = anime_pages_layout(i)
                             await message.edit(embed=page)
-
                     elif str(reaction) == "▶":
                         if i < len(search) - 1:
                             i += 1
                             page = anime_pages_layout(i)
                             await message.edit(embed=page)
-
                     elif str(reaction) == "⏩":
                         i = len(search) - 1
                         page = anime_pages_layout(len(search) - 1)
                         await message.edit(embed=page)
-
                     elif str(reaction) == "📄":
                         await ctx.invoke(
                             self.bot.get_command("anime-sin"),
                             anime_sin_title=page.title,
                         )
-
                     elif str(reaction) == "❌":
                         await message.clear_reactions()
                         await message.delete()
                         return
-
                     try:
                         reaction, user = await self.bot.wait_for("reaction_add", timeout=30.0, check=check)
                         await message.remove_reaction(reaction, user)
@@ -246,6 +241,7 @@ class MyAnimeList(commands.Cog):
                         genres_list.append("line_feed")
                         label_count = 0
                 genres = ", ".join(genres_list)
+
                 if genres == "":
                     genres = "Unknown"
                 # Tratando os 'Enters'
@@ -288,35 +284,29 @@ class MyAnimeList(commands.Cog):
                         i = 0
                         page = manga_pages_layout(i)
                         await message.edit(embed=page)
-
                     elif str(reaction) == "◀":
                         if i > 0:
                             i -= 1
                             page = manga_pages_layout(i)
                             await message.edit(embed=page)
-
                     elif str(reaction) == "▶":
                         if i < len(search) - 1:
                             i += 1
                             page = manga_pages_layout(i)
                             await message.edit(embed=page)
-
                     elif str(reaction) == "⏩":
                         i = len(search) - 1
                         page = manga_pages_layout(len(search) - 1)
                         await message.edit(embed=page)
-
                     elif str(reaction) == "📄":
                         await ctx.invoke(
                             self.bot.get_command("manga-sin"),
                             manga_sin_title=page.title,
                         )
-
                     elif str(reaction) == "❌":
                         await message.clear_reactions()
                         await message.delete()
                         return
-
                     try:
                         reaction, user = await self.bot.wait_for("reaction_add", timeout=30.0, check=check)
                         await message.remove_reaction(reaction, user)
@@ -385,11 +375,12 @@ class MyAnimeList(commands.Cog):
             )
             await ctx.send(embed=nothing_passed_embed)
         else:
+
             try:
                 search = jikan.search("character", char_name, page=1)
-
                 members_favorites_list = []
                 size_of_search = 0
+
                 if len(search["results"]) < 10:
                     size_of_search = len(search["results"])
                 else:
@@ -402,7 +393,6 @@ class MyAnimeList(commands.Cog):
                 index = members_favorites_list.index(max(members_favorites_list))
                 members_favorites_list.clear()
                 character = jikan.character(search["results"][index]["mal_id"])
-
             except exceptions.APIException:
                 char_error_embed = discord.Embed(
                     title="Erro",
