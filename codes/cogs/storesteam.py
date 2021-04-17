@@ -336,7 +336,6 @@ class StoreSteam(commands.Cog):
                     i = len(steam_games) - 1
                     page = steam_pages_layout(i, j)
                     await message.edit(embed=page)
-
             elif str(reaction) == EMOJI_ORANGE_PLAY:
                 j = 0
                 if i < len(steam_games) - 1:
@@ -347,7 +346,6 @@ class StoreSteam(commands.Cog):
                     i = 0
                     page = steam_pages_layout(i, j)
                     await message.edit(embed=page)
-
             elif str(reaction) == "◀":
                 if j > 0:
                     j -= 1
@@ -357,7 +355,6 @@ class StoreSteam(commands.Cog):
                     j = len(packages[i]) - 1
                     page = steam_pages_layout(i, j)
                     await message.edit(embed=page)
-
             elif str(reaction) == "▶":
                 if j < len(packages[i]) - 1:
                     j += 1
@@ -367,11 +364,9 @@ class StoreSteam(commands.Cog):
                     j = 0
                     page = steam_pages_layout(i, j)
                     await message.edit(embed=page)
-
             elif str(reaction) == "❌":
                 await message.clear_reactions()
                 await message.delete()
-
             try:
                 reaction, user = await self.bot.wait_for("reaction_add", timeout=30.0, check=check)
                 await message.remove_reaction(reaction, user)
