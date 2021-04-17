@@ -40,25 +40,25 @@ class LeagueOfLegends(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    # TODO Trocar a lógica do "Nothing Passed to Command" por algo mais elegante
     @commands.command(name="summ")
     async def get_summoner(
         self,
         ctx: commands.Context,
         *,
-        name: str = "Nothing Passed to Command",
+        name: str = None,
         current_champion=None,
         command_call_flag=0,
         msg=None,
     ):
         """!summ <summoner_name> => Retorna informações sobre o invocador"""
 
-        if name == "Nothing passed to command":
+        if name is None:
             missing_name_embed = discord.Embed(
                 description="É preciso passar um nome de invocador!\nEx. !summoner Pato Papão"
             )
             await ctx.send(embed=missing_name_embed)
         else:
+
             try:
                 summoner = watcher.summoner.by_name(region, name)
             except Exception:
@@ -97,16 +97,15 @@ class LeagueOfLegends(commands.Cog):
                     soloQ = f'{item["tier"]} {item["rank"]} ({item["leaguePoints"]}LP)\n*{item["wins"]}V {item["losses"]}D \nWRatio: {(item["wins"]/(item["wins"] + item["losses"]))*100:.2f}%*'
                 else:
                     flexQ = f'{item["tier"]} {item["rank"]} ({item["leaguePoints"]}LP)\n*{item["wins"]}V {item["losses"]}D \nWRatio: {(item["wins"]/(item["wins"] + item["losses"]))*100:.2f}%*'
+
             if soloQ == "":
                 soloQ = "UNRANKED"
             if flexQ == "":
                 flexQ = "UNRANKED"
 
             summoner_info_embed.set_thumbnail(url=dd.get_profile_icon(iconID=summoner["profileIconId"]))
-
             summoner_info_embed.add_field(name="**Ranked Solo**: ", value=f"{soloQ}", inline=True)
             summoner_info_embed.add_field(name="**Ranked Flex:** ", value=f"{flexQ}", inline=True)
-
             summoner_info_embed.add_field(name="\u200b", value="_**CAMPEÕES MAIS MASTERIZADOS**_", inline=False)
 
             for i in range(len(top3_champions)):
@@ -133,6 +132,7 @@ class LeagueOfLegends(commands.Cog):
                     )
                 except Exception:
                     pass
+
                 await msg.edit(embed=summoner_info_embed)
 
     @commands.command(name="live")
@@ -146,8 +146,7 @@ class LeagueOfLegends(commands.Cog):
             summoner = watcher.summoner.by_name(region, name)
         except Exception:
             no_summ_embed = discord.Embed(description=f"Não consegui encontrar o invocador **{name}**!")
-            await ctx.send(embed=no_summ_embed)
-            return
+            return await ctx.send(embed=no_summ_embed)
 
         try:
             spec = watcher.spectator.by_summoner(region, summoner["id"])
@@ -155,10 +154,10 @@ class LeagueOfLegends(commands.Cog):
             no_live_match_embed = discord.Embed(
                 description=f'Parece que o invocador **{summoner["name"]}** não está em uma partida no momento!'
             )
-            await ctx.send(embed=no_live_match_embed)
-            return
+            return await ctx.send(embed=no_live_match_embed)
 
         participants = spec["participants"]
+
         blue_champion_id_list = []
         red_champion_id_list = []
         count = 0
@@ -178,12 +177,14 @@ class LeagueOfLegends(commands.Cog):
         def get_rank(summonerId):
             current_rank = watcher.league.by_summoner(region, summonerId)
             player_rank = ""
+
             if current_rank == []:
                 player_rank = "UNRANKED"
             else:
                 for item in current_rank:
                     if item["queueType"] == "RANKED_SOLO_5x5":
                         player_rank = f'{item["tier"]} {item["rank"]} ({item["leaguePoints"]} LP)'
+
             return player_rank
 
         for row in participants:
@@ -400,6 +401,7 @@ class LeagueOfLegends(commands.Cog):
         )
         call_summ_msg = await ctx.send(embed=call_summ_msg_embed)
         while True:
+
             if str(reaction) == "🔹":
                 blue_flag = 1
                 red_flag = 0
@@ -424,7 +426,6 @@ class LeagueOfLegends(commands.Cog):
                         command_call_flag=command_call_flag_control,
                         msg=call_summ_msg,
                     )
-
             elif str(reaction) == "2️⃣":
                 if blue_flag:
                     await ctx.invoke(
@@ -442,7 +443,6 @@ class LeagueOfLegends(commands.Cog):
                         command_call_flag=command_call_flag_control,
                         msg=call_summ_msg,
                     )
-
             elif str(reaction) == "3️⃣":
                 if blue_flag:
                     await ctx.invoke(
@@ -460,7 +460,6 @@ class LeagueOfLegends(commands.Cog):
                         command_call_flag=command_call_flag_control,
                         msg=call_summ_msg,
                     )
-
             elif str(reaction) == "4️⃣":
                 if blue_flag:
                     await ctx.invoke(
@@ -478,7 +477,6 @@ class LeagueOfLegends(commands.Cog):
                         command_call_flag=command_call_flag_control,
                         msg=call_summ_msg,
                     )
-
             elif str(reaction) == "5️⃣":
                 if blue_flag:
                     await ctx.invoke(
@@ -496,7 +494,6 @@ class LeagueOfLegends(commands.Cog):
                         command_call_flag=command_call_flag_control,
                         msg=call_summ_msg,
                     )
-
             elif str(reaction) == "❌":
                 await call_summ_msg.delete()
                 await message.clear_reactions()
@@ -514,6 +511,7 @@ class LeagueOfLegends(commands.Cog):
                     await message.remove_reaction(reaction, user)
             except Exception:
                 break
+
         await message.clear_reactions()
 
     # TODO League Champions Info Command
