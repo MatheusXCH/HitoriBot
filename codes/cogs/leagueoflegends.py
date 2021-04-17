@@ -54,7 +54,7 @@ class LeagueOfLegends(commands.Cog):
 
         if name is None:
             missing_name_embed = discord.Embed(
-                description="É preciso passar um nome de invocador!\nEx. !summoner Pato Papão"
+                description="É preciso passar um nome de invocador!\nEx. `!summoner Pato Papão`"
             )
             await ctx.send(embed=missing_name_embed)
         else:

@@ -28,14 +28,14 @@ class MyAnimeList(commands.Cog):
         self.bot = bot
 
     @commands.command(name="anime")
-    async def anime(self, ctx: commands.Context, *, anime_title: str = "Nothing Passed to Command"):
+    async def anime(self, ctx: commands.Context, *, anime_title: str = None):
         """!anime <anime_title> => Pesquisa um anime no MAL
         - Retorna os animes encontrados no MyAnimeList que correspondem à busca
         """
 
-        if anime_title == "Nothing Passed to Command":
+        if anime_title is None:
             nothing_passed_embed = discord.Embed(
-                description="É preciso passar o nome do anime junto ao comando !anime"
+                description="É preciso passar o nome do anime junto ao comando `!anime`"
             )
             await ctx.send(embed=nothing_passed_embed)
         else:
@@ -162,15 +162,15 @@ class MyAnimeList(commands.Cog):
         self,
         ctx: commands.Context,
         *,
-        anime_sin_title: str = "Nothing Passed to Command",
+        anime_sin_title: str = None,
     ):
         """!anime-sin <anime_title> => Pesquisa a sinopse de um anime no MAL
         - Retorna as sinopses dos animes encontrados no MyAnimeList que correspondem à busca
         """
 
-        if anime_sin_title == "Nothing Passed to Command":
+        if anime_sin_title is None:
             nothing_passed_embed = discord.Embed(
-                description="É preciso passar o nome do anime junto ao comando !anime-sin"
+                description="É preciso passar o nome do anime junto ao comando `!anime-sin`"
             )
             await ctx.send(embed=nothing_passed_embed)
         else:
@@ -195,14 +195,14 @@ class MyAnimeList(commands.Cog):
             await ctx.send(content=None, embed=embed_anime_sin)
 
     @commands.command(name="manga")
-    async def manga(self, ctx: commands.Context, *, manga_title: str = "Nothing Passed to Command"):
+    async def manga(self, ctx: commands.Context, *, manga_title: str = None):
         """!manga <manga_title> => Pesquisa um mangá no MAL
         - Retorna os mangás encontrados no MyAnimeList que correspondem à busca
         """
 
-        if manga_title == "Nothing Passed to Command":
+        if manga_title is None:
             nothing_passed_embed = discord.Embed(
-                description="É preciso passar o nome do mangá junto ao comando !manga"
+                description="É preciso passar o nome do mangá junto ao comando `!manga`"
             )
             await ctx.send(embed=nothing_passed_embed)
         else:
@@ -335,15 +335,15 @@ class MyAnimeList(commands.Cog):
         self,
         ctx: commands.Context,
         *,
-        manga_sin_title: str = "Nothing Passed to Command",
+        manga_sin_title: str = None,
     ):
         """!manga-sin <manga_title> => Pesquisa a sinopse de um mangá no MAL
         - Retorna as sinopses dos mangás encontrados no MyAnimeList que correspondem à busca
         """
 
-        if manga_sin_title == "Nothing Passed to Command":
+        if manga_sin_title is None:
             nothing_passed_embed = discord.Embed(
-                description="É preciso passar o nome do mangá junto ao comando !anime-sin"
+                description="É preciso passar o nome do mangá junto ao comando `!manga-sin`"
             )
             await ctx.send(embed=nothing_passed_embed)
         else:
@@ -373,15 +373,15 @@ class MyAnimeList(commands.Cog):
     # Diante disso, buscando amenizar a situação, essa função busca os 10 primeiros resultados e retorna o mais popular deles
     # Ainda assim, nem sempre é garantido que o resultado mais popular de todo o MAL estará entre os 10 primeiros
     @commands.command(name="mal-char")
-    async def mal_char(self, ctx: commands.Context, *, char_name: str = "Nothing Passed to Command"):
+    async def mal_char(self, ctx: commands.Context, *, char_name: str = None):
         """!mal-char <character_name> => Pesquisa um personagem no MAL
         - Retorna personagem de anime mais famoso de acordo com a busca requisitada
         - OBS: Essa função nem sempre retorna o personagem mais popular, devido a uma limitação da busca do MAL
         """
 
-        if char_name == "Nothing Passed to Command":
+        if char_name is None:
             nothing_passed_embed = discord.Embed(
-                description="É preciso passar o nome do personagem junto ao comando !mal-char"
+                description="É preciso passar o nome do personagem junto ao comando `!mal-char`"
             )
             await ctx.send(embed=nothing_passed_embed)
         else:
