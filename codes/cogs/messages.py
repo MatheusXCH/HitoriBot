@@ -58,6 +58,10 @@ class Messages(commands.Cog):
             "bem como de consultar no que posso te ajudar com o comando `!help` 😎",
         )
 
+        embed.set_thumbnail(
+            url="https://lh3.googleusercontent.com/UjwwvH1Luh8ue76YXo9tlejaqxZ3vMGmf8C6t72XPfh0JqKc3cvzBwWXFTX02W9ku_TSWrxNQISXQ_o6I--TwATi4g-D6d1K_FLftWFmfQreEK95KiK1RXGV1S7aPRL86H35w5pPAyB12QAYjU2ZXQmvWjkKGdle2peESa05Ff9pCXj3RQD44-pIM8XmxksQMT7dILoJjAPKKntJZR82Aq4Wb-alZP-XSKc-PFESaKk_RnBIMx1YMsNbgZSTO1tnNAq9u1ci3jxgRXSip4VE12EKcnFbu1b1Lg9VhTSWeiA9PgPdLmjnKCbIEztybwwDp6In8wW_pfOZsg8zoxoNmOmJP0FzQRxD6A-gJrm5su-IXA-vnDE0PohLP5C3kdtPnsRThqyaQV8fMA-1SuCTjsr9ptsn-uIBhGBggFfapYdEhtl19wtsQ5JoYYB6tfpWtENbnTpfxvZv0LHcX5DPRFCRpiT49CAOvrzwjCYMA_qFMJ2ikeKZhFbwsdJ6P1l0SwAEyraqDoCmPzoswtl9D8y1S0F36qvTRESUUwofjDe3BGDvFqRODhHtlBL_be8Eq3AdDTfgeP1nv8WbrAbGyzt8IArYJTTg8hp6rx6q9o6m_a9uUdYTqbY5QzGgVLO5oekez33pVJ2A8tKPdkTa9y7D2FXicFOt4OGw2TH3UDUBGiV_PGUrAkIHhqP8dCDniNym2F87E2gXVzQkwTMnyyI=s977-no?authuser=0"
+        )
+
         await member.send(embed=embed)
 
     @commands.Cog.listener()
@@ -83,6 +87,9 @@ class Messages(commands.Cog):
                 f"Caso encontrem bugs, por favor, entrem em contato com meu criador pelo {path.dev_contact}."
             ),
             inline=False,
+        )
+        embed.set_image(
+            url="https://lh3.googleusercontent.com/XdUm4T1bQguPBtDyk_YbpekdOQwWAJ3M1TpILMTYXAXIqwa73Y-qDbpUnddRs_Ag-4QW1bNVlLWKUDpwsPVkh0kcjswDSKTMCEX350MFT0s4ZjJR2iL_jMaWSbfp_-ux27Y-jCF5y23uNupiflKOnjcyMGiZYfsFP3un3j62R0eNtm-rbUF4LD35avm5AOEBvMo4np-hVABCfBbSd9pIuI82-_p7byKuPndncZGWV2ET03yGJprOWSbzpAIow3ANrXC0vVKR1l2fULYq0evF9CZRn07-d9GNRBA-824H9r0gaZcoxRTCR08fkGyBoNOs7whYPCNeIy81hmySFUrLDcHI4mWb2bCWCJTV6R00Eyssnz27QnOAPtRBfTQgOTXk5y3RYTr9S6-EC1yujkWYJkOMqiKsr4LRrvZSf4vSpkI3-7Ik-ZS4CwN2o0TnuJlfr5RZNSD2XoJhNejRtqlGC7myfMiL5gK4eX6J7m-v2eHkdXSoc9RA6eZsp00z59BiUZVhZIx4bdCSZixk5iaW6ZKoQF-aMHso_qP5X9oK2dhUkerkDcHo6UuKZ1jD6fPXJL4H7uXO2SY5yybJmMC5YdMNeYH0GigclXehz5X6Lat9nzqC4tB0qgrn2HkzZhkF_ClXaF9ULuf0X7jypZ2jfAI8D_BUshuIxbYuTFfI1VOoSSAgOSC7DJjbDGOyBSNbUji9rzPcG-f1iGLMEMD0WZE=w1466-h977-no?authuser=0"
         )
 
         for channel in guild.text_channels:
