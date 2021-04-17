@@ -49,7 +49,17 @@ class Messages(commands.Cog):
         familia_embed = discord.Embed(description=response)
         await ctx.send(embed=familia_embed)
 
-    # TODO on_guild_join(guild) => Listener que apresenta o bot quando ele entra em uma nova guilda
+    @commands.Cog.listener()
+    async def on_member_join(self, member: discord.Member):
+        embed = discord.Embed(
+            title=f"Saudações e seja muito bem-vindo à Guilda **{member.guild.name}**, **{member.mention}**!!!",
+            description=f"Eu sou {self.bot.nick}, responsável por gerenciar algumas coisas aqui e ali no servidor.\n"
+            "Não esqueça de consultar as Regras e Diretrizes da Guilda (utilize `!rules` no servidor para isso), "
+            "bem como de consultar no que posso te ajudar com o comando `!help` 😎",
+        )
+
+        await member.send(embed=embed)
+
     @commands.Cog.listener()
     async def on_guild_join(self, guild: discord.Guild):
         embed = discord.Embed(
