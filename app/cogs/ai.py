@@ -23,6 +23,12 @@ class AI(commands.Cog):
         if self.bot.user not in message.mentions:
             return
 
+        # Skip replies to bot registration prompts (sticker-add, sound-add)
+        if message.reference:
+            ref = message.reference.resolved
+            if ref and isinstance(ref, discord.Message) and ref.author == self.bot.user and ref.content.startswith("📎"):
+                return
+
         guild_id = message.guild.id
         channel_id = message.channel.id
         pool = self.bot.pool

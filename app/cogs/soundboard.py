@@ -1,8 +1,11 @@
+import asyncio
 import discord
 from discord.ext import commands
 from discord import app_commands
 from pathlib import Path
-import asyncio
+from repositories.server import register_sound
+
+SOUND_EXTS = {".mp3", ".m4a", ".wav", ".ogg"}
 
 
 class Soundboard(commands.Cog):
@@ -36,12 +39,34 @@ class Soundboard(commands.Cog):
             await vc.disconnect()
         await interaction.followup.send(f"✅ Som **{name}** reproduzido.", ephemeral=True)
 
-    @app_commands.command(name="sound-add", description="Add a sound — reply with a name and attach an audio file")
+    @app_commands.command(name="sound-add", description="Add a sound — attach an audio file and give it a name")
     async def sound_add(self, interaction: discord.Interaction, name: str):
         await interaction.response.send_message(
             f"📎 Responda esta mensagem com o arquivo de áudio que deseja cadastrar como **{name}** (mp3, m4a ou wav).",
-            ephemeral=False,
         )
+        bot_msg = await interaction.original_response()
+
+        def check(m: discord.Message) -> bool:
+            return (
+                m.author.id == interaction.user.id
+                and m.channel.id == interaction.channel.id
+                and m.reference is not None
+                and m.reference.message_id == bot_msg.id
+                and any(Path(a.filename).suffix.lower() in SOUND_EXTS for a in m.attachments)
+            )
+
+        try:
+            msg = await self.bot.wait_for("message", check=check, timeout=120)
+        except asyncio.TimeoutError:
+            await bot_msg.edit(content=f"⏰ Tempo esgotado. Use `/sound-add {name}` novamente.")
+            return
+
+        attachment = next(a for a in msg.attachments if Path(a.filename).suffix.lower() in SOUND_EXTS)
+        try:
+            result = await register_sound(self.bot.pool, interaction.guild.id, name, attachment.url, attachment.filename)
+            await msg.reply(result)
+        except Exception as e:
+            await msg.reply(f"❌ Erro ao salvar o som: {e}")
 
     @app_commands.command(name="sound-list", description="List all sounds available in this server")
     async def sound_list(self, interaction: discord.Interaction):
@@ -50,10 +75,7 @@ class Soundboard(commands.Cog):
             interaction.guild.id,
         )
         embed = discord.Embed(title="🔊 Sons disponíveis", color=discord.Color.blurple())
-        if rows:
-            embed.description = " • ".join(f"`{r['name']}`" for r in rows)
-        else:
-            embed.description = "Nenhum som cadastrado. Use `/sound-add` para adicionar."
+        embed.description = " • ".join(f"`{r['name']}`" for r in rows) if rows else "Nenhum som cadastrado. Use `/sound-add` para adicionar."
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(name="sound-delete", description="Delete a sound from the server library")
