@@ -1,7 +1,10 @@
+import logging
 import discord
 from discord.ext import commands
 from discord import app_commands
 from integrations import anilist
+
+log = logging.getLogger("hitoribot.anime")
 
 
 class MediaView(discord.ui.View):
@@ -28,6 +31,13 @@ class MediaView(discord.ui.View):
         await interaction.response.edit_message(embed=self.embeds[self.index], view=self)
 
 
+async def _send_embed_list(interaction: discord.Interaction, embeds: list[discord.Embed]) -> None:
+    if len(embeds) > 1:
+        await interaction.followup.send(embed=embeds[0], view=MediaView(embeds))
+    else:
+        await interaction.followup.send(embed=embeds[0])
+
+
 class Anime(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -35,44 +45,47 @@ class Anime(commands.Cog):
     @app_commands.command(name="anime", description="Search for an anime on AniList")
     async def anime(self, interaction: discord.Interaction, title: str):
         await interaction.response.defer()
+        log.info("/anime title=%r guild=%s", title, interaction.guild_id)
         try:
             embeds = await anilist.search_anime(title)
         except Exception:
+            log.exception("/anime search failed")
             await interaction.followup.send("❌ Erro ao buscar no AniList. Tente novamente.")
             return
         if not embeds:
             await interaction.followup.send(f"❌ Nenhum anime encontrado para **{title}**.")
             return
-        view = MediaView(embeds) if len(embeds) > 1 else None
-        await interaction.followup.send(embed=embeds[0], view=view)
+        await _send_embed_list(interaction, embeds)
 
     @app_commands.command(name="manga", description="Search for a manga on AniList")
     async def manga(self, interaction: discord.Interaction, title: str):
         await interaction.response.defer()
+        log.info("/manga title=%r guild=%s", title, interaction.guild_id)
         try:
             embeds = await anilist.search_manga(title)
         except Exception:
+            log.exception("/manga search failed")
             await interaction.followup.send("❌ Erro ao buscar no AniList. Tente novamente.")
             return
         if not embeds:
             await interaction.followup.send(f"❌ Nenhum mangá encontrado para **{title}**.")
             return
-        view = MediaView(embeds) if len(embeds) > 1 else None
-        await interaction.followup.send(embed=embeds[0], view=view)
+        await _send_embed_list(interaction, embeds)
 
     @app_commands.command(name="character", description="Search for an anime/manga character on AniList")
     async def character(self, interaction: discord.Interaction, name: str):
         await interaction.response.defer()
+        log.info("/character name=%r guild=%s", name, interaction.guild_id)
         try:
             embeds = await anilist.search_character(name)
         except Exception:
+            log.exception("/character search failed")
             await interaction.followup.send("❌ Erro ao buscar no AniList. Tente novamente.")
             return
         if not embeds:
             await interaction.followup.send(f"❌ Nenhum personagem encontrado para **{name}**.")
             return
-        view = MediaView(embeds) if len(embeds) > 1 else None
-        await interaction.followup.send(embed=embeds[0], view=view)
+        await _send_embed_list(interaction, embeds)
 
 
 async def setup(bot: commands.Bot):

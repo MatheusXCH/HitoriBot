@@ -1,8 +1,10 @@
+import logging
 import discord
 from discord.ext import commands
 from discord import app_commands
 from core.agent import call_agent, is_rate_limited
 
+log = logging.getLogger("hitoribot.ai")
 ALLOWED_EXTENSIONS = {".mp3", ".m4a", ".wav", ".ogg", ".png", ".jpg", ".jpeg", ".gif", ".webp"}
 
 
@@ -28,7 +30,9 @@ class AI(commands.Cog):
         ai_enabled = await pool.fetchval(
             "SELECT ai_enabled FROM guild_settings WHERE guild_id = $1", guild_id
         )
+        log.info("on_message AI check: guild=%s ai_enabled=%s", guild_id, ai_enabled)
         if not ai_enabled:
+            log.info("AI disabled for guild=%s, ignoring mention", guild_id)
             return
 
         if await is_rate_limited(pool, guild_id, channel_id):
@@ -46,6 +50,7 @@ class AI(commands.Cog):
             await message.reply("Olá! Como posso ajudar? 😊", mention_author=False)
             return
 
+        log.info("Calling agent: guild=%s channel=%s content=%r", guild_id, channel_id, content[:80])
         async with message.channel.typing():
             try:
                 text_reply, embeds = await call_agent(
@@ -57,9 +62,11 @@ class AI(commands.Cog):
                     attachments=attachments or None,
                 )
             except Exception as e:
+                log.exception("Agent call failed: guild=%s", guild_id)
                 await message.reply(f"❌ Erro ao processar sua mensagem: {e}", mention_author=False)
                 return
 
+        log.info("Agent reply: guild=%s text=%r embeds=%d", guild_id, (text_reply or "")[:80], len(embeds))
         if embeds and text_reply:
             await message.reply(text_reply, embeds=embeds[:10], mention_author=False)
         elif embeds:
@@ -78,7 +85,16 @@ class AI(commands.Cog):
             "UPDATE guild_settings SET ai_enabled = $1 WHERE guild_id = $2", new_value, interaction.guild.id
         )
         state = "ativado" if new_value else "desativado"
+        log.info("ai-toggle: guild=%s %s→%s", interaction.guild.id, current, new_value)
         await interaction.response.send_message(f"✅ Agente IA {state} neste servidor.", ephemeral=True)
+
+    @app_commands.command(name="ai-status", description="Show whether the AI agent is enabled in this server")
+    async def ai_status(self, interaction: discord.Interaction) -> None:
+        current = await self.bot.pool.fetchval(
+            "SELECT ai_enabled FROM guild_settings WHERE guild_id = $1", interaction.guild.id
+        )
+        state = "ativado ✅" if current else "desativado ❌"
+        await interaction.response.send_message(f"Agente IA: **{state}**", ephemeral=True)
 
     @app_commands.command(name="ai-clear", description="Clear the AI conversation context for this channel")
     @app_commands.default_permissions(manage_messages=True)

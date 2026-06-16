@@ -56,8 +56,11 @@ class Games(commands.Cog):
                 value=f"Campanha: {hltb_embed.fields[0].value} | Extras: {hltb_embed.fields[1].value} | 100%: {hltb_embed.fields[2].value}",
                 inline=False,
             )
-        view = GameView(embeds) if len(embeds) > 1 else None
-        await interaction.followup.send(embed=embeds[0], view=view)
+        
+        if len(embeds) > 1:
+            await interaction.followup.send(embed=embeds[0], view=GameView(embeds))
+        else:
+            await interaction.followup.send(embed=embeds[0])
 
     @app_commands.command(name="price", description="Get current price and historical low for a game")
     async def price(self, interaction: discord.Interaction, title: str):
