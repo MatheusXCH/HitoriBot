@@ -1,0 +1,9 @@
+services:
+  hitoribot:
+    build: .
+    container_name: hitoribot
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - /opt/data/hitoribot/sounds:/app/data/sounds
+      - /opt/data/hitoribot/stickers:/app/data/stickers
