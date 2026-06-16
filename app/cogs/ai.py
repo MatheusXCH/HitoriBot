@@ -66,6 +66,7 @@ class AI(commands.Cog):
                     user_message=content,
                     bot=self.bot,
                     attachments=attachments or None,
+                    user_id=message.author.id,
                 )
             except Exception as e:
                 log.exception("Agent call failed: guild=%s", guild_id)

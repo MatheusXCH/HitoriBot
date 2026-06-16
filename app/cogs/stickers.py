@@ -51,7 +51,7 @@ class Stickers(commands.Cog):
 
         attachment = next(a for a in msg.attachments if Path(a.filename).suffix.lower() in STICKER_EXTS)
         try:
-            result = await register_sticker(self.bot.pool, interaction.guild.id, name, attachment.url, attachment.filename)
+            result = await register_sticker(self.bot.pool, interaction.guild.id, name, attachment.url, attachment.filename, uploaded_by=interaction.user.id)
             await msg.reply(result)
         except Exception as e:
             await msg.reply(f"❌ Erro ao salvar o sticker: {e}")

@@ -110,6 +110,7 @@ async def call_agent(
     user_message: str,
     bot,
     attachments: list[dict] | None = None,
+    user_id: int = 0,
 ) -> tuple[str | None, list[discord.Embed]]:
     content = user_message
     if attachments:
@@ -136,7 +137,7 @@ async def call_agent(
         for tc in message.tool_calls:
             fn = tc.function.name
             args = json.loads(tc.function.arguments)
-            result_text, embed = await _dispatch_tool(fn, args, pool, guild_id, channel_id, bot)
+            result_text, embed = await _dispatch_tool(fn, args, pool, guild_id, channel_id, bot, user_id)
             if embed:
                 embeds.extend(embed if isinstance(embed, list) else [embed])
             tool_results.append({"tool_call_id": tc.id, "role": "tool", "content": result_text or "done"})
@@ -162,6 +163,7 @@ async def _dispatch_tool(
     guild_id: int,
     channel_id: int,
     bot,
+    user_id: int = 0,
 ) -> tuple[str, discord.Embed | list[discord.Embed] | None]:
     match name:
         case "search_game":
@@ -216,13 +218,13 @@ async def _dispatch_tool(
             embed = await get_playlists(pool, guild_id)
             return "Playlists listed — embed displayed to user.", embed
         case "register_sound":
-            text = await register_sound(pool, guild_id, args["name"], args["attachment_url"], args["filename"])
+            text = await register_sound(pool, guild_id, args["name"], args["attachment_url"], args["filename"], uploaded_by=user_id)
             return text, None
         case "delete_sound":
             text = await delete_sound(pool, guild_id, args["name"])
             return text, None
         case "register_sticker":
-            text = await register_sticker(pool, guild_id, args["name"], args["attachment_url"], args["filename"])
+            text = await register_sticker(pool, guild_id, args["name"], args["attachment_url"], args["filename"], uploaded_by=user_id)
             return text, None
         case "delete_sticker":
             text = await delete_sticker(pool, guild_id, args["name"])

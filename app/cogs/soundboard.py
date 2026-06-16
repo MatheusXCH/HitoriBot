@@ -63,7 +63,7 @@ class Soundboard(commands.Cog):
 
         attachment = next(a for a in msg.attachments if Path(a.filename).suffix.lower() in SOUND_EXTS)
         try:
-            result = await register_sound(self.bot.pool, interaction.guild.id, name, attachment.url, attachment.filename)
+            result = await register_sound(self.bot.pool, interaction.guild.id, name, attachment.url, attachment.filename, uploaded_by=msg.author.id)
             await msg.reply(result)
         except Exception as e:
             await msg.reply(f"❌ Erro ao salvar o som: {e}")

@@ -64,14 +64,14 @@ async def _download_attachment(url: str, dest: Path) -> None:
             dest.write_bytes(await resp.read())
 
 
-async def register_sound(pool: asyncpg.Pool, guild_id: int, name: str, attachment_url: str, filename: str) -> str:
+async def register_sound(pool: asyncpg.Pool, guild_id: int, name: str, attachment_url: str, filename: str, uploaded_by: int = 0) -> str:
     name = name.lower().strip()
     dest = Path(settings.sounds_path) / str(guild_id) / filename
     await _download_attachment(attachment_url, dest)
     await pool.execute(
-        "INSERT INTO guild_sounds (guild_id, name, file_path) VALUES ($1, $2, $3) "
-        "ON CONFLICT (guild_id, name) DO UPDATE SET file_path = $3",
-        guild_id, name, str(dest),
+        "INSERT INTO guild_sounds (guild_id, name, file_path, uploaded_by) VALUES ($1, $2, $3, $4) "
+        "ON CONFLICT (guild_id, name) DO UPDATE SET file_path = $3, uploaded_by = $4",
+        guild_id, name, str(dest), uploaded_by,
     )
     return f"✅ Som **{name}** cadastrado com sucesso."
 
@@ -88,14 +88,14 @@ async def delete_sound(pool: asyncpg.Pool, guild_id: int, name: str) -> str:
     return f"✅ Som **{name}** removido."
 
 
-async def register_sticker(pool: asyncpg.Pool, guild_id: int, name: str, attachment_url: str, filename: str) -> str:
+async def register_sticker(pool: asyncpg.Pool, guild_id: int, name: str, attachment_url: str, filename: str, uploaded_by: int = 0) -> str:
     name = name.lower().strip()
     dest = Path(settings.stickers_path) / str(guild_id) / filename
     await _download_attachment(attachment_url, dest)
     await pool.execute(
-        "INSERT INTO guild_stickers (guild_id, name, file_path) VALUES ($1, $2, $3) "
-        "ON CONFLICT (guild_id, name) DO UPDATE SET file_path = $3",
-        guild_id, name, str(dest),
+        "INSERT INTO guild_stickers (guild_id, name, file_path, uploaded_by) VALUES ($1, $2, $3, $4) "
+        "ON CONFLICT (guild_id, name) DO UPDATE SET file_path = $3, uploaded_by = $4",
+        guild_id, name, str(dest), uploaded_by,
     )
     return f"✅ Sticker **{name}** cadastrado com sucesso."
 
