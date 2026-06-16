@@ -3,6 +3,7 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 from core.agent import call_agent, is_rate_limited
+from config import settings as cfg
 
 log = logging.getLogger("hitoribot.ai")
 ALLOWED_EXTENSIONS = {".mp3", ".m4a", ".wav", ".ogg", ".png", ".jpg", ".jpeg", ".gif", ".webp"}
@@ -41,7 +42,7 @@ class AI(commands.Cog):
             log.info("AI disabled for guild=%s, ignoring mention", guild_id)
             return
 
-        if await is_rate_limited(pool, guild_id, channel_id):
+        if message.author.id != cfg.discord_owner_id and await is_rate_limited(pool, guild_id, channel_id):
             await message.reply("⏳ Muitas mensagens neste canal na última hora. Tente novamente mais tarde.", mention_author=False)
             return
 
@@ -111,6 +112,35 @@ class AI(commands.Cog):
             interaction.guild.id, interaction.channel.id,
         )
         await interaction.response.send_message("✅ Contexto de conversa limpo para este canal.", ephemeral=True)
+
+
+    @app_commands.command(name="ai-config", description="View or change AI limits for this server")
+    @app_commands.default_permissions(administrator=True)
+    async def ai_config(
+        self,
+        interaction: discord.Interaction,
+        rate_limit: app_commands.Range[int, 1, 500] | None = None,
+        context_limit: app_commands.Range[int, 5, 200] | None = None,
+    ) -> None:
+        pool = self.bot.pool
+        guild_id = interaction.guild.id
+        if rate_limit is not None:
+            await pool.execute(
+                "UPDATE guild_settings SET ai_rate_limit = $1 WHERE guild_id = $2",
+                rate_limit, guild_id,
+            )
+        if context_limit is not None:
+            await pool.execute(
+                "UPDATE guild_settings SET ai_context_limit = $1 WHERE guild_id = $2",
+                context_limit, guild_id,
+            )
+        row = await pool.fetchrow(
+            "SELECT ai_rate_limit, ai_context_limit FROM guild_settings WHERE guild_id = $1", guild_id
+        )
+        embed = discord.Embed(title="⚙️ Configuração da IA", color=discord.Color.blurple())
+        embed.add_field(name="📨 Rate limit", value=f"**{row['ai_rate_limit']}** msgs/hora por canal", inline=True)
+        embed.add_field(name="📜 Contexto", value=f"**{row['ai_context_limit']}** mensagens", inline=True)
+        await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
 async def setup(bot: commands.Bot):

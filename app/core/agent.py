@@ -76,7 +76,10 @@ TOOLS = [
 ]
 
 
-async def get_channel_context(pool: asyncpg.Pool, guild_id: int, channel_id: int, limit: int = 20) -> list[dict]:
+async def get_channel_context(pool: asyncpg.Pool, guild_id: int, channel_id: int) -> list[dict]:
+    limit = await pool.fetchval(
+        "SELECT ai_context_limit FROM guild_settings WHERE guild_id = $1", guild_id
+    ) or 50
     rows = await pool.fetch(
         "SELECT role, content FROM ai_context "
         "WHERE guild_id = $1 AND channel_id = $2 "
@@ -93,7 +96,10 @@ async def save_message(pool: asyncpg.Pool, guild_id: int, channel_id: int, role:
     )
 
 
-async def is_rate_limited(pool: asyncpg.Pool, guild_id: int, channel_id: int, limit: int = 10) -> bool:
+async def is_rate_limited(pool: asyncpg.Pool, guild_id: int, channel_id: int) -> bool:
+    limit = await pool.fetchval(
+        "SELECT ai_rate_limit FROM guild_settings WHERE guild_id = $1", guild_id
+    ) or 50
     count = await pool.fetchval(
         "SELECT COUNT(*) FROM ai_context "
         "WHERE guild_id = $1 AND channel_id = $2 AND role = 'user' "
