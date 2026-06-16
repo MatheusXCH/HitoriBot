@@ -166,43 +166,55 @@ async def _dispatch_tool(
     match name:
         case "search_game":
             embeds = await search_game(args["title"])
-            return f"Found {len(embeds)} result(s).", embeds
+            if not embeds:
+                return "No results found on Steam for this title.", None
+            return f"Found {len(embeds)} result(s) — embed displayed to user.", embeds
         case "get_game_price":
             embed = await get_game_price(args["title"])
-            return "Price info retrieved.", embed
+            return "Price info retrieved — embed displayed to user.", embed
         case "get_completion_time":
             embed = await get_completion_time(args["title"])
-            return "HLTB data retrieved.", embed
+            if not embed:
+                return "No results found on HowLongToBeat. Try using the full/exact title, with Roman numerals for sequels (e.g. 'III' instead of '3').", None
+            return "HLTB data retrieved — embed displayed to user.", embed
         case "get_free_games":
             embed = await get_free_games(pool)
-            return "Free games listed.", embed
+            return "Free games listed — embed displayed to user.", embed
         case "search_anime":
             embeds = await search_anime(args["title"])
-            return f"Found {len(embeds)} result(s).", embeds
+            if not embeds:
+                return "No anime found for this title.", None
+            return f"Found {len(embeds)} result(s) — embed displayed to user.", embeds
         case "search_manga":
             embeds = await search_manga(args["title"])
-            return f"Found {len(embeds)} result(s).", embeds
+            if not embeds:
+                return "No manga found for this title.", None
+            return f"Found {len(embeds)} result(s) — embed displayed to user.", embeds
         case "search_character":
             embeds = await search_character(args["name"])
-            return f"Found {len(embeds)} result(s).", embeds
+            if not embeds:
+                return "No character found for this name.", None
+            return f"Found {len(embeds)} result(s) — embed displayed to user.", embeds
         case "wikipedia_summary":
             embed = await wikipedia_summary(args["query"])
-            return "Wikipedia article retrieved.", embed
+            if not embed:
+                return "No Wikipedia article found.", None
+            return "Wikipedia article retrieved — embed displayed to user.", embed
         case "get_server_rules":
             embed = await get_server_rules(pool, guild_id)
-            return "Rules retrieved.", embed
+            return "Rules retrieved — embed displayed to user.", embed
         case "get_server_info":
             embed = await get_server_info(pool, guild_id, bot)
-            return "Server info retrieved.", embed
+            return "Server info retrieved — embed displayed to user.", embed
         case "get_sounds_library":
             embed = await get_sounds_library(pool, guild_id)
-            return "Sounds listed.", embed
+            return "Sounds library listed — embed displayed to user.", embed
         case "get_stickers_library":
             embed = await get_stickers_library(pool, guild_id)
-            return "Stickers listed.", embed
+            return "Stickers library listed — embed displayed to user.", embed
         case "get_playlists":
             embed = await get_playlists(pool, guild_id)
-            return "Playlists listed.", embed
+            return "Playlists listed — embed displayed to user.", embed
         case "register_sound":
             text = await register_sound(pool, guild_id, args["name"], args["attachment_url"], args["filename"])
             return text, None
