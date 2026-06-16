@@ -35,7 +35,11 @@ class Anime(commands.Cog):
     @app_commands.command(name="anime", description="Search for an anime on AniList")
     async def anime(self, interaction: discord.Interaction, title: str):
         await interaction.response.defer()
-        embeds = await anilist.search_anime(title)
+        try:
+            embeds = await anilist.search_anime(title)
+        except Exception:
+            await interaction.followup.send("❌ Erro ao buscar no AniList. Tente novamente.")
+            return
         if not embeds:
             await interaction.followup.send(f"❌ Nenhum anime encontrado para **{title}**.")
             return
@@ -45,7 +49,11 @@ class Anime(commands.Cog):
     @app_commands.command(name="manga", description="Search for a manga on AniList")
     async def manga(self, interaction: discord.Interaction, title: str):
         await interaction.response.defer()
-        embeds = await anilist.search_manga(title)
+        try:
+            embeds = await anilist.search_manga(title)
+        except Exception:
+            await interaction.followup.send("❌ Erro ao buscar no AniList. Tente novamente.")
+            return
         if not embeds:
             await interaction.followup.send(f"❌ Nenhum mangá encontrado para **{title}**.")
             return
@@ -55,7 +63,11 @@ class Anime(commands.Cog):
     @app_commands.command(name="character", description="Search for an anime/manga character on AniList")
     async def character(self, interaction: discord.Interaction, name: str):
         await interaction.response.defer()
-        embeds = await anilist.search_character(name)
+        try:
+            embeds = await anilist.search_character(name)
+        except Exception:
+            await interaction.followup.send("❌ Erro ao buscar no AniList. Tente novamente.")
+            return
         if not embeds:
             await interaction.followup.send(f"❌ Nenhum personagem encontrado para **{name}**.")
             return

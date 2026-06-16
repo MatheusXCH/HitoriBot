@@ -2,6 +2,7 @@ import aiohttp
 import discord
 
 ANILIST_URL = "https://graphql.anilist.co"
+_TIMEOUT = aiohttp.ClientTimeout(total=10)
 
 _ANIME_QUERY = """
 query ($search: String) {
@@ -46,7 +47,7 @@ query ($search: String) {
 
 
 async def _query(query: str, variables: dict) -> dict:
-    async with aiohttp.ClientSession() as session:
+    async with aiohttp.ClientSession(timeout=_TIMEOUT) as session:
         async with session.post(ANILIST_URL, json={"query": query, "variables": variables}) as resp:
             return await resp.json()
 
@@ -108,7 +109,8 @@ async def search_character(name: str) -> list[discord.Embed]:
     for item in results:
         full_name = item["name"]["full"]
         media_nodes = item.get("media", {}).get("nodes", [])
-        media_title = media_nodes[0]["title"]["romaji"] if media_nodes else "—"
+        title_obj = media_nodes[0].get("title") if media_nodes else None
+        media_title = title_obj.get("romaji", "—") if title_obj else "—"
         embed = discord.Embed(title=full_name, url=item.get("siteUrl", ""), color=discord.Color.purple())
         embed.set_thumbnail(url=item.get("image", {}).get("large", ""))
         embed.add_field(name="Aparece em", value=media_title, inline=False)

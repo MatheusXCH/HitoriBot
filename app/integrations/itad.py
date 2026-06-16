@@ -16,7 +16,7 @@ async def _find_game_id(title: str, session: aiohttp.ClientSession) -> str | Non
 async def _get_lowest_price(game_id: str, session: aiohttp.ClientSession) -> dict | None:
     async with session.get(
         f"{ITAD_BASE}/games/historylow/v1",
-        params={"key": cfg.itad_api_key, "id": game_id, "country": "BR"},
+        params={"key": cfg.itad_api_key, "id": game_id},
     ) as resp:
         data = await resp.json()
     return data[0] if isinstance(data, list) and data else None
@@ -25,7 +25,7 @@ async def _get_lowest_price(game_id: str, session: aiohttp.ClientSession) -> dic
 async def _get_current_prices(game_id: str, session: aiohttp.ClientSession) -> list:
     async with session.get(
         f"{ITAD_BASE}/games/prices/v3",
-        params={"key": cfg.itad_api_key, "id": game_id, "country": "BR"},
+        params={"key": cfg.itad_api_key, "id": game_id},
     ) as resp:
         data = await resp.json()
     if isinstance(data, list) and data:
@@ -54,15 +54,16 @@ async def get_game_price(title: str) -> discord.Embed:
     )
     if lowest:
         low_price = lowest.get("price", {})
+        currency = low_price.get("currency", "USD")
         embed.add_field(
             name="📉 Menor preço histórico",
-            value=f"**R$ {low_price.get('amount', '?'):.2f}** em {lowest.get('shop', {}).get('name', '?')} ({lowest.get('recorded', '?')[:10]})",
+            value=f"**{currency} {low_price.get('amount', '?'):.2f}** em {lowest.get('shop', {}).get('name', '?')} ({lowest.get('recorded', '?')[:10]})",
             inline=False,
         )
     if deals:
         best = sorted(deals, key=lambda d: d.get("price", {}).get("amount", 9999))[:3]
         lines = [
-            f"**{d.get('shop', {}).get('name', '?')}:** R$ {d.get('price', {}).get('amount', 0):.2f}"
+            f"**{d.get('shop', {}).get('name', '?')}:** {d.get('price', {}).get('currency', 'USD')} {d.get('price', {}).get('amount', 0):.2f}"
             + (f" (-{d.get('cut', 0)}%)" if d.get("cut") else "")
             for d in best
         ]

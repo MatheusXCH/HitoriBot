@@ -4,9 +4,15 @@ from howlongtobeatpy import HowLongToBeat
 
 
 async def get_completion_time(title: str) -> discord.Embed | None:
-    results = await asyncio.get_event_loop().run_in_executor(
-        None, lambda: HowLongToBeat().search(title)
-    )
+    try:
+        results = await asyncio.wait_for(
+            asyncio.get_event_loop().run_in_executor(
+                None, lambda: HowLongToBeat().search(title)
+            ),
+            timeout=8.0,
+        )
+    except Exception:
+        return None
     if not results:
         return None
     game = max(results, key=lambda r: r.similarity)

@@ -41,7 +41,11 @@ class Games(commands.Cog):
     @app_commands.command(name="game", description="Search for a game — Steam info and completion times")
     async def game(self, interaction: discord.Interaction, title: str):
         await interaction.response.defer()
-        embeds = await steam.search_game(title)
+        try:
+            embeds = await steam.search_game(title)
+        except Exception:
+            await interaction.followup.send("❌ Erro ao buscar o jogo na Steam.")
+            return
         if not embeds:
             await interaction.followup.send(f"❌ Nenhum jogo encontrado para **{title}**.")
             return
@@ -61,7 +65,11 @@ class Games(commands.Cog):
         if not cfg.itad_api_key:
             await interaction.followup.send("❌ IsThereAnyDeal API key não configurada.")
             return
-        embed = await itad.get_game_price(title)
+        try:
+            embed = await itad.get_game_price(title)
+        except Exception:
+            await interaction.followup.send("❌ Erro ao buscar preços no IsThereAnyDeal.")
+            return
         await interaction.followup.send(embed=embed)
 
     @app_commands.command(name="freegame-channel", description="Set the current channel for free game alerts")

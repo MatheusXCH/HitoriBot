@@ -8,6 +8,11 @@ class Events(commands.Cog):
         self.bot = bot
 
     @commands.Cog.listener()
+    async def on_ready(self):
+        for guild in self.bot.guilds:
+            await get_or_create_guild(self.bot.pool, guild.id, guild.name)
+
+    @commands.Cog.listener()
     async def on_guild_join(self, guild: discord.Guild):
         await get_or_create_guild(self.bot.pool, guild.id, guild.name)
 
